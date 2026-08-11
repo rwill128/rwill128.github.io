@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rwill128.github.io/sitemap.xml

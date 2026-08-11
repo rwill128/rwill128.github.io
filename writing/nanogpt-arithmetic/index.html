@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A tiny GPT learned to call Python | Richard Williams</title>
+  <meta name="description" content="A 790,000-parameter GPT mastered four-digit addition, failed at five digits, and became reliable when it learned to translate calculations into Python tool calls.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="I taught a tiny GPT to use Python instead of guessing at math">
+  <meta property="og:description" content="What a tiny language model taught me about brittle capability, deceptive evaluations, and reliable tool use.">
+  <meta property="og:url" content="https://rwill128.github.io/writing/nanogpt-arithmetic/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/nanogpt/direct-vs-tool.png">
+  <meta property="article:author" content="Richard Williams">
+  <meta property="article:published_time" content="2026-08-11">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f6f3">
+  <link rel="canonical" href="https://rwill128.github.io/writing/nanogpt-arithmetic/">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to article</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="/">Richard Williams</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/writing/nanogpt-arithmetic/" aria-current="page">Writing</a>
+        <a class="optional-nav" href="/#work">Work</a>
+        <a href="https://github.com/rwill128" rel="me">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="article">
+    <header class="article-header">
+      <div class="shell article-heading">
+        <div class="article-kicker">
+          <span class="draft-label">Draft</span>
+          <span>AI evaluation</span>
+          <span>Tool use</span>
+          <span>Small models</span>
+        </div>
+        <h1>I taught a tiny GPT to use Python instead of guessing at math</h1>
+        <p class="article-deck">A 790,000-parameter model mastered four-digit addition, failed completely at five digits, and eventually learned to hand calculations to a deterministic tool.</p>
+        <div class="article-byline">
+          <span>By Richard Williams</span>
+          <span>August 11, 2026</span>
+          <span>Draft for review</span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="article-hero">
+      <img src="/assets/images/nanogpt/direct-vs-tool.png" alt="Direct arithmetic accuracy compared with Python tool-call accuracy over four twelve-by-twelve operand surfaces" width="1920" height="1080">
+    </figure>
+
+    <section class="metric-band" aria-label="Key results">
+      <div class="wide-shell metric-grid">
+        <div class="metric">
+          <strong>0.79M</strong>
+          <span>parameters in the direct arithmetic model</span>
+        </div>
+        <div class="metric">
+          <strong>499/500</strong>
+          <span>four-digit addition answers correct</span>
+        </div>
+        <div class="metric">
+          <strong>0/1,500</strong>
+          <span>tests correct when either operand had five digits</span>
+        </div>
+        <div class="metric">
+          <strong>1,999/2,000</strong>
+          <span>balanced tool calls and final answers correct</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell article-layout">
+      <article class="article-body">
+        <p>Most AI demonstrations begin with a behavior and ask whether it feels intelligent. I wanted a test with nowhere to hide. Arithmetic gives an exact grade: the answer is right or it is wrong.</p>
+
+        <p>I started with Andrej Karpathy's <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a>, the small character-level Transformer commonly demonstrated by training it on Shakespeare. The original model learns enough names, punctuation, and cadence to produce recognizable Shakespeare-shaped nonsense. I wanted to know what the same kind of model would learn from a STEM education.</p>
+
+        <p>The result was not a clean story about a model learning or failing to learn arithmetic. It became an investigation into local competence, catastrophic forgetting, deceptive metrics, and the difference between generating an answer and knowing when to call a tool.</p>
+
+        <div class="pullquote">The most useful result was not that the model learned math. It was that the model learned when to stop guessing and hand the problem to something deterministic.</div>
+
+        <h2 id="setup">A tiny model and an exact test</h2>
+
+        <p>The direct arithmetic model had about 790,000 parameters, four layers, four attention heads, and a 40-character context. I generated a text file containing equations separated by newlines. nanoGPT trained exactly as it would on any other character corpus: by predicting the next character in random windows.</p>
+
+        <pre><code>37+58=95
+912+4=916
+903+76=979</code></pre>
+
+        <p>There was no calculator, arithmetic-specific architecture, reinforcement learning, or scratchpad. At evaluation time, I supplied an equation through the equals sign, generated the answer greedily, and compared the leading number with the exact expected result.</p>
+
+        <p>This sounds difficult to get wrong. My first interesting result was still an evaluator bug.</p>
+
+        <h2 id="evaluator-bug">The first discovery was my bug</h2>
+
+        <p>After training on operands up to 999, the first evaluation grid showed a strange asymmetry. One-digit plus two-digit problems scored 61.7%, while two-digit plus one-digit problems scored 99.0%.</p>
+
+        <p>Addition is commutative, so reversing the operands should not create a gap like that. I could have treated the result as evidence about positional representations or attention. Instead, I tested the experiment.</p>
+
+        <p>The training examples were separated by newlines, but the evaluator used a bare prompt such as <code>4+54=</code>. Because training windows could begin in the middle of a line, the model had also encountered the same suffix inside <code>14+54=</code> and <code>204+54=</code>. Nothing in the prompt told it that the first <code>4</code> was the beginning of the problem.</p>
+
+        <p>I added the same newline boundary used during training. One-digit plus two-digit accuracy jumped from 61.7% to 100%. The asymmetry disappeared.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/evaluator-boundary.png">
+            <img src="/assets/images/nanogpt/evaluator-boundary.png" alt="A prompt boundary ablation showing accuracy rising from 61.7 percent to 100 percent" width="1920" height="1080">
+          </a>
+          <figcaption>A single start-of-example character removed the apparent asymmetry. The model had not produced the discovery; the evaluator had.</figcaption>
+        </figure>
+
+        <p>That changed how I approached every later result. When a benchmark produces a surprising pattern, the first question should not be, "What did the model learn?" It should be, "What exactly did this test measure?"</p>
+
+        <h2 id="digit-wall">Near-perfect mastery, then a wall</h2>
+
+        <p>With the boundary fixed, the model learned bounded addition remarkably well. I expanded training to one million equations with operands sampled from 0 through 9,999. On fresh four-digit plus four-digit tests, it answered 499 out of 500 correctly.</p>
+
+        <p>Then I tested the next digit length. The result was not a gradual decline:</p>
+
+        <ul>
+          <li>Four digits plus four digits: <strong>499/500</strong>.</li>
+          <li>Four digits plus five digits: <strong>0/500</strong>.</li>
+          <li>Five digits plus four digits: <strong>0/500</strong>.</li>
+          <li>Five digits plus five digits: <strong>0/500</strong>.</li>
+        </ul>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/five-digit-cliff.png">
+            <img src="/assets/images/nanogpt/five-digit-cliff.png" alt="A four-cell evaluation showing 99.8 percent accuracy for four-digit addition and zero for every case containing a five-digit operand" width="1920" height="1080">
+          </a>
+          <figcaption>More range produced mastery inside the trained representation. It did not produce length-general addition.</figcaption>
+        </figure>
+
+        <p>The model had become excellent at the task as represented in its training distribution. It had not learned an addition procedure that could simply repeat for another column. More training data moved the wall. It did not remove the wall.</p>
+
+        <h2 id="transfer">Transfer existed, but it had a shape</h2>
+
+        <p>Changing digit length might be an unusually hard test, so I tried a smaller distribution shift. I kept ordinary two-operand addition in rehearsal and trained a new expression shape, <code>a+b+c</code>, while restricting the third operand to values from 0 through 50.</p>
+
+        <p>The model transferred well to unseen third operands from 51 through 99. At 100, accuracy collapsed. After training through 200, it transferred some capability to unseen three-digit values before collapsing again at 1,000.</p>
+
+        <p>This was real generalization, but it was not unlimited. Inside a familiar digit representation, the competence had a soft edge. At a new number of digits, it had a wall.</p>
+
+        <h2 id="island">Competence could move without becoming reusable</h2>
+
+        <p>I then created a deliberately strange continuation. Starting from the model trained on third operands through 200, I skipped the next 499 values and trained only on third operands from 700 through 799.</p>
+
+        <p>If the model had learned a reusable operation, the old region might remain intact and the two regions might connect. Instead, the new 700 to 799 band reached 98.3%, while the previously learned region below 200 collapsed to about 2.8%. Ordinary two-operand addition remained at 99.6%.</p>
+
+        <p>The forgetting was specific. It had not globally forgotten addition; it had overwritten behavior associated with the third-operand role.</p>
+
+        <p>The errors were highly structured. In a 50,000-case probe of third operands from the 800s, 89.3% of predictions were exactly 100 too small. The lower digits were often preserved while the leading 8 behaved like the recently trained leading 7.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/structured-error.png">
+            <img src="/assets/images/nanogpt/structured-error.png" alt="Examples and a bar chart showing that 89.3 percent of predictions for 800-series third operands were exactly 100 too small" width="1920" height="1080">
+          </a>
+          <figcaption>The model's failures were not random. Most 800-series predictions matched the same problem with the leading 8 replaced by a 7.</figcaption>
+        </figure>
+
+        <p>This looked less like a stable algorithm and more like a precise local map of familiar input and output shapes. That map could be expanded, shifted, erased, and restored through rehearsal.</p>
+
+        <h2 id="composition">Knowing two operations was not the same as composing them</h2>
+
+        <p>Next, I trained multiplication while rehearsing addition. Pure multiplication training pushed two-operand multiplication above 90%, but initially erased addition. Mixed rehearsal eventually produced a checkpoint that retained strong four-digit addition and reached 96.8% on two-digit multiplication.</p>
+
+        <p>Then I froze the checkpoint and tested whether it could combine those learned operations in expression shapes it had not seen:</p>
+
+        <ul>
+          <li><code>a*b*c</code>: 0/2,000.</li>
+          <li><code>a*b+c</code>: 0/2,000.</li>
+          <li><code>a+b*c</code>: 0/2,000.</li>
+        </ul>
+
+        <p>The model still produced numeric-looking output 94.5% to 100% of the time. It recognized the format. It did not perform the requested computation. Even appending an identity operation failed: <code>a*b*1</code> was correct only 11 times out of 9,801.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/composition-failure.png">
+            <img src="/assets/images/nanogpt/composition-failure.png" alt="Composition tests showing zero exact answers across three new expression grammars" width="1920" height="1080">
+          </a>
+          <figcaption>The checkpoint could answer familiar two-operand multiplication, but that behavior did not become a reusable multiplication operator.</figcaption>
+        </figure>
+
+        <p>The network could contain successful regions for addition and multiplication at the same time. It still could not call those capabilities wherever the symbols appeared.</p>
+
+        <h2 id="measurement-traps">A green evaluation can still be wrong</h2>
+
+        <p>I expanded the curriculum into four 12-by-12 operand-length grids for addition, subtraction, multiplication, and division. Watching the cells improve and regress was useful, but division demonstrated how easily a green chart can lie.</p>
+
+        <p>The first generator used integer division. When the numerator was smaller than the denominator, <code>3/100</code> became <code>0</code>. Large regions turned green because predicting zero was enough.</p>
+
+        <p>I changed the task to two decimal places and filtered out results that rounded to <code>0.00</code>. That removed one shortcut and created another. In one band, 503 of 509 surviving targets were exactly <code>0.01</code>. Predicting that constant was 98.8% accurate.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/division-shortcut.png">
+            <img src="/assets/images/nanogpt/division-shortcut.png" alt="A division accuracy grid and distribution analysis showing a 98.8 percent shortcut from predicting 0.01" width="1920" height="1080">
+          </a>
+          <figcaption>Filtering out zero did not make the benchmark balanced. It concentrated the remaining answers around a new constant.</figcaption>
+        </figure>
+
+        <p>The model was doing exactly what optimization rewards: exploiting the target distribution. The mistake was assuming that the score represented general division before inspecting what made each cell easy.</p>
+
+        <h2 id="tool-use">Give the model a different job</h2>
+
+        <p>At this point, building a more elaborate neural calculator felt like the wrong objective. A language model does not need to reproduce arithmetic internally when a deterministic calculator already exists.</p>
+
+        <p>I returned to the Tiny Shakespeare checkpoint and trained one small model to perform two jobs:</p>
+
+        <ol>
+          <li>Continue generating prose when given Shakespeare.</li>
+          <li>Emit an <code>@</code> sentinel and a Python expression when given arithmetic.</li>
+        </ol>
+
+        <pre><code>Q: What is (842+159)*73?
+A: @(842+159)*73
+R: 73073
+A: 73073</code></pre>
+
+        <p>The generated expression passed through a restricted parser that allowed numeric constants and approved arithmetic operators, not unrestricted Python execution. The result then returned to the model so it could finish the response.</p>
+
+        <p>This separated the task into stages that could be measured independently:</p>
+
+        <ul>
+          <li>Did the model route the request to Python?</li>
+          <li>Was the generated expression syntactically valid?</li>
+          <li>Did the expression represent the requested calculation?</li>
+          <li>Did the final answer correctly use the returned result?</li>
+        </ul>
+
+        <h2 id="routing">Routing succeeded before argument construction</h2>
+
+        <p>After 1,000 updates, the model chose Python for every arithmetic prompt. That looked like success until I examined the generated arguments. Only 3.5% of the calls represented the requested calculation.</p>
+
+        <p>It had learned the easiest structural distinction first:</p>
+
+        <pre><code>Shakespeare -&gt; continue prose
+Arithmetic  -&gt; emit @ and call Python</code></pre>
+
+        <p>It knew when to ask for help before it knew what to ask.</p>
+
+        <p>A later narrow evaluator reported 99.5% semantic-call accuracy. But that evaluator reused familiar operand shapes. On a balanced 2,000-case test that varied operand widths and expression roles independently, correct calls fell to 52.2% and complete answers to 46.35%.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/evaluator-scope.png">
+            <img src="/assets/images/nanogpt/evaluator-scope.png" alt="A comparison showing 100 percent on a narrow tool evaluator, 52.2 percent on a balanced evaluator, and 100 percent routing" width="1280" height="720">
+          </a>
+          <figcaption>Routing, argument accuracy, and final task completion were separate capabilities. One aggregate success number would have hidden the difference.</figcaption>
+        </figure>
+
+        <p>The first evaluator bug involved one missing boundary character. This one involved sampling. In both cases, the model looked more mysterious than it was because the evaluation failed to isolate the behavior I thought it measured.</p>
+
+        <h2 id="tool-results">The tool-trained model becomes useful</h2>
+
+        <p>I broadened training so operand widths and expression roles varied independently, while keeping half of each batch as Shakespeare. After 6,000 additional updates, the same balanced evaluator reached 1,999 correct calls and final answers out of 2,000.</p>
+
+        <p>The model also made zero false tool calls across 1,000 sampled Shakespeare contexts. Its Shakespeare validation loss improved slightly, from 1.590 to 1.573, rather than collapsing under the mixed curriculum.</p>
+
+        <p>Then I ran the same four 12-by-12 operand grids used for direct arithmetic. The tool model generated 5,757 semantically correct Python expressions out of 5,760. All three misses occurred in the 12-digit by 12-digit division cell.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/direct-vs-tool.png">
+            <img src="/assets/images/nanogpt/direct-vs-tool.png" alt="The direct model's uneven arithmetic surfaces compared with nearly perfect Python tool-call surfaces" width="1920" height="1080">
+          </a>
+          <figcaption>The tool model's job was no longer to calculate. It had to preserve the requested structure well enough for Python to calculate.</figcaption>
+        </figure>
+
+        <p>There was still an important failure after the correct call. Across those long-operand surfaces, the tiny model recopied only 4,511 of the 5,760 returned answers correctly. The tool had produced the right value, but asking a character model to reproduce a long result created a new lossy step.</p>
+
+        <p>That distinction matters in production. If the deterministic system has already produced the answer, the application should usually return or render that structured result directly. It should not require a probabilistic model to copy it perfectly unless language generation adds real value.</p>
+
+        <h2 id="complex">More complex calls, within learned grammars</h2>
+
+        <p>Finally, I trained five expression grammars containing five operands, mixed operators, and parentheses. On 1,000 unseen numerical combinations inside those learned grammars, the model generated 1,000 correct calls and recopied 998 answers.</p>
+
+        <figure class="article-figure">
+          <a href="/assets/images/nanogpt/complex-tool-calls.png">
+            <img src="/assets/images/nanogpt/complex-tool-calls.png" alt="Three five-operand prompts translated into correct Python calls with deterministic results" width="1280" height="720">
+          </a>
+          <figcaption>The numerical combinations were unseen, but the expression grammars were learned during training. Holding out entire grammar forms remained much harder.</figcaption>
+        </figure>
+
+        <p>This did not mean the model had become a general parser. When entire expression grammars were withheld, performance stayed near 53%. The tool removed the need to generalize arithmetic across new values, but the model still depended on training coverage for the symbolic structures it had to translate.</p>
+
+        <h2 id="production">What I would carry into a production agent</h2>
+
+        <p>The arithmetic task was intentionally small. The failure modes are not. A customer-facing agent can select the correct API and still submit the wrong customer ID, date range, operation, or medication. A successful HTTP request is not the same thing as a successfully completed task.</p>
+
+        <div class="result-box">
+          <h3>Evaluate the whole execution path</h3>
+          <ul>
+            <li><strong>Routing:</strong> Did the model select the right capability?</li>
+            <li><strong>Arguments:</strong> Do the parameters preserve the user's request?</li>
+            <li><strong>Validation:</strong> Can cheap deterministic checks reject malformed or unsafe calls?</li>
+            <li><strong>Execution:</strong> Did the tool complete successfully?</li>
+            <li><strong>Completion:</strong> Did the system deliver the correct result to the user?</li>
+          </ul>
+        </div>
+
+        <p>The experiment also reinforced four practical rules:</p>
+
+        <ol>
+          <li><strong>Interrogate surprising metrics.</strong> A dramatic result may come from a prompt boundary, target imbalance, or evaluation shortcut.</li>
+          <li><strong>Hold out structures, not only values.</strong> New numbers inside a learned grammar are a much easier test than genuinely new task forms.</li>
+          <li><strong>Use deterministic systems for deterministic work.</strong> Let the model recognize intent and translate it into a constrained operation. Let code perform the calculation.</li>
+          <li><strong>Do not add a probabilistic recopy step.</strong> Preserve structured tool output whenever the application can present it directly.</li>
+        </ol>
+
+        <p>The direct model became almost exactly as capable as the examples it received, with a few narrow and interesting exceptions. The tool-trained model did not become a mathematician either. It learned something more useful: recognize the task, preserve its structure, and hand exact execution to a system that already knows how to do it.</p>
+
+        <div class="pullquote">Pattern recognition chose the tool. Deterministic execution supplied the arithmetic. Rigorous evaluation told me whether the combination actually worked.</div>
+
+        <div class="article-end">
+          <h2>Where this goes next</h2>
+          <p>The next experiments should test more realistic translation problems: natural-language arithmetic, unseen paraphrase templates, malformed inputs, and execution-repair loops. Those tests will make the model's actual responsibility progressively closer to the argument-construction problem inside a production agent.</p>
+          <p>This draft focuses on the experimental story and its engineering implications. I am preparing the runnable experiment code and raw evaluation artifacts for a separate publication.</p>
+        </div>
+
+        <p class="draft-note"><strong>Draft note:</strong> This article is published for review. The prose, visual sequence, and supporting artifact links may change before the final version.</p>
+      </article>
+
+      <aside class="article-aside" aria-label="Article contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#setup">A tiny exact test</a></li>
+          <li><a href="#evaluator-bug">The evaluator bug</a></li>
+          <li><a href="#digit-wall">The digit wall</a></li>
+          <li><a href="#transfer">Transfer has a shape</a></li>
+          <li><a href="#island">Competence islands</a></li>
+          <li><a href="#composition">Composition failure</a></li>
+          <li><a href="#measurement-traps">Measurement traps</a></li>
+          <li><a href="#tool-use">A different job</a></li>
+          <li><a href="#routing">Routing and arguments</a></li>
+          <li><a href="#tool-results">Tool results</a></li>
+          <li><a href="#production">Production lessons</a></li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <span>&copy; 2026 Richard Williams</span>
+      <a href="/">Back to the homepage</a>
+    </div>
+  </footer>
+</body>
+</html>
