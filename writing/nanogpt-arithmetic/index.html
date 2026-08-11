@@ -300,16 +300,19 @@ Arithmetic  -&gt; emit @ and call Python</code></pre>
           </ul>
         </div>
 
-        <p>The experiment also reinforced four practical rules:</p>
+        <p>The experiment also reinforced five practical rules:</p>
 
         <ol>
           <li><strong>Interrogate surprising metrics.</strong> A dramatic result may come from a prompt boundary, target imbalance, or evaluation shortcut.</li>
           <li><strong>Hold out structures, not only values.</strong> New numbers inside a learned grammar are a much easier test than genuinely new task forms.</li>
           <li><strong>Use deterministic systems for deterministic work.</strong> Let the model recognize intent and translate it into a constrained operation. Let code perform the calculation.</li>
           <li><strong>Do not add a probabilistic recopy step.</strong> Preserve structured tool output whenever the application can present it directly.</li>
+          <li><strong>Test capability addition, not capability replacement.</strong> A useful specialized agent should add a new responsibility without erasing the old one, and the evaluation should measure both.</li>
         </ol>
 
-        <p>The direct model became almost exactly as capable as the examples it received, with a few narrow and interesting exceptions. The tool-trained model did not become a mathematician either. It learned something more useful: recognize the task, preserve its structure, and hand exact execution to a system that already knows how to do it.</p>
+        <p>One result matters as much as the arithmetic score: the tool-trained model kept its original job. Given Shakespeare, it continued generating Shakespeare-like text; given arithmetic, it emitted a constrained Python call. Across 1,000 sampled Shakespeare contexts it made zero false tool calls, while Shakespeare validation loss improved from 1.590 to 1.573. Unlike the earlier curricula, adding the new behavior did not catastrophically overwrite the old one.</p>
+
+        <p>The direct model became almost exactly as capable as the examples it received, with a few narrow and interesting exceptions. The tool-trained model did not become a mathematician either. It learned something more useful: carry two responsibilities at once, recognize which one the context required, preserve the requested structure, and hand exact arithmetic to a system that already knew how to do it.</p>
 
         <div class="pullquote">Pattern recognition chose the tool. Deterministic execution supplied the arithmetic. Rigorous evaluation told me whether the combination actually worked.</div>
 
