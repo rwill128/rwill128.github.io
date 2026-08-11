@@ -228,6 +228,11 @@ a:hover {
   object-position: 57% center;
 }
 
+.feature-story-media img.text-sql-preview {
+  object-fit: contain;
+  object-position: center;
+}
+
 .feature-story-copy {
   display: flex;
   flex-direction: column;
@@ -646,6 +651,49 @@ a:hover {
   border: 0;
   color: inherit;
   background: transparent;
+}
+
+.article-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  margin: 34px 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  background: var(--white);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+
+.article-body thead {
+  color: var(--ink);
+  background: var(--soft);
+}
+
+.article-body th,
+.article-body td {
+  min-width: 94px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-body th:first-child,
+.article-body td:first-child {
+  min-width: 150px;
+}
+
+.article-body th {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.article-body th[align="right"],
+.article-body td[align="right"] {
+  text-align: right;
 }
 
 .article-body blockquote {

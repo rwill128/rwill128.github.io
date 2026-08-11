@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I let a 1.5B SQL model study its target databases | Richard Williams</title>
+  <meta name="description" content="Same-schema training raised execution accuracy from 17.8% to 26.2%. The more revealing result was what the model learned, and what it still could not detect.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="I let a 1.5B SQL model study its target databases">
+  <meta property="og:description" content="Same-schema training improved schema fluency far more than semantic correctness.">
+  <meta property="og:url" content="https://rwill128.github.io/writing/text-to-sql-specialist/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/text-to-sql/schema-training-results.png">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="900">
+  <meta property="article:author" content="Richard Williams">
+  <meta property="article:published_time" content="2026-08-11">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f6f3">
+  <link rel="canonical" href="https://rwill128.github.io/writing/text-to-sql-specialist/">
+  <link rel="stylesheet" href="/assets/site.css?v=20260811-3">
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to article</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="/">Richard Williams</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/#writing" aria-current="page">Writing</a>
+        <a class="optional-nav" href="/#work">Work</a>
+        <a href="https://github.com/rwill128" rel="me">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="article">
+    <header class="article-header">
+      <div class="shell article-heading">
+        <div class="article-kicker">
+          <span>Text-to-SQL</span>
+          <span>Small models</span>
+          <span>Domain adaptation</span>
+        </div>
+        <h1>I let a 1.5B SQL model study its target databases</h1>
+        <p class="article-deck">Same-schema training raised accuracy from 17.8% to 26.2%. Most of the improvement came from learning to produce SQL that ran, not from solving semantics.</p>
+        <div class="article-byline">
+          <span>By Richard Williams</span>
+          <span>August 11, 2026</span>
+          <span>16 minute read</span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="article-hero editorial-hero">
+      <img src="/assets/images/text-to-sql/schema-training-results.png" alt="Failure breakdown for untouched, generally fine-tuned, and same-schema Qwen2.5-Coder 1.5B models across 500 BIRD Mini-Dev questions" width="1600" height="900">
+    </figure>
+
+    <section class="metric-band" aria-label="Key results">
+      <div class="wide-shell metric-grid">
+        <div class="metric">
+          <strong>+47%</strong>
+          <span>more correct answers than the untouched model</span>
+        </div>
+        <div class="metric">
+          <strong>+95</strong>
+          <span>additional executable queries out of 500</span>
+        </div>
+        <div class="metric">
+          <strong>42.4%</strong>
+          <span>correct among queries that executed</span>
+        </div>
+        <div class="metric">
+          <strong>9.5 MB</strong>
+          <span>size of the schema-specialist adapter</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell article-layout">
+      <article class="article-body">
+<p>General text-to-SQL benchmarks ask a model to work with databases it has never seen. That is a useful test of general capability. It is not how I would build most production systems.</p>
+<p>If I were deploying a SQL agent inside one company, I would know the schemas ahead of time. I would probably have query logs, analyst-written SQL, a business glossary, and a growing history of corrected questions. It would be wasteful to make the model rediscover all of that on every request.</p>
+<p>So I let a small model cheat in exactly that way.</p>
+<p>I trained <a href="https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct">Qwen2.5-Coder 1.5B</a> on questions from the same 11 database schemas used by the BIRD Mini-Dev evaluation, while removing the 500 evaluation questions and every normalized question or SQL duplicate I could identify. Then I reran all 500 questions.</p>
+<p>Accuracy rose from <strong>17.8% to 26.2%</strong>. Relative to the best general fine-tune, it rose from <strong>23.2% to 26.2%</strong>.</p>
+<p>That was useful, but it was not the most important result. The model became much better at writing SQL that executed. Once a query executed, its chance of actually being correct barely changed.</p>
+<p>The experiment ended up measuring the difference between <strong>schema fluency</strong> and <strong>semantic correctness</strong>.</p>
+<h2 id="the-production-question">The production question</h2>
+
+<p>This experiment followed an earlier comparison of three local Qwen2.5-Coder models and a hosted model on <a href="https://github.com/bird-bench/mini_dev">BIRD Mini-Dev</a>. The 1.5B model was predictably weak, but its failures suggested several different problems were being compressed into one accuracy score:</p>
+<ul>
+<li>Sometimes it did not produce parseable SQL.</li>
+<li>Sometimes it referenced tables or columns that did not exist.</li>
+<li>Sometimes it produced valid SQL that failed when executed.</li>
+<li>Sometimes the query ran successfully and returned the wrong data.</li>
+<li>Sometimes it was correct.</li>
+</ul>
+<p>Those failure modes imply different remedies. Grammar constraints can help parsing. Schema training can help table and column selection. Execution feedback can repair database errors. None of those automatically tells the model that it used the wrong denominator, join path, filter, or aggregation.</p>
+<p>The question was therefore not simply:</p>
+<blockquote>
+<p>Can fine-tuning improve the score?</p>
+</blockquote>
+<p>It was:</p>
+<blockquote>
+<p>What kind of capability does same-schema training add to a 1.5B model, and which failures remain afterward?</p>
+</blockquote>
+<h2 id="three-model-conditions">Three model conditions</h2>
+
+<p>I compared three versions of the same <a href="https://huggingface.co/mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit">4-bit MLX Qwen2.5-Coder 1.5B checkpoint</a>. Every condition used the same model revision, prompt construction, deterministic decoding, evaluation order, databases, and execution evaluator.</p>
+<ol>
+<li><strong>Untouched model.</strong> The original 4-bit MLX checkpoint with no adapter.</li>
+<li><strong>General fine-tune.</strong> A LoRA adapter trained on BIRD examples from schemas that do not appear in Mini-Dev.</li>
+<li><strong>Same-schema adaptation.</strong> The best general adapter followed by 300 additional updates using non-evaluation questions from the 11 Mini-Dev schemas.</li>
+</ol>
+<p>My earlier Ollama run scored 16.6%. Fine-tuning required an MLX checkpoint, so I reran the untouched MLX model and used its 17.8% result as the baseline here. Mixing runtimes or quantizations would have made the comparison less meaningful.</p>
+<h2 id="letting-it-study-without-handing-it-the-answers">Letting it study without handing it the answers</h2>
+
+<p>The <a href="https://huggingface.co/datasets/birdsql/bird_sql_dev_20251106">current BIRD development dataset</a> contains 1,534 questions across the same 11 schemas as Mini-Dev. Mini-Dev contains 500 of those questions.</p>
+<p>I excluded source rows using three independent checks:</p>
+<ul>
+<li>matching question ID;</li>
+<li>matching normalized question text;</li>
+<li>matching normalized reference SQL.</li>
+</ul>
+<p>The union removed 501 rows: the 500 evaluation IDs plus one additional duplicate caught by the content checks. That left 1,033 same-schema examples that did not directly duplicate the evaluation set.</p>
+<p>I split those within each database into 930 training and 103 validation examples. A 2,560-token safety limit removed three oversized training rows and no validation rows, leaving <strong>927 training examples and 103 validation examples</strong>. Every target schema remained represented in both splits.</p>
+<p>This is intentionally not an unseen-schema experiment. Similar join paths, columns, business concepts, and question structures can appear in training and evaluation. That overlap is the point. The condition asks whether a model can become a specialist in a known data environment.</p>
+<p>The evaluation questions were not used for training, validation, checkpoint selection, or prompt examples.</p>
+<h2 id="training-method">Training method</h2>
+
+<p>Each example used the same shape as inference:</p>
+<ul>
+<li>a system instruction requiring one read-only SQLite query;</li>
+<li>the schema DDL;</li>
+<li>the natural-language question;</li>
+<li>BIRD&#39;s optional evidence or business-rule text;</li>
+<li>the reference SQL as the assistant response.</li>
+</ul>
+<p>Loss was applied only to the assistant SQL, not the prompt.</p>
+<p>The adapter used rank-16 LoRA updates on the query, key, value, and output projections in the final 16 transformer layers. Training used a <code>5e-6</code> learning rate, batch size 1, four-step gradient accumulation, prompt masking, 5% LoRA dropout, gradient checkpointing, and a 2,560-token maximum sequence length.</p>
+<p>I initialized from the best general adapter and trained for 300 additional updates. Full same-schema validation loss moved steadily downward:</p>
+<table>
+<thead>
+<tr>
+<th align="right">Update</th>
+<th align="right">Validation loss</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">Initial</td>
+<td align="right">0.379</td>
+</tr>
+<tr>
+<td align="right">100</td>
+<td align="right">0.350</td>
+</tr>
+<tr>
+<td align="right">200</td>
+<td align="right">0.336</td>
+</tr>
+<tr>
+<td align="right">300</td>
+<td align="right">0.327</td>
+</tr>
+</tbody></table>
+<p>The run peaked at 4.28 GB of MLX memory. The final adapter is 9.5 MB.</p>
+<p>I also changed the training wrapper after finding that MLX-LM silently reset the wired-memory limit to the machine&#39;s recommended maximum when training began. The wrapper now clamps any later attempt to raise the configured 6 GiB limit. That was not a model-quality change, but it made the continuation run materially safer after an earlier configuration caused a system crash.</p>
+<h2 id="what-changed">What changed</h2>
+
+<p>Every row below describes the same population of 500 questions.</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th align="right">Parse failure</th>
+<th align="right">Execution failure</th>
+<th align="right">Executes, wrong</th>
+<th align="right">Correct</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Untouched</td>
+<td align="right">13</td>
+<td align="right">273</td>
+<td align="right">125</td>
+<td align="right">89</td>
+</tr>
+<tr>
+<td>General fine-tune</td>
+<td align="right">5</td>
+<td align="right">213</td>
+<td align="right">166</td>
+<td align="right">116</td>
+</tr>
+<tr>
+<td>Same-schema adaptation</td>
+<td align="right">2</td>
+<td align="right">189</td>
+<td align="right">178</td>
+<td align="right"><strong>131</strong></td>
+</tr>
+</tbody></table>
+<p>Two official reference queries timed out locally, so the scorable accuracy figures were 89/498, 116/498, and 131/498. The table keeps all 500 questions visible instead of silently changing the denominator.</p>
+<p>From the untouched model to the same-schema specialist:</p>
+<ul>
+<li>Correct answers increased from 89 to 131: <strong>42 additional answers</strong>, or a <strong>47.2% relative improvement</strong>.</li>
+<li>Executable queries increased from 214 to 309: <strong>95 additional executable queries</strong>, or a <strong>44.4% relative improvement</strong>.</li>
+<li>Parse failures fell from 13 to 2.</li>
+<li>Execution failures fell from 273 to 189.</li>
+<li>SQLite&#39;s <code>no such column</code> failures fell from 244 to 173.</li>
+</ul>
+<p>Compared with the general fine-tune, the same-schema condition produced 36 paired wins and 21 paired losses. The exact McNemar p-value was 0.0627: promising evidence, but not conventionally significant at 0.05 on this sample.</p>
+<p>The result was also not monotonic at the question level. Of the general model&#39;s invalid queries, 74 became executable after same-schema training. Only 22 of those became correct; 52 became executable but still returned the wrong result. Meanwhile, 47 previously executable queries became invalid.</p>
+<p>Fine-tuning shifted the distribution. It did not simply repair one fixed set of mistakes.</p>
+<h2 id="the-real-result-schema-fluency-improved-more-than-semantics">The real result: schema fluency improved more than semantics</h2>
+
+<p>The most revealing denominator is the number of queries that actually executed.</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th align="right">Executable</th>
+<th align="right">Correct</th>
+<th align="right">Correct among executable</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Untouched</td>
+<td align="right">214</td>
+<td align="right">89</td>
+<td align="right">41.6%</td>
+</tr>
+<tr>
+<td>General fine-tune</td>
+<td align="right">282</td>
+<td align="right">116</td>
+<td align="right">41.1%</td>
+</tr>
+<tr>
+<td>Same-schema adaptation</td>
+<td align="right">309</td>
+<td align="right">131</td>
+<td align="right">42.4%</td>
+</tr>
+</tbody></table>
+<p>Training made the model substantially better at producing queries SQLite could run. Conditional on producing an executable query, however, correctness remained near 42% in all three conditions.</p>
+<p>That does not make the training useless. In a production pipeline, an invalid query cannot answer anything. Reducing hallucinated columns and malformed SQL is valuable.</p>
+<p>But it locates the remaining problem. The model learned more about the schema&#39;s vocabulary and common query shapes. It did not become proportionally better at preserving the exact meaning of the user&#39;s request.</p>
+<p>This distinction matters because invalid SQL is observable. A database can reject it and return a specific error. Executable-but-wrong SQL is silent. It returns rows with all the authority of a successful query.</p>
+<h2 id="what-still-failed">What still failed</h2>
+
+<p>The specialist missed 369 of the 500 questions. Two were parse failures, 189 failed during execution, and 178 executed successfully but returned a different result from the reference query.</p>
+<h3 id="execution-failures-were-overwhelmingly-schema-mistakes">Execution failures were overwhelmingly schema mistakes</h3>
+
+<p>Of the 189 execution failures:</p>
+<table>
+<thead>
+<tr>
+<th>SQLite failure</th>
+<th align="right">Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Unknown column</td>
+<td align="right">173</td>
+</tr>
+<tr>
+<td>Unsupported <code>YEAR</code> or <code>MONTH</code> function</td>
+<td align="right">7</td>
+</tr>
+<tr>
+<td>Ambiguous column</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>Unknown table</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>Interrupted or timed out</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>Aggregate misuse</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>SQL syntax error</td>
+<td align="right">1</td>
+</tr>
+</tbody></table>
+<p>Unknown columns accounted for <strong>91.5% of execution failures</strong>. The same mistake appeared in several forms: inventing a column, attaching a real concept to the wrong table, using an incorrect alias, or recalling a plausible name instead of the schema&#39;s actual name.</p>
+<p>For example, one question asked for the customer with the least consumption in the <code>LAM</code> segment. The model joined <code>customers</code> to <code>yearmonth</code>, then emitted:</p>
+<pre><code class="language-sql">WHERE T2.Country = &#39;LAM&#39;
+</code></pre>
+<p><code>LAM</code> was a customer segment, not a country, and <code>Country</code> did not exist on <code>yearmonth</code>. The model had several pieces of the query shape right but attached the business concept to an invented location.</p>
+<p>This class of failure is well suited to a repair loop. SQLite can say exactly which column does not exist, and the next attempt can receive the original schema, the failed SQL, and the error.</p>
+<h3 id="executable-but-wrong-queries-were-harder">Executable-but-wrong queries were harder</h3>
+
+<p>The 178 executable failures were not malformed. They returned data. Their semantics were wrong.</p>
+<p>Of those queries, 141 involved joins, 92 involved aggregation, and 28 involved subqueries. Those categories overlap, but they describe the dominant shape of the remaining problem: the model often knew enough SQL to produce a plausible multi-table query without preserving every relationship and business rule.</p>
+<p>One question asked for the ratio of customers paying in EUR to customers paying in CZK. The model divided the EUR count by all customers:</p>
+<pre><code class="language-sql">SELECT
+  SUM(CASE WHEN Currency = &#39;EUR&#39; THEN 1 ELSE 0 END) * 1.0
+  / COUNT(Currency)
+FROM customers;
+</code></pre>
+<p>The query executed perfectly. The correct denominator was the count of CZK customers.</p>
+<p>Another question defined average monthly consumption as <code>AVG(Consumption) / 12</code>. The model used <code>SUM(Consumption) / 12</code>. Again, SQLite had no objection. The result was simply wrong.</p>
+<p>No parser, column validator, read-only policy, or execution retry can detect those errors by itself. They require a stronger semantic signal: a trusted example, a semantic layer, an independent critic, a result contract, or escalation to a more capable model.</p>
+<h2 id="the-benefit-varied-by-database">The benefit varied by database</h2>
+
+<p>Same-schema adaptation improved seven databases, left two unchanged, and regressed two relative to the general fine-tune.</p>
+<figure class="article-figure">
+  <a href="/assets/images/text-to-sql/schema-accuracy-deltas.png">
+    <img src="/assets/images/text-to-sql/schema-accuracy-deltas.png" alt="Schema-level accuracy changes after same-schema adaptation, with seven improvements, two unchanged schemas, and two regressions" width="1400" height="820">
+  </a>
+  <figcaption>Toxicology gained 10 percentage points, while Formula 1 and Student Club regressed slightly. Training volume alone did not explain the differences.</figcaption>
+</figure>
+
+<p>The largest gain was toxicology, from 17.5% to 27.5%. Card games improved from 21.6% to 29.4%, and financial improved from 6.2% to 12.5%. Formula 1 fell three points and Student Club fell two.</p>
+<p>More examples did not guarantee more improvement. Card Games and Codebase Community had similar amounts of training data; one gained 7.8 points and the other did not move. Toxicology gained 10 points with fewer examples than either.</p>
+<p>That suggests the next dataset should not merely be larger. It should be targeted at observed failure modes: ambiguous join paths, dialect-specific date operations, business-rule filters, aggregation denominators, and the exact concepts each schema represents.</p>
+<h2 id="what-i-would-test-next">What I would test next</h2>
+
+<p>The next conditions should separate several ways of giving the model domain knowledge.</p>
+<h3 id="retrieve-approved-examples-at-inference-time">Retrieve approved examples at inference time</h3>
+
+<p>Fine-tuning compresses the domain into weights. Retrieval can place the most relevant corrected examples directly in context. For each request, I would retrieve a few examples from the same schema based on tables, columns, business concepts, and query shape.</p>
+<p>This is closer to literally letting the model look at similar solved problems. It is also easier to update when the schema or business vocabulary changes.</p>
+<h3 id="add-deterministic-execution-repair">Add deterministic execution repair</h3>
+
+<p>The model should receive its failed SQL and the actual SQLite error, then retry. This directly targets the 189 execution failures and especially the 173 unknown-column failures.</p>
+<p>The stopping rule matters: retry only while deterministic validation reveals new information, cap attempts, and preserve the complete history so the model does not repeat rejected queries.</p>
+<h3 id="combine-retrieval-fine-tuning-and-repair">Combine retrieval, fine-tuning, and repair</h3>
+
+<p>These approaches solve different problems. Fine-tuning teaches broad schema familiarity. Retrieval supplies a precise local precedent. Execution feedback repairs observable mistakes. The combined condition is more representative of a production agent than any one of them alone.</p>
+<h3 id="train-on-the-hard-cases-not-just-more-cases">Train on the hard cases, not just more cases</h3>
+
+<p>I would oversample the failure families the evaluation exposed and generate contrastive examples:</p>
+<ul>
+<li>same question, different denominator;</li>
+<li>same columns, different join path;</li>
+<li><code>SUM</code> versus <code>AVG</code>;</li>
+<li>inclusive versus exclusive date boundaries;</li>
+<li>grouped result versus row-level result;</li>
+<li>real column versus a plausible hallucinated synonym.</li>
+</ul>
+<p>The model needs examples where one small semantic change produces a different answer, not thousands of redundant easy selects.</p>
+<h3 id="emit-a-constrained-semantic-representation">Emit a constrained semantic representation</h3>
+
+<p>For a mature enterprise data platform, raw SQL may be the wrong target. A small model could emit a constrained metric request or semantic-layer DSL: metric, dimensions, filters, time grain, ordering, and limit. Deterministic code could then compile that structure into SQL.</p>
+<p>That would make a wrong denominator or unsupported join easier to reject before execution.</p>
+<h2 id="building-an-enterprise-specialist-with-a-teacher-model">Building an enterprise specialist with a teacher model</h2>
+
+<p>The most practical path to a high-volume specialist would use an expensive teacher model offline and the small model online.</p>
+<h3 id="1-start-from-trusted-queries">1. Start from trusted queries</h3>
+
+<p>The safest source is not unconstrained synthetic SQL. It is approved analyst SQL, production query logs, dashboard definitions, dbt models, metric definitions, support questions, and a business glossary.</p>
+<p>Where possible, I would reverse the generation direction: start from SQL whose meaning is already trusted and ask the teacher to produce realistic natural-language questions and paraphrases. That reduces the chance of treating a teacher&#39;s plausible but incorrect SQL as ground truth.</p>
+<h3 id="2-generate-for-coverage-not-volume">2. Generate for coverage, not volume</h3>
+
+<p>Build a coverage map over:</p>
+<ul>
+<li>tables and join paths;</li>
+<li>business metrics and dimensions;</li>
+<li>filters and date semantics;</li>
+<li>aggregations, subqueries, CTEs, and windows;</li>
+<li>common user vocabulary and ambiguous terms;</li>
+<li>authorization and row-level access boundaries.</li>
+</ul>
+<p>Then ask the teacher to fill specific gaps. A dataset of carefully targeted examples can be more valuable than a much larger pile of near-duplicates.</p>
+<h3 id="3-validate-every-generated-artifact">3. Validate every generated artifact</h3>
+
+<p>Each candidate should pass deterministic checks:</p>
+<ul>
+<li>parse successfully in the target dialect;</li>
+<li>reference only approved tables and columns;</li>
+<li>be read-only;</li>
+<li>execute under a timeout on a safe snapshot;</li>
+<li>produce a nontrivial result where appropriate;</li>
+<li>survive duplicate and near-duplicate detection;</li>
+<li>record the result fingerprint, referenced objects, and query features.</li>
+</ul>
+<p>Execution is necessary but not sufficient. High-value or teacher-generated queries should also be checked by an independent critic, compared with a semantic layer, or sampled by a human analyst.</p>
+<h3 id="4-split-by-intent-not-wording">4. Split by intent, not wording</h3>
+
+<p>Randomly holding out paraphrases creates an easy and misleading test. Evaluation should hold out business intents, query templates, join paths, or time periods. It should include adversarial boundary cases such as nulls, ties, duplicates, empty groups, and inclusive dates.</p>
+<h3 id="5-distill-into-the-small-model">5. Distill into the small model</h3>
+
+<p>Fine-tune a small model on the validated corpus, then evaluate it on the enterprise holdout. Repeat using the real error distribution rather than continuing to generate generic SQL examples.</p>
+<p>The adapter in this experiment was only 9.5 MB. That makes per-customer or per-domain adapters plausible, although operational complexity and model-serving design would determine whether separate adapters are actually the best choice.</p>
+<h3 id="6-keep-the-teacher-as-an-escalation-path">6. Keep the teacher as an escalation path</h3>
+
+<p>The small model should handle familiar, validated patterns. Novel schemas, repeated execution failures, low-confidence semantic choices, or high-impact questions can route to the teacher model or a human analyst.</p>
+<p>The objective is not to prove that the small model can answer everything. It is to identify the large, repetitive portion of traffic it can answer reliably enough to avoid paying frontier-model inference costs on every request.</p>
+<h2 id="why-the-economics-can-work">Why the economics can work</h2>
+
+<p>A hosted teacher model is expensive when placed in the hot path of every question. It is much easier to justify when it creates and audits training data offline.</p>
+<p>The serving equation becomes:</p>
+<pre><code class="language-text">effective cost per request
+  = local specialist inference
+  + escalation rate * hosted model cost
+  + amortized dataset and training cost
+</code></pre>
+<p>For a high-volume agentic analysis product operating over a stable set of enterprise schemas, that can be attractive:</p>
+<ul>
+<li>the schema and business concepts repeat;</li>
+<li>many user questions fall into recurring query families;</li>
+<li>generated examples and corrections improve a reusable asset;</li>
+<li>local inference improves privacy and cost predictability;</li>
+<li>the expensive model is reserved for novel or ambiguous work.</li>
+</ul>
+<p>Caching, query normalization, semantic-layer compilation, and result reuse can reduce cost further. More importantly, the system can route based on observed failure signals instead of treating every request as equally difficult.</p>
+<p>The hard part is not making a 1.5B model emit SQL. This experiment shows that fewer than a thousand same-schema examples already improve that substantially. The hard part is deciding when its executable SQL should be trusted.</p>
+<h2 id="what-i-learned">What I learned</h2>
+
+<p>Same-schema training worked, but not as a single-number story.</p>
+<p>It made the 1.5B model much more fluent in the target schemas. It reduced parse failures, hallucinated columns, and queries that SQLite could not execute. It produced 42 more correct answers than the untouched model.</p>
+<p>It did not eliminate the semantic ceiling. Roughly 42% of executable queries were correct before specialization, and roughly 42% were correct afterward. The remaining silent failures involved exactly the details that matter in real analysis: join paths, filters, denominators, aggregation choices, and business definitions.</p>
+<p>That points toward a production architecture rather than another isolated fine-tune:</p>
+<blockquote>
+<p>Use a teacher to build a trusted domain dataset. Distill recurring patterns into a small specialist. Retrieve approved examples. Validate and repair what can be checked deterministically. Route ambiguous semantics to a stronger model or a human.</p>
+</blockquote>
+<p>The model does not need to become a general database expert. It needs to become reliably useful inside one well-defined data environment, and the surrounding system needs to know where that reliability ends.</p>
+
+      </article>
+
+      <aside class="article-aside" aria-label="Article contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#the-production-question">The production question</a></li>
+          <li><a href="#three-model-conditions">Three conditions</a></li>
+          <li><a href="#letting-it-study-without-handing-it-the-answers">Data controls</a></li>
+          <li><a href="#training-method">Training method</a></li>
+          <li><a href="#what-changed">What changed</a></li>
+          <li><a href="#the-real-result-schema-fluency-improved-more-than-semantics">The real result</a></li>
+          <li><a href="#what-still-failed">Remaining failures</a></li>
+          <li><a href="#the-benefit-varied-by-database">Schema variation</a></li>
+          <li><a href="#what-i-would-test-next">Next experiments</a></li>
+          <li><a href="#building-an-enterprise-specialist-with-a-teacher-model">Teacher-generated data</a></li>
+          <li><a href="#why-the-economics-can-work">The economics</a></li>
+          <li><a href="#what-i-learned">What I learned</a></li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <span>&copy; 2026 Richard Williams</span>
+      <a href="/">Back to the homepage</a>
+    </div>
+  </footer>
+</body>
+</html>
