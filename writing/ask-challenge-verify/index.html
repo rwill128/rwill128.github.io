@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask. Challenge. Verify. | Richard Williams</title>
+  <meta name="description" content="In an AI-native engineering workflow, code generation is cheap. The scarce skills are asking the right questions, challenging unsupported claims, and designing verification loops that force agents to confront reality.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Ask. Challenge. Verify: The Three Skills That Matter in AI-Native Engineering">
+  <meta property="og:description" content="AI has made code cheap. It has not made truth cheap.">
+  <meta property="og:url" content="https://rwill128.github.io/writing/ask-challenge-verify/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/ask-challenge-verify.jpg">
+  <meta property="og:image:width" content="1672">
+  <meta property="og:image:height" content="941">
+  <meta property="article:author" content="Richard Williams">
+  <meta property="article:published_time" content="2026-08-11">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f6f3">
+  <link rel="canonical" href="https://rwill128.github.io/writing/ask-challenge-verify/">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to article</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="/">Richard Williams</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/#writing" aria-current="page">Writing</a>
+        <a class="optional-nav" href="/#work">Work</a>
+        <a href="https://github.com/rwill128" rel="me">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="article">
+    <header class="article-header">
+      <div class="shell article-heading">
+        <div class="article-kicker">
+          <span>AI-native engineering</span>
+          <span>Agentic workflows</span>
+          <span>Verification</span>
+        </div>
+        <h1>Ask. Challenge. Verify.</h1>
+        <p class="article-deck">The three skills that matter when fast, capable, unreliable agents can produce code more quickly than humans can inspect it.</p>
+        <div class="article-byline">
+          <span>By Richard Williams</span>
+          <span>August 11, 2026</span>
+          <span>10 minute read</span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="article-hero editorial-hero">
+      <img src="/assets/images/ask-challenge-verify.jpg" alt="An editorial collage moving from an ambiguous technical problem through code review to test results and measured evidence" width="1672" height="941">
+    </figure>
+
+    <section class="principle-band" aria-label="Ask, challenge, verify">
+      <div class="wide-shell principle-grid">
+        <div class="principle">
+          <strong>Ask</strong>
+          <span>Expose the real problem and the assumptions most likely to invalidate the plan.</span>
+        </div>
+        <div class="principle">
+          <strong>Challenge</strong>
+          <span>Press fluent claims until observation, inference, and uncertainty are separated.</span>
+        </div>
+        <div class="principle">
+          <strong>Verify</strong>
+          <span>Build empirical loops that make the agent produce evidence before reporting success.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell article-layout">
+      <article class="article-body">
+<p><strong>AI has made code cheap. It has not made truth cheap.</strong></p>
+<p>A capable coding agent can produce thousands of lines of code, search a large repository, propose an architecture, generate tests, analyze a dataset, tune a model, and explain all of it with unnerving confidence. That is an extraordinary increase in leverage.</p>
+<p>It is also an extraordinary increase in the speed at which plausible-looking mistakes can be created.</p>
+<p>The central skill in AI-native engineering is therefore not simply “knowing how to prompt.” Prompting is an interface skill. The deeper skill is designing an epistemic process: a way of working that keeps a fast, capable, unreliable reasoning system in contact with reality.</p>
+<p>After several years of using coding agents across production systems, data analysis, refactors, prototypes, infrastructure, and machine-learning experiments, I think that process comes down to three durable abilities:</p>
+<ol>
+<li><strong>Ask the right questions.</strong></li>
+<li><strong>Challenge the model’s unsupported claims.</strong></li>
+<li><strong>Design verification loops that force the model to confront evidence before it reports success.</strong></li>
+</ol>
+<p>A compact name for the approach is:</p>
+<blockquote>
+<p><strong>Ask. Challenge. Verify.</strong></p>
+</blockquote>
+<p>These skills matter more than fluency with any particular model, editor, framework, or programming language. They are what allow agentic work to remain fast, useful, and production-safe across changing tools and technical contexts.</p>
+<h2 id="ask">1. Ask the right questions</h2>
+<p>The quality of an agent’s output is bounded long before it starts writing code. It is bounded by whether the problem has been framed correctly.</p>
+<p>A weak request tells the model what activity to perform:</p>
+<blockquote>
+<p>Refactor this service.</p>
+</blockquote>
+<p>A stronger request asks questions that expose the real engineering problem:</p>
+<ul>
+<li>Which externally observable behaviors must remain unchanged?</li>
+<li>What failure modes are we trying to eliminate?</li>
+<li>Which data sources are authoritative?</li>
+<li>What performance, reliability, and compatibility constraints matter?</li>
+<li>How will we know that the refactor is actually better?</li>
+<li>What evidence would cause us to abandon the proposed approach?</li>
+</ul>
+<p>The right question narrows the search space. It converts a vague task into a set of falsifiable claims.</p>
+<p>This is more important with agents than with conventional programming because an agent will happily fill in missing context. When the task is underspecified, it does not stop producing. It invents assumptions, chooses a locally coherent interpretation, and proceeds as though the ambiguity has been resolved.</p>
+<p>That means the human operator must become unusually good at identifying uncertainty. Before asking the agent to implement anything, ask:</p>
+<ul>
+<li>What do we know?</li>
+<li>What are we assuming?</li>
+<li>What do we need to observe?</li>
+<li>Which unknown has the highest chance of invalidating the whole plan?</li>
+</ul>
+<p>A good AI-native engineer does not merely decompose work into subtasks. They decompose uncertainty into questions.</p>
+<h3>The highest-value question is often not “How do we build this?”</h3>
+<p>It may be:</p>
+<ul>
+<li>Does this bug actually occur under the conditions we think it does?</li>
+<li>Is the database query really the bottleneck?</li>
+<li>Are these records malformed, or is our parser wrong?</li>
+<li>Does the model fail because it lacks capability, because the prompt is poor, or because the evaluation is measuring the wrong thing?</li>
+<li>Is this migration behavior-preserving for the cases users actually depend on?</li>
+</ul>
+<p>The fastest implementation is useless if it solves an imagined problem.</p>
+<h2 id="challenge">2. Challenge plausible-sounding bullshit</h2>
+<p>LLMs are optimized to continue coherently. They are not intrinsically optimized to stop when evidence runs out.</p>
+<p>That creates a characteristic failure mode: the model produces a technically fluent explanation that is only weakly connected to what it actually observed.</p>
+<p>Common examples include:</p>
+<ul>
+<li>claiming a bug is fixed because the code looks reasonable;</li>
+<li>describing an API from memory without checking the installed version;</li>
+<li>inventing a causal explanation after seeing a correlation;</li>
+<li>silently changing the scope of the task to something easier;</li>
+<li>declaring a refactor behavior-preserving without comparing outputs;</li>
+<li>reporting that tests pass while omitting skipped tests, warnings, or untested branches;</li>
+<li>treating a plausible metric improvement as proof that the underlying objective improved;</li>
+<li>summarizing a repository architecture after reading only a few files.</li>
+</ul>
+<p>The correct response is not vague skepticism. It is direct epistemic pressure.</p>
+<p>Ask:</p>
+<blockquote>
+<p>Where did you observe that?</p>
+</blockquote>
+<blockquote>
+<p>What evidence supports this claim?</p>
+</blockquote>
+<blockquote>
+<p>What would falsify your explanation?</p>
+</blockquote>
+<blockquote>
+<p>Show me the exact command, output, log line, test result, benchmark, or diff.</p>
+</blockquote>
+<blockquote>
+<p>Find a counterexample to your current conclusion.</p>
+</blockquote>
+<blockquote>
+<p>Separate what you verified from what you inferred.</p>
+</blockquote>
+<p>This is where a strong human operator matters. The model often does not know that its answer is weak. It experiences no internal discomfort when it moves from observation to speculation. The human must detect the transition.</p>
+<h3>Warning signs</h3>
+<p>A few linguistic patterns are especially useful signals:</p>
+<ul>
+<li>“This should fix…”</li>
+<li>“It appears that…”</li>
+<li>“Most likely…”</li>
+<li>“The issue is probably…”</li>
+<li>“The implementation is complete…”</li>
+<li>“The system now correctly…”</li>
+</ul>
+<p>None of those phrases is automatically wrong. But each should trigger the question: <strong>What was actually tested?</strong></p>
+<p>The goal is not to punish uncertainty. Quite the opposite. A useful agent should be encouraged to state uncertainty precisely. The dangerous behavior is unearned certainty disguised as technical fluency.</p>
+<h2 id="verify">3. Design verification loops that force contact with reality</h2>
+<p>The most powerful move is not personally checking every claim the model makes. That does not scale.</p>
+<p>The powerful move is redesigning the workflow so the model must produce and inspect evidence before it is allowed to report success.</p>
+<p>A general verification loop looks like this:</p>
+<ol>
+<li><strong>State the claim.</strong> What exactly does the agent believe is true?</li>
+<li><strong>Establish a baseline.</strong> Reproduce the current behavior before changing anything.</li>
+<li><strong>Create an observable test.</strong> Define the measurement, failing test, benchmark, query, dataset slice, or output comparison that represents success.</li>
+<li><strong>Make the smallest useful change.</strong> Avoid combining multiple speculative fixes.</li>
+<li><strong>Run the check.</strong> Capture the actual output.</li>
+<li><strong>Search for counterexamples.</strong> Test boundary cases and cases likely to break the hypothesis.</li>
+<li><strong>Compare against the baseline.</strong> Inspect regressions, not just improvements.</li>
+<li><strong>Report evidence and remaining uncertainty.</strong> Do not collapse inference into fact.</li>
+</ol>
+<p>The agent becomes much more reliable when it is required to participate in its own falsification.</p>
+<h3>Bug fixing</h3>
+<p>Weak workflow:</p>
+<blockquote>
+<p>Inspect the code, fix the bug, and tell me when it is done.</p>
+</blockquote>
+<p>Stronger workflow:</p>
+<blockquote>
+<p>Reproduce the bug first. Write a test that fails for the expected reason. Show me the failure. Make the smallest change that should fix it. Rerun the test and the surrounding suite. Then search for at least one adjacent case where the same assumption could fail.</p>
+</blockquote>
+<p>Now the model cannot substitute a persuasive code diff for proof.</p>
+<h3>Data analysis</h3>
+<p>Weak workflow:</p>
+<blockquote>
+<p>Analyze this CSV and explain the trend.</p>
+</blockquote>
+<p>Stronger workflow:</p>
+<blockquote>
+<p>Load the actual file. Profile missingness, distributions, duplicates, and outliers. State the hypothesis you think explains the trend. Then actively search for records that contradict it. Recalculate the result under at least two reasonable filtering choices and explain whether the conclusion survives.</p>
+</blockquote>
+<p>This prevents the model from building a story around the first pattern it notices.</p>
+<h3>Large refactors</h3>
+<p>Weak workflow:</p>
+<blockquote>
+<p>Rewrite this module using the new architecture without changing behavior.</p>
+</blockquote>
+<p>Stronger workflow:</p>
+<blockquote>
+<p>First define the observable behavior that must remain stable. Build characterization tests over a representative corpus. Run the old and new implementations against the same inputs, diff every output, and investigate all disagreements before replacing the old path.</p>
+</blockquote>
+<p>“Behavior-preserving” becomes an empirical statement instead of an aesthetic judgment.</p>
+<h3>Machine-learning experiments</h3>
+<p>Weak workflow:</p>
+<blockquote>
+<p>Fine-tune the model and improve performance.</p>
+</blockquote>
+<p>Stronger workflow:</p>
+<blockquote>
+<p>Freeze the evaluation set and record the baseline. Define the metric and its known limitations. Run the smallest experiment that isolates the proposed change. Preserve seeds and configuration. Compare against the baseline, inspect error categories, and test whether the gain survives a distribution shift or a second evaluation slice.</p>
+</blockquote>
+<p>Without this discipline, an agent can optimize the experiment until it produces an exciting number while quietly changing the conditions that gave the number meaning.</p>
+<h3>Architecture planning</h3>
+<p>Architecture is harder to verify because many claims concern future behavior. But the same principle applies.</p>
+<p>Require the agent to:</p>
+<ul>
+<li>enumerate assumptions;</li>
+<li>identify load, latency, consistency, security, and failure requirements;</li>
+<li>compare at least two plausible designs;</li>
+<li>model likely bottlenecks;</li>
+<li>prototype the riskiest integration;</li>
+<li>define operational signals that would reveal a bad decision after deployment.</li>
+</ul>
+<p>A diagram is not evidence. A small prototype, benchmark, failure injection, or traced request often is.</p>
+<h2 id="prompting">Prompting is not the scarce skill</h2>
+<p>The model interface will keep changing. Today it may be a terminal agent, an IDE assistant, a chat interface, or a multi-agent workflow. Tomorrow it will be something else.</p>
+<p>The durable skill is not memorizing the perfect incantation for one tool. It is knowing how to construct a process in which the tool cannot easily fool you—or itself.</p>
+<p>That process generalizes across:</p>
+<ul>
+<li>data analysis;</li>
+<li>testing;</li>
+<li>large refactors;</li>
+<li>green-field systems;</li>
+<li>machine-learning training experiments;</li>
+<li>rapid prototypes;</li>
+<li>infrastructure changes;</li>
+<li>system architecture;</li>
+<li>production debugging.</li>
+</ul>
+<p>The surface details change. The epistemic structure does not.</p>
+<p>In every case, the operator must identify the real question, detect unsupported confidence, and define a loop that produces evidence.</p>
+<h2 id="epistemic-designer">The AI-native engineer as an epistemic systems designer</h2>
+<p>In conventional software work, much of an engineer’s value came from personally translating intent into code.</p>
+<p>In AI-native work, that translation becomes cheaper. The engineer’s value shifts upward:</p>
+<ul>
+<li>deciding what problem is worth solving;</li>
+<li>exposing hidden assumptions;</li>
+<li>choosing the next uncertainty to reduce;</li>
+<li>defining success in observable terms;</li>
+<li>creating feedback loops;</li>
+<li>separating evidence from narrative;</li>
+<li>deciding when the result is safe enough to ship.</li>
+</ul>
+<p>The human is no longer merely the author of the implementation. The human is the designer of the environment in which implementation happens.</p>
+<p>That does not make technical knowledge less important. It makes deep technical judgment more important. You cannot challenge a model’s claims if you do not understand the system well enough to recognize when they are suspicious. You cannot design a good verification loop if you do not know what the relevant failure modes are.</p>
+<p>But raw recall matters less. Epistemic control matters more.</p>
+<h2 id="protocol">A reusable operating protocol</h2>
+<p>For practical use, I reduce the approach to eight questions:</p>
+<ol>
+<li><strong>What is the real problem?</strong></li>
+<li><strong>What do we know, and what are we assuming?</strong></li>
+<li><strong>What evidence would change the plan?</strong></li>
+<li><strong>How can we reproduce or measure the current state?</strong></li>
+<li><strong>What is the smallest change that tests the hypothesis?</strong></li>
+<li><strong>What counterexample is most likely to break it?</strong></li>
+<li><strong>What did the evidence actually show?</strong></li>
+<li><strong>What remains uncertain?</strong></li>
+</ol>
+<p>Those questions turn an agent from a fluent code generator into something closer to a disciplined engineering collaborator.</p>
+<p>Not perfectly reliable. Not autonomous in the magical sense. But enormously productive inside a process that continuously pushes it back toward reality.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In an AI-native world, the ability to generate code is abundant. The ability to generate <strong>verified progress</strong> is not.</p>
+<p>The engineers who get the most leverage from agents will not simply be the people who type the cleverest prompts. They will be the people who can:</p>
+<blockquote>
+<p><strong>Ask the questions that expose the real problem.</strong></p>
+<p><strong>Challenge claims that outrun the evidence.</strong></p>
+<p><strong>Verify results through loops that force contact with reality.</strong></p>
+</blockquote>
+<p>Ask. Challenge. Verify.</p>
+<p>That is the core discipline that makes agentic engineering fast without becoming reckless, flexible without becoming shallow, and powerful without becoming detached from the truth.</p>
+
+      </article>
+
+      <aside class="article-aside" aria-label="Article contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#ask">Ask the right questions</a></li>
+          <li><a href="#challenge">Challenge unsupported claims</a></li>
+          <li><a href="#verify">Design verification loops</a></li>
+          <li><a href="#prompting">Prompting is not scarce</a></li>
+          <li><a href="#epistemic-designer">The engineer's role</a></li>
+          <li><a href="#protocol">Operating protocol</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <span>&copy; 2026 Richard Williams</span>
+      <a href="/">Back to the homepage</a>
+    </div>
+  </footer>
+</body>
+</html>
