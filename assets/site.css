@@ -442,14 +442,6 @@ a:hover {
   text-transform: uppercase;
 }
 
-.draft-label {
-  padding: 4px 9px;
-  border: 1px solid var(--yellow);
-  border-radius: 3px;
-  color: #7e4e00;
-  background: #fff6dc;
-}
-
 .article-header h1 {
   margin: 0;
   font-family: var(--display);
@@ -759,16 +751,6 @@ a:hover {
 
 .article-end h2 {
   margin-top: 0;
-}
-
-.draft-note {
-  margin: 54px 0 0;
-  padding: 22px 24px;
-  border: 1px solid #dfc67d;
-  border-radius: 5px;
-  color: #654b11;
-  background: #fff8e5;
-  font-size: 14px;
 }
 
 @media (max-width: 960px) {
