@@ -2,7 +2,7 @@
 layout: post
 title: "I let a 1.5B SQL model study its target databases"
 date: 2026-08-11
-description: "Same-schema training raised execution accuracy from 17.8% to 26.2%. The more revealing result was what the model learned, and what it still could not detect."
+description: "Same-schema training raised execution accuracy from 17.8% to 26.2%, and deterministic validation and repair raised it again to 27.8%."
 ---
 
 # I let a 1.5B SQL model study its target databases
@@ -191,6 +191,33 @@ Another question defined average monthly consumption as `AVG(Consumption) / 12`.
 
 No parser, column validator, read-only policy, or execution retry can detect those errors by itself. They require a stronger semantic signal: a trusted example, a semantic layer, an independent critic, a result contract, or escalation to a more capable model.
 
+## Update: validation and retry
+
+After publishing the initial experiment, I ran the missing production-style condition against the same fine-tuned adapter and all 500 questions.
+
+The harness preserved each original one-shot response. If its SQL parsed and executed, the system accepted it immediately. Only parser or SQLite execution failures triggered another generation. Each retry received the original schema and question, the rejected SQL, the actual error, and the complete attempt history. The model had at most five total attempts and never saw the reference SQL, expected result, or a correctness label.
+
+| Condition | Executable | Correct |
+|---|---:|---:|
+| Fine-tuned model, one shot | 309/500 (61.8%) | 131/500 (26.2%) |
+| Fine-tuned model, validation and retry | 336/500 (67.2%) | 139/500 (27.8%) |
+
+The wrapper recovered 27 of the 191 initially invalid queries to executable SQL. Eight became correct. Because it never replaced an executable one-shot answer, the paired result was **eight wins and zero losses**.
+
+Nearly all useful repair happened immediately:
+
+| Attempt budget | Executable | Correct |
+|---:|---:|---:|
+| 1 | 309 | 131 |
+| 2 | 334 | 139 |
+| 3 | 336 | 139 |
+| 4 | 336 | 139 |
+| 5 | 336 | 139 |
+
+Attempts three through five added two executable queries and no correct answers. At deterministic decoding, 634 of 685 retry generations repeated a previously rejected query exactly. Once the first error message failed to produce a useful correction, repeatedly asking the same model rarely changed the outcome.
+
+The result reinforces the original distinction. Deterministic repair raised execution success from 61.8% to 67.2% and accuracy from 26.2% to 27.8%, but it could not inspect the 178 executable-but-wrong one-shot queries. Correctness among executable queries therefore moved from 42.4% to 41.4%: the wrapper recovered syntax and schema failures more readily than semantic ones.
+
 ## The benefit varied by database
 
 Same-schema adaptation improved seven databases, left two unchanged, and regressed two relative to the general fine-tune.
@@ -217,12 +244,6 @@ The next conditions should separate several ways of giving the model domain know
 Fine-tuning compresses the domain into weights. Retrieval can place the most relevant corrected examples directly in context. For each request, I would retrieve a few examples from the same schema based on tables, columns, business concepts, and query shape.
 
 This is closer to literally letting the model look at similar solved problems. It is also easier to update when the schema or business vocabulary changes.
-
-### Add deterministic execution repair
-
-The model should receive its failed SQL and the actual SQLite error, then retry. This directly targets the 189 execution failures and especially the 173 unknown-column failures.
-
-The stopping rule matters: retry only while deterministic validation reveals new information, cap attempts, and preserve the complete history so the model does not repeat rejected queries.
 
 ### Combine retrieval, fine-tuning, and repair
 
