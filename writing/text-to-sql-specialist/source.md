@@ -348,11 +348,11 @@ The hard part is not making a 1.5B model emit SQL. This experiment shows that fe
 
 ## Conclusion
 
-It made the 1.5B model much more fluent in the target schemas. It reduced parse failures, hallucinated columns, and queries that SQLite could not execute. It produced 42 more correct answers than the untouched model.
+Same-schema fine-tuning made the 1.5B model much more fluent in the target schemas. The fine-tuned model produced fewer parse failures, hallucinated columns, and queries that SQLite could not execute. The fine-tuned model also answered 42 more questions correctly than the untouched model.
 
-It did not eliminate the semantic ceiling. Roughly 42% of executable queries were correct before specialization, and roughly 42% were correct afterward. The remaining silent failures involved exactly the details that matter in real analysis: join paths, filters, denominators, aggregation choices, and business definitions.
+However, same-schema fine-tuning did not improve the proportion of executable queries that were semantically correct. Roughly 42% of executable queries were correct before specialization, and roughly 42% were correct afterward. The remaining silent failures involved exactly the details that matter in real analysis: join paths, filters, denominators, aggregation choices, and business definitions.
 
-That points toward a production architecture rather than another isolated fine-tune:
+These results point toward a system that combines specialization with runtime safeguards:
 
 > Use a teacher to build a trusted domain dataset. Distill recurring patterns into a small specialist. Retrieve approved examples. Validate and repair what can be checked deterministically. Route ambiguous semantics to a stronger model or a human.
 
