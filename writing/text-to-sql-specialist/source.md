@@ -193,7 +193,7 @@ No parser, column validator, read-only policy, or execution retry can detect tho
 
 ## Update: validation and retry
 
-After publishing the initial experiment, I ran the missing production-style condition against the same fine-tuned adapter and all 500 questions.
+After publishing the initial experiment, I tested deterministic validation and retry against the same fine-tuned adapter and all 500 questions.
 
 The harness preserved each original one-shot response. If its SQL parsed and executed, the system accepted it immediately. Only parser or SQLite execution failures triggered another generation. Each retry received the original schema and question, the rejected SQL, the actual error, and the complete attempt history. The model had at most five total attempts and never saw the reference SQL, expected result, or a correctness label.
 
