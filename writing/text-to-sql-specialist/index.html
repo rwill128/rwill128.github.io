@@ -472,9 +472,7 @@ FROM customers;
 </ul>
 <p>Caching, query normalization, semantic-layer compilation, and result reuse can reduce cost further. More importantly, the system can route based on observed failure signals instead of treating every request as equally difficult.</p>
 <p>The hard part is not making a 1.5B model emit SQL. This experiment shows that fewer than a thousand same-schema examples already improve that substantially. The hard part is deciding when its executable SQL should be trusted.</p>
-<h2 id="what-i-learned">What I learned</h2>
-
-<p>Same-schema training worked, but not as a single-number story.</p>
+<h2 id="conclusion">Conclusion</h2>
 <p>It made the 1.5B model much more fluent in the target schemas. It reduced parse failures, hallucinated columns, and queries that SQLite could not execute. It produced 42 more correct answers than the untouched model.</p>
 <p>It did not eliminate the semantic ceiling. Roughly 42% of executable queries were correct before specialization, and roughly 42% were correct afterward. The remaining silent failures involved exactly the details that matter in real analysis: join paths, filters, denominators, aggregation choices, and business definitions.</p>
 <p>That points toward a production architecture rather than another isolated fine-tune:</p>
@@ -500,7 +498,7 @@ FROM customers;
           <li><a href="#what-i-would-test-next">Next experiments</a></li>
           <li><a href="#building-an-enterprise-specialist-with-a-teacher-model">Teacher-generated data</a></li>
           <li><a href="#why-the-economics-can-work">The economics</a></li>
-          <li><a href="#what-i-learned">What I learned</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
         </ol>
       </aside>
     </div>

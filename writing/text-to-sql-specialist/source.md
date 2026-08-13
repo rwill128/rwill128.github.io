@@ -346,9 +346,7 @@ Caching, query normalization, semantic-layer compilation, and result reuse can r
 
 The hard part is not making a 1.5B model emit SQL. This experiment shows that fewer than a thousand same-schema examples already improve that substantially. The hard part is deciding when its executable SQL should be trusted.
 
-## What I learned
-
-Same-schema training worked, but not as a single-number story.
+## Conclusion
 
 It made the 1.5B model much more fluent in the target schemas. It reduced parse failures, hallucinated columns, and queries that SQLite could not execute. It produced 42 more correct answers than the untouched model.
 
