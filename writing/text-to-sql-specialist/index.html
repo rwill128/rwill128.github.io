@@ -312,7 +312,7 @@ FROM customers;
 <p>No parser, column validator, read-only policy, or execution retry can detect those errors by itself. They require a stronger semantic signal: a trusted example, a semantic layer, an independent critic, a result contract, or escalation to a more capable model.</p>
 <h2 id="update-validation-and-retry">Update: validation and retry</h2>
 
-<p>After publishing the initial experiment, I tested deterministic validation and retry against the same fine-tuned adapter and all 500 questions.</p>
+<p>After publishing the initial experiment, I tested deterministic validation and retry with the fine-tuned 1.5B model on all 500 questions.</p>
 <p>The harness preserved each original one-shot response. If its SQL parsed and executed, the system accepted it immediately. Only parser or SQLite execution failures triggered another generation. Each retry received the original schema and question, the rejected SQL, the actual error, and the complete attempt history. The model had at most five total attempts and never saw the reference SQL, expected result, or a correctness label.</p>
 <table>
 <thead>
