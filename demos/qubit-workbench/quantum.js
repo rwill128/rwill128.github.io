@@ -166,12 +166,41 @@ export function applyControlledZ(vector, qubitCount, control, target) {
   });
 }
 
+export function applyControlledPhase(vector, qubitCount, first, second, angle) {
+  const firstMask = qubitMask(qubitCount, first);
+  const secondMask = qubitMask(qubitCount, second);
+  const phase = complex(Math.cos(angle), Math.sin(angle));
+  return vector.map((value, basis) => {
+    const shouldRotate = (basis & firstMask) !== 0 && (basis & secondMask) !== 0;
+    return shouldRotate ? multiply(value, phase) : complex(value.re, value.im);
+  });
+}
+
 export function applySwap(vector, qubitCount, first, second) {
   const output = vector.map((value) => complex(value.re, value.im));
   const firstMask = qubitMask(qubitCount, first);
   const secondMask = qubitMask(qubitCount, second);
 
   for (let basis = 0; basis < vector.length; basis += 1) {
+    const firstBit = (basis & firstMask) !== 0;
+    const secondBit = (basis & secondMask) !== 0;
+    if (firstBit || !secondBit) continue;
+    const swappedIndex = basis ^ firstMask ^ secondMask;
+    output[basis] = complex(vector[swappedIndex].re, vector[swappedIndex].im);
+    output[swappedIndex] = complex(vector[basis].re, vector[basis].im);
+  }
+
+  return output;
+}
+
+export function applyControlledSwap(vector, qubitCount, control, first, second) {
+  const output = vector.map((value) => complex(value.re, value.im));
+  const controlMask = qubitMask(qubitCount, control);
+  const firstMask = qubitMask(qubitCount, first);
+  const secondMask = qubitMask(qubitCount, second);
+
+  for (let basis = 0; basis < vector.length; basis += 1) {
+    if ((basis & controlMask) === 0) continue;
     const firstBit = (basis & firstMask) !== 0;
     const secondBit = (basis & secondMask) !== 0;
     if (firstBit || !secondBit) continue;
@@ -245,8 +274,26 @@ function applyGate(vector, qubitCount, gate) {
   if (gate.type === "CZ") {
     return applyControlledZ(vector, qubitCount, gate.control, gate.target);
   }
+  if (gate.type === "CPHASE") {
+    return applyControlledPhase(
+      vector,
+      qubitCount,
+      gate.rows[0],
+      gate.rows[1],
+      gate.angle,
+    );
+  }
   if (gate.type === "SWAP") {
     return applySwap(vector, qubitCount, gate.rows[0], gate.rows[1]);
+  }
+  if (gate.type === "CSWAP") {
+    return applyControlledSwap(
+      vector,
+      qubitCount,
+      gate.control,
+      gate.targets[0],
+      gate.targets[1],
+    );
   }
   if (gate.type === "CMOD") {
     return applyControlledModularMultiply(

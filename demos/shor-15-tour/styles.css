@@ -896,7 +896,7 @@ a {
   position: relative;
   display: grid;
   min-width: 0;
-  grid-template-columns: repeat(13, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--step-count), minmax(0, 1fr));
 }
 
 .step-track::before {
@@ -915,6 +915,8 @@ a {
   display: grid;
   width: 18px;
   height: 18px;
+  min-width: 0;
+  padding: 0;
   place-self: center;
   place-items: center;
   border: 1px solid var(--line-strong);
@@ -936,6 +938,15 @@ a {
   color: white;
   background: var(--coral);
   box-shadow: 0 0 0 3px #e8e8e2;
+}
+
+.step-marker.is-phase-start::after {
+  position: absolute;
+  top: -7px;
+  width: 1px;
+  height: 5px;
+  background: var(--line-strong);
+  content: "";
 }
 
 .step-progress output {
@@ -1185,8 +1196,8 @@ noscript {
   }
 
   .step-marker {
-    width: 14px;
-    height: 14px;
+    width: 6px;
+    height: 6px;
     font-size: 0;
   }
 
