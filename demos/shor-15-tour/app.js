@@ -150,11 +150,12 @@ const steps = [
     body: [
       "The work bits use the order w0w1w2w3, with w0 worth 8 and w3 worth 1. The initial label 0000 represents the integer 0. An X gate exchanges |0⟩ and |1⟩ on its target, so applying X to w3 changes the work-register label from 0000 to 0001.",
       "The work register must begin at <strong>1</strong>, the multiplicative identity, because the next gates build 2<sup>x</sup> by multiplying this stored value. Starting from 1 gives 1·2<sup>x</sup> = 2<sup>x</sup>. Starting from 0 would be useless because every multiplication would leave it at 0.",
-      "Only one joint basis state still has nonzero amplitude: |000⟩<sub>count</sub>|0001⟩<sub>work</sub> with coefficient 1. The state remains a product state; the X gate changed one definite bit but created neither superposition nor entanglement.",
+      "Only one joint basis state still has nonzero amplitude: |000⟩<sub>count</sub>|0001⟩<sub>work</sub> with coefficient 1. More explicitly, the complete state can be written as seven separate one-qubit states multiplied together: |0⟩<sub>c0</sub>⊗|0⟩<sub>c1</sub>⊗|0⟩<sub>c2</sub>⊗|0⟩<sub>w0</sub>⊗|0⟩<sub>w1</sub>⊗|0⟩<sub>w2</sub>⊗|1⟩<sub>w3</sub>. That separability is what <strong>product state</strong> means. The X gate changed w3 from |0⟩ to |1⟩ without making any qubit's state depend on another qubit, so no entanglement exists yet.",
     ],
     equations: [
       "X|0⟩ = |1⟩",
       "|Ψ₁⟩ = |000⟩<sub>count</sub>|0001⟩<sub>work</sub>",
+      "|Ψ₁⟩ = |0⟩<sub>c0</sub>⊗|0⟩<sub>c1</sub>⊗|0⟩<sub>c2</sub>⊗|0⟩<sub>w0</sub>⊗|0⟩<sub>w1</sub>⊗|0⟩<sub>w2</sub>⊗|1⟩<sub>w3</sub>",
     ],
     facts: [
       ["Changed qubit", "w3"],
