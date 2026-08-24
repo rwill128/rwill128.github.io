@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shor's Algorithm: Factoring 15 | Richard Williams</title>
+  <meta name="description" content="A guided, spatial walkthrough of Shor's algorithm factoring 15 with seven simulated qubits, exact state vectors, phase estimation, and classical factor recovery.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shor's Algorithm: Factoring 15">
+  <meta property="og:description" content="Walk through every stage of seven-qubit order finding and see how period four becomes the factors three and five.">
+  <meta property="og:url" content="https://rwill128.github.io/demos/shor-15-tour/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/shor-15-tour.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#101413">
+  <link rel="canonical" href="https://rwill128.github.io/demos/shor-15-tour/">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/demos/shor-15-tour/styles.css?v=20260824-1">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#guide-heading">Skip to explanation</a>
+
+  <header class="tour-header">
+    <a class="back-link" href="/">&larr; Richard Williams</a>
+    <div class="title-lockup">
+      <span>Guided quantum algorithm</span>
+      <strong>Factoring 15</strong>
+    </div>
+    <a class="source-link" href="https://github.com/rwill128/rwill128.github.io/tree/master/demos/shor-15-tour">Source</a>
+  </header>
+
+  <main class="tour-layout">
+    <section class="quantum-stage" aria-label="Orbitable seven-qubit visualization">
+      <canvas id="tour-canvas"></canvas>
+      <div class="qubit-labels" id="qubit-labels" aria-hidden="true"></div>
+
+      <div class="scene-heading">
+        <p id="scene-kicker">The problem</p>
+        <h1 id="scene-title">Factor N = 15</h1>
+      </div>
+
+      <dl class="scene-metrics">
+        <div><dt>Joint state</dt><dd>128 amplitudes</dd></div>
+        <div><dt>Quantum register</dt><dd>7 qubits</dd></div>
+        <div><dt>Current operation</dt><dd id="operation-label">None</dd></div>
+      </dl>
+
+      <div class="register-legend" aria-hidden="true">
+        <span><i class="counting-swatch"></i>Counting register c0-c2</span>
+        <span><i class="work-swatch"></i>Work register w0-w3</span>
+        <span><i class="previous-swatch"></i>Previous reduced state</span>
+      </div>
+
+      <button class="camera-reset" id="camera-reset" type="button" title="Reset camera" aria-label="Reset camera">&#8634;</button>
+    </section>
+
+    <section class="guide-band" aria-labelledby="guide-heading">
+      <article class="step-explanation">
+        <div class="step-heading">
+          <p id="step-number">Step 1 of 13</p>
+          <h2 id="guide-heading">Why factoring becomes period finding</h2>
+        </div>
+        <div class="step-body" id="step-body"></div>
+      </article>
+
+      <section class="math-explanation" aria-labelledby="math-heading">
+        <div class="panel-heading">
+          <h3 id="math-heading">Mathematical state</h3>
+          <span id="state-stage-label">Before the circuit</span>
+        </div>
+        <div class="equation-list" id="equation-list"></div>
+        <dl class="step-facts" id="step-facts"></dl>
+      </section>
+
+      <aside class="state-evidence" aria-labelledby="evidence-heading">
+        <div class="panel-heading">
+          <h3 id="evidence-heading">State evidence</h3>
+          <span id="nonzero-count">1 nonzero amplitude</span>
+        </div>
+        <div class="counting-distribution" id="counting-distribution"></div>
+        <details class="basis-details">
+          <summary>Joint basis amplitudes</summary>
+          <div class="basis-amplitudes" id="basis-amplitudes"></div>
+        </details>
+      </aside>
+
+      <nav class="tour-navigation" aria-label="Walkthrough steps">
+        <button id="previous-step" type="button" aria-label="Previous step" title="Previous step">&#8592;</button>
+        <div class="step-progress">
+          <div class="step-track" id="step-track"></div>
+          <output id="step-progress-label">1 / 13</output>
+        </div>
+        <button id="next-step" type="button" aria-label="Next step" title="Next step">&#8594;</button>
+      </nav>
+    </section>
+  </main>
+
+  <noscript>This walkthrough requires JavaScript.</noscript>
+  <script type="module" src="/demos/shor-15-tour/app.js?v=20260824-1"></script>
+</body>
+</html>
