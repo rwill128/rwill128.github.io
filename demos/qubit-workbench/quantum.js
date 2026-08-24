@@ -23,7 +23,7 @@ function magnitudeSquared(value) {
   return value.re * value.re + value.im * value.im;
 }
 
-const MATRICES = {
+export const MATRICES = {
   H: [
     [complex(SQRT_HALF), complex(SQRT_HALF)],
     [complex(SQRT_HALF), complex(-SQRT_HALF)],
@@ -44,9 +44,17 @@ const MATRICES = {
     [complex(1), complex()],
     [complex(), complex(0, 1)],
   ],
+  SDG: [
+    [complex(1), complex()],
+    [complex(), complex(0, -1)],
+  ],
   T: [
     [complex(1), complex()],
     [complex(), complex(SQRT_HALF, SQRT_HALF)],
+  ],
+  TDG: [
+    [complex(1), complex()],
+    [complex(), complex(SQRT_HALF, -SQRT_HALF)],
   ],
 };
 

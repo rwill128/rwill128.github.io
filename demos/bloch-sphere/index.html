@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#f2f1ec">
   <link rel="canonical" href="https://rwill128.github.io/demos/bloch-sphere/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/bloch-sphere/styles.css?v=20260824-1">
+  <link rel="stylesheet" href="/demos/bloch-sphere/styles.css?v=20260824-2">
   <script type="importmap">
     {
       "imports": {
@@ -69,6 +69,29 @@
           <output id="phi-output" for="phi">135&deg;</output>
         </label>
         <input id="phi" type="range" min="0" max="359" step="1" value="135">
+      </fieldset>
+
+      <fieldset class="control-group operator-control">
+        <legend>Unitary operators</legend>
+        <div class="operator-grid">
+          <button type="button" data-operator="H" title="Hadamard gate">H</button>
+          <button type="button" data-operator="X" title="Pauli X gate">X</button>
+          <button type="button" data-operator="Y" title="Pauli Y gate">Y</button>
+          <button type="button" data-operator="Z" title="Pauli Z gate">Z</button>
+          <button type="button" data-operator="S" title="S phase gate">S</button>
+          <button type="button" data-operator="SDG" title="Inverse S phase gate">S<sup>&dagger;</sup></button>
+          <button type="button" data-operator="T" title="T phase gate">T</button>
+          <button type="button" data-operator="TDG" title="Inverse T phase gate">T<sup>&dagger;</sup></button>
+        </div>
+        <div class="operation-navigation">
+          <button id="undo-operation" type="button" aria-label="Undo operator" title="Undo operator">&#8630;</button>
+          <div>
+            <small id="operation-step">Initial state</small>
+            <strong id="operation-name">No operator applied</strong>
+          </div>
+          <button id="redo-operation" type="button" aria-label="Redo operator" title="Redo operator">&#8631;</button>
+        </div>
+        <ol class="operation-history" id="operation-history" aria-label="Applied operators"></ol>
       </fieldset>
 
       <fieldset class="control-group preset-control">
@@ -152,6 +175,17 @@
         </dl>
       </section>
 
+      <section class="readout-group operation-readout" aria-labelledby="operator-heading">
+        <div class="readout-heading">
+          <h3 id="operator-heading">Last operator</h3>
+          <span>Unitary</span>
+        </div>
+        <div class="operator-matrix">
+          <strong id="operator-symbol">I</strong>
+          <code id="operator-matrix">[1 0; 0 1]</code>
+        </div>
+      </section>
+
       <div class="state-definition">
         <span>Global phase fixed</span>
         <code>|&psi;&#10217; = cos(&theta;/2)|0&#10217; + e<sup>i&phi;</sup> sin(&theta;/2)|1&#10217;</code>
@@ -160,6 +194,6 @@
   </main>
 
   <noscript>This experiment requires JavaScript.</noscript>
-  <script type="module" src="/demos/bloch-sphere/app.js?v=20260824-2"></script>
+  <script type="module" src="/demos/bloch-sphere/app.js?v=20260824-3"></script>
 </body>
 </html>

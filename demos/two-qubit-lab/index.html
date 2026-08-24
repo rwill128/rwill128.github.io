@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two-Qubit Lab | Richard Williams</title>
+  <meta name="description" content="Apply reversible single- and two-qubit gates, inspect reduced Bloch vectors, and see the full joint quantum state and entanglement evolve.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Interactive Two-Qubit Lab">
+  <meta property="og:description" content="Apply quantum gates to two qubits and inspect their reduced states, joint amplitudes, measurement outcomes, and entanglement.">
+  <meta property="og:url" content="https://rwill128.github.io/demos/two-qubit-lab/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/two-qubit-lab.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f2f1ec">
+  <link rel="canonical" href="https://rwill128.github.io/demos/two-qubit-lab/">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/demos/two-qubit-lab/styles.css?v=20260824-1">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#gate-controls">Skip to operators</a>
+
+  <header class="lab-header">
+    <a class="back-link" href="/" aria-label="Back to Richard Williams home page">&larr; Richard Williams</a>
+    <div class="title-lockup">
+      <span>Quantum mechanics</span>
+      <strong>Two-Qubit Lab</strong>
+    </div>
+    <a class="source-link" href="https://github.com/rwill128/rwill128.github.io/tree/master/demos/two-qubit-lab">Source</a>
+  </header>
+
+  <main class="two-qubit-layout">
+    <section class="operator-panel" id="gate-controls" aria-labelledby="operator-heading">
+      <div class="panel-heading">
+        <p>Exact state-vector simulation</p>
+        <h1 id="operator-heading">Operators</h1>
+      </div>
+
+      <fieldset class="control-group">
+        <legend>Target qubit</legend>
+        <div class="segmented-control">
+          <input type="radio" name="target" id="target-q0" value="0" checked>
+          <label for="target-q0">q0</label>
+          <input type="radio" name="target" id="target-q1" value="1">
+          <label for="target-q1">q1</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="control-group">
+        <legend>Single-qubit gates</legend>
+        <div class="gate-grid single-gates">
+          <button type="button" data-single-gate="H" title="Hadamard gate">H</button>
+          <button type="button" data-single-gate="X" title="Pauli X gate">X</button>
+          <button type="button" data-single-gate="Y" title="Pauli Y gate">Y</button>
+          <button type="button" data-single-gate="Z" title="Pauli Z gate">Z</button>
+          <button type="button" data-single-gate="S" title="S phase gate">S</button>
+          <button type="button" data-single-gate="SDG" title="Inverse S phase gate">S<sup>&dagger;</sup></button>
+          <button type="button" data-single-gate="T" title="T phase gate">T</button>
+          <button type="button" data-single-gate="TDG" title="Inverse T phase gate">T<sup>&dagger;</sup></button>
+        </div>
+      </fieldset>
+
+      <fieldset class="control-group">
+        <legend>Two-qubit gates</legend>
+        <div class="pair-gates">
+          <button type="button" data-pair-gate="CNOT01"><span>CNOT</span><small>q0 &rarr; q1</small></button>
+          <button type="button" data-pair-gate="CNOT10"><span>CNOT</span><small>q1 &rarr; q0</small></button>
+          <button type="button" data-pair-gate="CZ"><span>CZ</span><small>controlled phase</small></button>
+          <button type="button" data-pair-gate="SWAP"><span>SWAP</span><small>q0 &harr; q1</small></button>
+        </div>
+      </fieldset>
+
+      <fieldset class="control-group">
+        <legend>Presets</legend>
+        <div class="preset-actions">
+          <button id="preset-bell" type="button">Bell &Phi;<sup>+</sup></button>
+          <button id="preset-plus" type="button">|++&#10217;</button>
+          <button id="preset-01" type="button">|01&#10217;</button>
+        </div>
+      </fieldset>
+
+      <div class="history-controls" aria-label="Operation history">
+        <button id="undo" type="button" aria-label="Undo operation" title="Undo operation">&#8630;</button>
+        <div>
+          <small id="history-position">Initial state</small>
+          <strong id="current-operation">|00&#10217;</strong>
+        </div>
+        <button id="redo" type="button" aria-label="Redo operation" title="Redo operation">&#8631;</button>
+        <button id="reset" type="button">Reset</button>
+      </div>
+    </section>
+
+    <section class="visualization-panel" aria-labelledby="visualization-heading">
+      <div class="visualization-heading">
+        <div>
+          <p>Reduced single-qubit states</p>
+          <h2 id="visualization-heading">Bloch vectors</h2>
+        </div>
+        <div class="entanglement-status" id="entanglement-status">
+          <span>Product state</span>
+          <strong>C = 0.000</strong>
+        </div>
+      </div>
+
+      <div class="sphere-pair">
+        <section class="qubit-visual" aria-labelledby="q0-heading">
+          <div class="qubit-heading">
+            <h3 id="q0-heading">q0</h3>
+            <span id="q0-state-type">Pure</span>
+          </div>
+          <div class="sphere-stage" id="q0-stage">
+            <canvas id="q0-canvas"></canvas>
+            <div class="sphere-labels" id="q0-labels" aria-hidden="true"></div>
+          </div>
+          <dl class="bloch-readout" id="q0-readout">
+            <div><dt>x</dt><dd>0.000</dd></div>
+            <div><dt>y</dt><dd>0.000</dd></div>
+            <div><dt>z</dt><dd>1.000</dd></div>
+            <div><dt>r</dt><dd>1.000</dd></div>
+          </dl>
+        </section>
+
+        <section class="qubit-visual" aria-labelledby="q1-heading">
+          <div class="qubit-heading">
+            <h3 id="q1-heading">q1</h3>
+            <span id="q1-state-type">Pure</span>
+          </div>
+          <div class="sphere-stage" id="q1-stage">
+            <canvas id="q1-canvas"></canvas>
+            <div class="sphere-labels" id="q1-labels" aria-hidden="true"></div>
+          </div>
+          <dl class="bloch-readout" id="q1-readout">
+            <div><dt>x</dt><dd>0.000</dd></div>
+            <div><dt>y</dt><dd>0.000</dd></div>
+            <div><dt>z</dt><dd>1.000</dd></div>
+            <div><dt>r</dt><dd>1.000</dd></div>
+          </dl>
+        </section>
+      </div>
+    </section>
+
+    <aside class="joint-panel" aria-labelledby="joint-heading">
+      <div class="panel-heading">
+        <p>Two-qubit state</p>
+        <h2 id="joint-heading">|&Psi;&#10217;</h2>
+      </div>
+
+      <section class="joint-section" aria-labelledby="amplitudes-heading">
+        <div class="section-heading">
+          <h3 id="amplitudes-heading">Joint amplitudes</h3>
+          <span>Complex</span>
+        </div>
+        <div class="amplitude-list" id="amplitude-list"></div>
+      </section>
+
+      <section class="joint-section" aria-labelledby="outcomes-heading">
+        <div class="section-heading">
+          <h3 id="outcomes-heading">Z outcomes</h3>
+          <span>Probability</span>
+        </div>
+        <div class="outcome-list" id="outcome-list"></div>
+      </section>
+
+      <section class="joint-section" aria-labelledby="entanglement-heading">
+        <div class="section-heading">
+          <h3 id="entanglement-heading">Entanglement</h3>
+          <span>Pure joint state</span>
+        </div>
+        <dl class="entanglement-metrics">
+          <div><dt>Concurrence</dt><dd id="concurrence">0.000</dd></div>
+          <div><dt>q0 purity</dt><dd id="q0-purity">1.000</dd></div>
+          <div><dt>q1 purity</dt><dd id="q1-purity">1.000</dd></div>
+        </dl>
+      </section>
+
+      <section class="joint-section" aria-labelledby="history-heading">
+        <div class="section-heading">
+          <h3 id="history-heading">Operation history</h3>
+          <span id="history-count">0 gates</span>
+        </div>
+        <ol class="history-list" id="history-list"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <noscript>This experiment requires JavaScript.</noscript>
+  <script type="module" src="/demos/two-qubit-lab/app.js?v=20260824-1"></script>
+</body>
+</html>

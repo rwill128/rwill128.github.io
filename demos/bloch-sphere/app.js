@@ -1,12 +1,44 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {
+  MATRICES,
+  applySingleQubitGate,
+  qubitState,
+  reducedBlochVector,
+} from "../qubit-workbench/quantum.js";
 
 const DEG = Math.PI / 180;
 const state = {
   theta: 50 * DEG,
   phi: 135 * DEG,
   interaction: "state",
+  previousState: null,
 };
+
+const OPERATOR_LABELS = {
+  H: "H",
+  X: "X",
+  Y: "Y",
+  Z: "Z",
+  S: "S",
+  SDG: "S†",
+  T: "T",
+  TDG: "T†",
+};
+
+const OPERATOR_MATRICES = {
+  H: "1/√2 [1  1; 1  −1]",
+  X: "[0  1; 1  0]",
+  Y: "[0  −i; i  0]",
+  Z: "[1  0; 0  −1]",
+  S: "[1  0; 0  i]",
+  SDG: "[1  0; 0  −i]",
+  T: "[1  0; 0  e^(iπ/4)]",
+  TDG: "[1  0; 0  e^(−iπ/4)]",
+};
+
+let operationHistory = [{ theta: state.theta, phi: state.phi, operator: "I" }];
+let operationCursor = 0;
 
 const stage = document.querySelector("#scene-stage");
 const canvas = document.querySelector("#bloch-canvas");
@@ -27,6 +59,13 @@ const zValue = document.querySelector("#z-value");
 const modeStatus = document.querySelector("#mode-status");
 const thetaBadge = document.querySelector("#theta-badge");
 const phiBadge = document.querySelector("#phi-badge");
+const undoOperation = document.querySelector("#undo-operation");
+const redoOperation = document.querySelector("#redo-operation");
+const operationStep = document.querySelector("#operation-step");
+const operationName = document.querySelector("#operation-name");
+const operationHistoryElement = document.querySelector("#operation-history");
+const operatorSymbol = document.querySelector("#operator-symbol");
+const operatorMatrix = document.querySelector("#operator-matrix");
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -184,6 +223,25 @@ const stateTip = new THREE.Mesh(
 );
 scene.add(stateTip);
 
+const previousStateMaterial = new THREE.LineDashedMaterial({
+  color: 0xd59a2d,
+  transparent: true,
+  opacity: 0.72,
+  dashSize: 0.07,
+  gapSize: 0.045,
+});
+const previousStateLine = makeLine(
+  [new THREE.Vector3(), new THREE.Vector3()],
+  previousStateMaterial,
+);
+previousStateLine.visible = false;
+const previousStateTip = new THREE.Mesh(
+  new THREE.SphereGeometry(0.04, 18, 12),
+  new THREE.MeshBasicMaterial({ color: 0xd59a2d }),
+);
+previousStateTip.visible = false;
+scene.add(previousStateTip);
+
 const projectionMaterial = new THREE.LineDashedMaterial({
   color: 0xd8d3bb,
   transparent: true,
@@ -227,12 +285,16 @@ const projectedLabels = labelDefinitions.map((definition) => {
   return { ...definition, element };
 });
 
-function blochVector() {
+function blochVectorFor(theta, phi) {
   return {
-    x: Math.sin(state.theta) * Math.cos(state.phi),
-    y: Math.sin(state.theta) * Math.sin(state.phi),
-    z: Math.cos(state.theta),
+    x: Math.sin(theta) * Math.cos(phi),
+    y: Math.sin(theta) * Math.sin(phi),
+    z: Math.cos(theta),
   };
+}
+
+function blochVector() {
+  return blochVectorFor(state.theta, state.phi);
 }
 
 function sceneVector(vector, radius = 1) {
@@ -249,6 +311,78 @@ function formatComplex(real, imaginary) {
   const normalizedImaginary = Math.abs(imaginary) < 0.0005 ? 0 : imaginary;
   const sign = normalizedImaginary < 0 ? "−" : "+";
   return `${normalizedReal.toFixed(3)} ${sign} ${Math.abs(normalizedImaginary).toFixed(3)}i`;
+}
+
+function updateOperationUI() {
+  const current = operationHistory[operationCursor];
+  const label = current.operator === "I" ? "I" : OPERATOR_LABELS[current.operator];
+  operationStep.textContent = operationCursor === 0
+    ? "Initial state"
+    : `Step ${operationCursor} of ${operationHistory.length - 1}`;
+  operationName.textContent = operationCursor === 0 ? "No operator applied" : `${label} applied`;
+  operatorSymbol.textContent = label;
+  operatorMatrix.textContent = current.operator === "I"
+    ? "[1  0; 0  1]"
+    : OPERATOR_MATRICES[current.operator];
+  undoOperation.disabled = operationCursor === 0;
+  redoOperation.disabled = operationCursor === operationHistory.length - 1;
+
+  operationHistoryElement.innerHTML = "";
+  operationHistory.forEach((entry, index) => {
+    const item = document.createElement("li");
+    item.textContent = entry.operator === "I" ? "ψ" : OPERATOR_LABELS[entry.operator];
+    item.classList.toggle("is-current", index === operationCursor);
+    operationHistoryElement.appendChild(item);
+  });
+  document.querySelectorAll("[data-operator]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.operator === current.operator);
+  });
+}
+
+function resetOperationHistory() {
+  operationHistory = [{ theta: state.theta, phi: state.phi, operator: "I" }];
+  operationCursor = 0;
+  state.previousState = null;
+  updateOperationUI();
+}
+
+function anglesFromStateVector(vector) {
+  const reduced = reducedBlochVector(vector, 1, 0);
+  const theta = Math.acos(THREE.MathUtils.clamp(reduced.z, -1, 1));
+  const phi = Math.atan2(reduced.y, reduced.x);
+  return {
+    theta,
+    phi: ((phi % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2),
+  };
+}
+
+function applyOperator(operator) {
+  const before = { theta: state.theta, phi: state.phi };
+  const vector = qubitState(state.theta, state.phi);
+  const next = applySingleQubitGate(vector, 1, 0, MATRICES[operator]);
+  const angles = anglesFromStateVector(next);
+
+  operationHistory = operationHistory.slice(0, operationCursor + 1);
+  operationHistory.push({ ...angles, operator });
+  operationCursor += 1;
+  state.previousState = before;
+  state.theta = angles.theta;
+  state.phi = angles.phi;
+  updateState();
+  updateOperationUI();
+}
+
+function moveThroughHistory(offset) {
+  const nextCursor = operationCursor + offset;
+  if (nextCursor < 0 || nextCursor >= operationHistory.length) return;
+  const before = { theta: state.theta, phi: state.phi };
+  const target = operationHistory[nextCursor];
+  operationCursor = nextCursor;
+  state.previousState = before;
+  state.theta = target.theta;
+  state.phi = target.phi;
+  updateState();
+  updateOperationUI();
 }
 
 function updatePresetSelection() {
@@ -274,6 +408,20 @@ function updateState() {
   stateShaft.scale.set(1, shaftLength, 1);
   stateTip.position.copy(tipPosition);
   updateLineGeometry(verticalProjection, [tipPosition, equatorialProjection], true);
+
+  if (state.previousState) {
+    const previousDirection = sceneVector(
+      blochVectorFor(state.previousState.theta, state.previousState.phi),
+    ).normalize();
+    const previousTipPosition = previousDirection.multiplyScalar(sphereRadius);
+    previousStateLine.visible = true;
+    previousStateTip.visible = true;
+    previousStateTip.position.copy(previousTipPosition);
+    updateLineGeometry(previousStateLine, [new THREE.Vector3(), previousTipPosition], true);
+  } else {
+    previousStateLine.visible = false;
+    previousStateTip.visible = false;
+  }
 
   const thetaPoints = [];
   const thetaRadius = 0.48;
@@ -331,9 +479,10 @@ function updateState() {
   );
 }
 
-function setState(thetaDegrees, phiDegrees) {
+function setState(thetaDegrees, phiDegrees, { resetHistory = true } = {}) {
   state.theta = THREE.MathUtils.clamp(thetaDegrees, 0, 180) * DEG;
   state.phi = (((phiDegrees % 360) + 360) % 360) * DEG;
+  if (resetHistory) resetOperationHistory();
   updateState();
 }
 
@@ -357,6 +506,13 @@ document.querySelector("#random-state").addEventListener("click", () => {
   const phi = Math.random() * 360;
   setState(theta, phi);
 });
+
+document.querySelectorAll("[data-operator]").forEach((button) => {
+  button.addEventListener("click", () => applyOperator(button.dataset.operator));
+});
+
+undoOperation.addEventListener("click", () => moveThroughHistory(-1));
+redoOperation.addEventListener("click", () => moveThroughHistory(1));
 
 document.querySelectorAll("input[name='interaction']").forEach((input) => {
   input.addEventListener("change", () => {
@@ -448,5 +604,6 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+updateOperationUI();
 updateState();
 animate();
