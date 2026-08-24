@@ -54,6 +54,7 @@ export function createCircuitWorkspace({ initialQubit, onEditQubit }) {
   const grid = document.querySelector("#circuit-grid");
   const status = document.querySelector("#circuit-status");
   const stepInput = document.querySelector("#circuit-step");
+  const stepMarks = document.querySelector("#circuit-step-marks");
   const stepOutput = document.querySelector("#step-output");
   const jointState = document.querySelector("#joint-state");
   const jointStateDimension = document.querySelector("#joint-state-dimension");
@@ -63,6 +64,13 @@ export function createCircuitWorkspace({ initialQubit, onEditQubit }) {
   const addQubitButton = document.querySelector("#add-qubit");
   const algorithmResult = document.querySelector("#algorithm-result");
   const algorithmResultContent = document.querySelector("#algorithm-result-content");
+
+  for (let step = 0; step <= COLUMN_COUNT; step += 1) {
+    const label = step === 0 ? "Input" : step === COLUMN_COUNT ? "Output" : `t${step}`;
+    const mark = makeElement("span", "step-mark", label);
+    mark.style.setProperty("--step-position", `${(step / COLUMN_COUNT) * 100}%`);
+    stepMarks.appendChild(mark);
+  }
 
   function setStatus(message) {
     status.textContent = message;
@@ -475,6 +483,7 @@ export function createCircuitWorkspace({ initialQubit, onEditQubit }) {
     jointStateDimension.textContent = `${vector.length} amplitudes`;
     stepInput.value = String(model.step);
     stepOutput.value = model.step === COLUMN_COUNT ? "Output" : model.step === 0 ? "Input" : `After t${model.step}`;
+    stepInput.setAttribute("aria-valuetext", stepOutput.value);
     document.querySelectorAll("[data-gate-tool]").forEach((button) => {
       button.classList.toggle("is-active", button.dataset.gateTool === model.selectedTool);
     });

@@ -209,7 +209,10 @@
             <button id="next-step" type="button" aria-label="Next circuit step" title="Next step">&#9654;</button>
           </div>
         </div>
-        <input class="step-range" id="circuit-step" type="range" min="0" max="6" step="1" value="6" aria-label="Circuit simulation step">
+        <div class="step-timeline">
+          <input class="step-range" id="circuit-step" type="range" min="0" max="6" step="1" value="6" aria-label="Circuit simulation step">
+          <div class="step-marks" id="circuit-step-marks" aria-hidden="true"></div>
+        </div>
         <div class="circuit-scroll" id="circuit-scroll">
           <div class="circuit-grid" id="circuit-grid"></div>
         </div>
