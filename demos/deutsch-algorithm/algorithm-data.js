@@ -194,7 +194,8 @@ export const STEPS = [
     body: () => [
       "The symbol |1⟩ names the two-component state vector [0, 1]ᵀ; it is not the number 1. The Hadamard gate is a matrix. Multiplying that matrix by [0, 1]ᵀ produces the new vector [1, −1]ᵀ/√2.",
       "That output vector is given the shorthand name |−⟩. Because |0⟩ = [1, 0]ᵀ and |1⟩ = [0, 1]ᵀ, the same output vector can also be written (|0⟩ − |1⟩)/√2. These are equivalent descriptions of one vector, not a value being mapped to an equation.",
-      "X has a special action on this state: X|−⟩ = −|−⟩. Flipping the target exchanges its two components, which produces the same physical target state multiplied by −1. That minus sign is exactly what the oracle will transfer onto an input branch.",
+      "Applying X does <strong>not</strong> point the Bloch arrow in the opposite direction. X is a 180-degree rotation around the X axis, and |−⟩ already lies on that axis. Its Bloch arrow therefore remains fixed at the −X point. The opposite Bloch point is |+⟩, not −|−⟩.",
+      "Algebraically, X exchanges the |0⟩ and |1⟩ components of |−⟩. Because those components have opposite signs, the resulting vector is −|−⟩. A common multiplier of −1 is a phase shift of π and does not change the target's physical state. During the oracle, however, X is applied conditionally: only the input components for which f(x) = 1 acquire that sign. It can therefore become a relative phase between the x = 0 and x = 1 components, which the final Hadamard can reveal through interference.",
       "The target is not random or mixed. It is a pure state pointing along the negative X axis of its Bloch sphere.",
     ],
     equations: () => [
@@ -202,6 +203,7 @@ export const STEPS = [
       "H[0, 1]ᵀ = [1, −1]ᵀ/√2",
       "|−⟩ := [1, −1]ᵀ/√2 = (|0⟩−|1⟩)/√2",
       "X|−⟩ = −|−⟩",
+      "Bloch(|−⟩) = Bloch(−|−⟩) = (−1, 0, 0)",
       "|ψ₂⟩ = |0⟩ₓ|−⟩ᵧ",
     ],
     facts: () => [

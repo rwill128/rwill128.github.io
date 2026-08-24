@@ -377,6 +377,22 @@ main {
   font-size: 18px;
 }
 
+.state-name-stack {
+  display: grid;
+  max-width: 250px;
+  justify-items: end;
+  gap: 3px;
+  text-align: right;
+}
+
+.state-name-stack small {
+  color: #a9bbb5;
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
 .qubit-visual:first-child .qubit-heading strong {
   color: var(--coral);
 }

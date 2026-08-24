@@ -125,6 +125,7 @@ const stageTitle = document.querySelector("#stage-title");
 const queryCount = document.querySelector("#query-count");
 const inputStateName = document.querySelector("#input-state-name");
 const targetStateName = document.querySelector("#target-state-name");
+const targetPhaseStatus = document.querySelector("#target-phase-status");
 const amplitudeList = document.querySelector("#amplitude-list");
 const stateNormElement = document.querySelector("#state-norm");
 const branchStatus = document.querySelector("#branch-status");
@@ -188,6 +189,15 @@ function renderQubits(vector) {
   });
   inputStateName.textContent = stateName(reduced[0]);
   targetStateName.textContent = stateName(reduced[1]);
+
+  const step = currentStep();
+  const targetIsMinus = stateName(reduced[1]) === "|−⟩";
+  targetPhaseStatus.hidden = !targetIsMinus;
+  if (targetIsMinus) {
+    targetPhaseStatus.textContent = step.stateIndex < 4
+      ? "After X: same Bloch point · phase ×−1"
+      : "Oracle result: Bloch point unchanged · signs moved to x components";
+  }
 }
 
 function renderAmplitudes(vector) {
