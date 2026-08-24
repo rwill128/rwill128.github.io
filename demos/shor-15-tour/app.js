@@ -68,11 +68,12 @@ const steps = [
     ],
     equations: [
       "N = 15 = p q",
-      "Find an order r, then recover p and q with greatest common divisors.",
+      "r = min{k &gt; 0 : a<sup>k</sup> ≡ 1 (mod N)}",
+      "Factors ← gcd(a<sup>r/2</sup> − 1, N) and gcd(a<sup>r/2</sup> + 1, N)",
     ],
     facts: [
       ["Target", "3 × 5"],
-      ["Quantum task", "Find r"],
+      ["Quantum task", "Find the order r"],
       ["Counting register", "3 qubits"],
       ["Work register", "4 qubits"],
     ],
