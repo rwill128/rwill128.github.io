@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deutsch's Algorithm | Richard Williams</title>
+  <meta name="description" content="A gate-by-gate visual walkthrough of Deutsch's two-qubit algorithm, phase kickback, interference, and its one-query advantage.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Deutsch's Algorithm: One Query, One Answer">
+  <meta property="og:description" content="Choose any one-bit Boolean oracle and trace exactly how phase kickback and interference reveal whether it is constant or balanced.">
+  <meta property="og:url" content="https://rwill128.github.io/demos/deutsch-algorithm/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/deutsch-algorithm.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0d1211">
+  <link rel="canonical" href="https://rwill128.github.io/demos/deutsch-algorithm/">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/demos/deutsch-algorithm/styles.css?v=20260824-1">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#guide-heading">Skip to explanation</a>
+
+  <header class="site-header">
+    <a class="back-link" href="/" aria-label="Back to Richard Williams home page">&larr; Richard Williams</a>
+    <div class="title-lockup">
+      <span>Quantum query algorithms</span>
+      <strong>Deutsch's Algorithm</strong>
+    </div>
+    <a class="source-link" href="https://github.com/rwill128/rwill128.github.io/tree/master/demos/deutsch-algorithm">Source</a>
+  </header>
+
+  <section class="oracle-band" aria-labelledby="oracle-heading">
+    <div class="oracle-intro">
+      <p>Choose the hidden function</p>
+      <h1 id="oracle-heading">Is <i>f</i> constant or balanced?</h1>
+    </div>
+    <div class="oracle-options" role="radiogroup" aria-label="Hidden Boolean function">
+      <button class="oracle-option is-selected" type="button" role="radio" aria-checked="true" data-oracle="constant-zero">
+        <span class="oracle-name">Constant zero</span>
+        <span class="truth-pair"><code>f(0)=0</code><code>f(1)=0</code></span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="identity">
+        <span class="oracle-name">Identity</span>
+        <span class="truth-pair"><code>f(0)=0</code><code>f(1)=1</code></span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="not">
+        <span class="oracle-name">NOT</span>
+        <span class="truth-pair"><code>f(0)=1</code><code>f(1)=0</code></span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="constant-one">
+        <span class="oracle-name">Constant one</span>
+        <span class="truth-pair"><code>f(0)=1</code><code>f(1)=1</code></span>
+      </button>
+    </div>
+  </section>
+
+  <main>
+    <section class="quantum-stage" aria-labelledby="stage-title">
+      <div class="stage-heading">
+        <div>
+          <p id="stage-kicker">Problem setup</p>
+          <h2 id="stage-title">One hidden bit-to-bit function</h2>
+        </div>
+        <div class="query-meter" aria-label="Oracle query count">
+          <span>Oracle queries</span>
+          <strong id="query-count">0</strong>
+        </div>
+      </div>
+
+      <div class="circuit" aria-label="Deutsch algorithm circuit">
+        <div class="circuit-row">
+          <span class="wire-label"><strong>x</strong><small>input</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span>
+          <span class="wire-node spacer" aria-hidden="true"></span>
+          <span class="wire-node spacer" aria-hidden="true"></span>
+          <span class="wire-node gate" data-stage="3">H</span>
+          <span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span>
+          <span class="wire-node gate" data-stage="5">H</span>
+          <span class="wire-node measure" data-stage="6">M</span>
+        </div>
+        <div class="circuit-row">
+          <span class="wire-label"><strong>y</strong><small>target</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span>
+          <span class="wire-node gate" data-stage="1">X</span>
+          <span class="wire-node gate" data-stage="2">H</span>
+          <span class="wire-node spacer" aria-hidden="true"></span>
+          <span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span>
+          <span class="wire-node spacer" aria-hidden="true"></span>
+          <span class="wire-node unmeasured">&mdash;</span>
+        </div>
+      </div>
+
+      <div class="sphere-pair">
+        <section class="qubit-visual" aria-labelledby="input-qubit-heading">
+          <div class="qubit-heading">
+            <div>
+              <p>Query input</p>
+              <h3 id="input-qubit-heading">Input qubit x</h3>
+            </div>
+            <strong id="input-state-name">|0&#10217;</strong>
+          </div>
+          <div class="sphere-stage" id="input-stage">
+            <canvas id="input-canvas"></canvas>
+            <div class="sphere-labels" id="input-labels" aria-hidden="true"></div>
+          </div>
+          <dl class="bloch-readout" id="input-readout">
+            <div><dt>x</dt><dd>0.000</dd></div>
+            <div><dt>y</dt><dd>0.000</dd></div>
+            <div><dt>z</dt><dd>1.000</dd></div>
+          </dl>
+        </section>
+
+        <section class="qubit-visual" aria-labelledby="target-qubit-heading">
+          <div class="qubit-heading">
+            <div>
+              <p>Phase catalyst</p>
+              <h3 id="target-qubit-heading">Target qubit y</h3>
+            </div>
+            <strong id="target-state-name">|0&#10217;</strong>
+          </div>
+          <div class="sphere-stage" id="target-stage">
+            <canvas id="target-canvas"></canvas>
+            <div class="sphere-labels" id="target-labels" aria-hidden="true"></div>
+          </div>
+          <dl class="bloch-readout" id="target-readout">
+            <div><dt>x</dt><dd>0.000</dd></div>
+            <div><dt>y</dt><dd>0.000</dd></div>
+            <div><dt>z</dt><dd>1.000</dd></div>
+          </dl>
+        </section>
+      </div>
+    </section>
+
+    <aside class="evidence-panel" aria-labelledby="evidence-heading">
+      <div class="panel-heading">
+        <p>Exact two-qubit state</p>
+        <h2 id="evidence-heading">State evidence</h2>
+      </div>
+
+      <section class="evidence-section" aria-labelledby="amplitude-heading">
+        <div class="section-heading">
+          <h3 id="amplitude-heading">Joint amplitudes</h3>
+          <span id="state-norm">Norm 1.000</span>
+        </div>
+        <div class="amplitude-list" id="amplitude-list"></div>
+      </section>
+
+      <section class="evidence-section" aria-labelledby="branch-heading">
+        <div class="section-heading">
+          <h3 id="branch-heading">Function branches</h3>
+          <span id="branch-status">Not queried</span>
+        </div>
+        <div class="branch-table" id="branch-table"></div>
+      </section>
+
+      <section class="evidence-section result-section" aria-labelledby="result-heading">
+        <div class="section-heading">
+          <h3 id="result-heading">Input measurement</h3>
+          <span>Probability</span>
+        </div>
+        <div class="measurement-row">
+          <span>|0&#10217;</span>
+          <div class="probability-track"><i id="probability-zero-bar"></i></div>
+          <strong id="probability-zero">100.0%</strong>
+        </div>
+        <div class="measurement-row">
+          <span>|1&#10217;</span>
+          <div class="probability-track"><i id="probability-one-bar"></i></div>
+          <strong id="probability-one">0.0%</strong>
+        </div>
+        <div class="classification" id="classification">
+          <span>Conclusion</span>
+          <strong>Not measured</strong>
+        </div>
+      </section>
+    </aside>
+
+    <section class="guide-band" aria-labelledby="guide-heading">
+      <article class="step-explanation">
+        <div class="step-heading">
+          <p id="step-number">Step 1 of 13</p>
+          <h2 id="guide-heading">Define the question</h2>
+        </div>
+        <div class="step-body" id="step-body"></div>
+      </article>
+
+      <aside class="math-explanation" aria-labelledby="math-heading">
+        <div class="section-heading">
+          <h3 id="math-heading">Mathematical state</h3>
+          <span id="math-stage">Before the circuit</span>
+        </div>
+        <div class="equation-list" id="equation-list"></div>
+        <dl class="step-facts" id="step-facts"></dl>
+      </aside>
+    </section>
+
+    <nav class="step-controls" aria-label="Walkthrough controls">
+      <button id="previous-step" type="button" aria-label="Previous step" title="Previous step">&#8592;</button>
+      <div class="step-progress">
+        <div class="step-track" id="step-track"></div>
+        <output id="step-progress-label">1 / 13</output>
+      </div>
+      <button id="next-step" type="button" aria-label="Next step" title="Next step">&#8594;</button>
+    </nav>
+  </main>
+
+  <noscript>This walkthrough requires JavaScript.</noscript>
+  <script type="module" src="/demos/deutsch-algorithm/app.js?v=20260824-1"></script>
+</body>
+</html>
