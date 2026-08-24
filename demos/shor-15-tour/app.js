@@ -64,7 +64,7 @@ const steps = [
     focus: [],
     body: [
       "We want the nontrivial factors of <strong>N = 15</strong>. Shor's central move is not to search for those factors directly. It converts factoring into the problem of finding the period of modular exponentiation, uses a quantum computer for that period-finding step, and then returns to ordinary integer arithmetic.",
-      "This example uses seven qubits because three counting qubits can represent eight exponents and four work qubits can represent the integers 0 through 15. The simulation keeps all <strong>2<sup>7</sup> = 128 complex amplitudes</strong>, even when most of them are zero.",
+      "This example uses seven qubits because three counting qubits can represent eight exponents and four work qubits can represent the integers 0 through 15. All seven begin in |0⟩. By Bloch-sphere convention, |0⟩ is the +Z north pole, so every arrow points upward and the counting-register result 000 initially has 100% probability. The simulation keeps all <strong>2<sup>7</sup> = 128 complex amplitudes</strong>, even when most of them are zero.",
     ],
     equations: [
       "N = 15 = p q",

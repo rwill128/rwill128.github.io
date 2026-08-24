@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#101413">
   <link rel="canonical" href="https://rwill128.github.io/demos/shor-15-tour/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/shor-15-tour/styles.css?v=20260824-1">
+  <link rel="stylesheet" href="/demos/shor-15-tour/styles.css?v=20260824-2">
   <script type="importmap">
     {
       "imports": {
@@ -59,6 +59,13 @@
         <span><i class="previous-swatch"></i>Previous reduced state</span>
       </div>
 
+      <div class="axis-convention" aria-label="Bloch sphere axis convention">
+        <strong>Bloch-sphere convention</strong>
+        <span><b>Z</b> +Z / north = |0&#10217; &middot; &minus;Z / south = |1&#10217;</span>
+        <span><b>X</b> +X = |+&#10217; &middot; &minus;X = |&minus;&#10217;</span>
+        <span><b>Y</b> +Y = |+i&#10217; &middot; &minus;Y = |&minus;i&#10217;</span>
+      </div>
+
       <button class="camera-reset" id="camera-reset" type="button" title="Reset camera" aria-label="Reset camera">&#8634;</button>
     </section>
 
@@ -82,12 +89,13 @@
 
       <aside class="state-evidence" aria-labelledby="evidence-heading">
         <div class="panel-heading">
-          <h3 id="evidence-heading">State evidence</h3>
-          <span id="nonzero-count">1 nonzero amplitude</span>
+          <h3 id="evidence-heading">Counting-register measurement</h3>
+          <span>Marginal P(c0c1c2)</span>
         </div>
+        <p class="evidence-scope">These tiles show the probability of each counting-register result, summed over every possible work-register state.</p>
         <div class="counting-distribution" id="counting-distribution"></div>
         <details class="basis-details">
-          <summary>Joint basis amplitudes</summary>
+          <summary>Full joint state: |c0c1c2&#10217;|w0w1w2w3&#10217; <small id="nonzero-count">1 nonzero amplitude</small></summary>
           <div class="basis-amplitudes" id="basis-amplitudes"></div>
         </details>
       </aside>
@@ -104,6 +112,6 @@
   </main>
 
   <noscript>This walkthrough requires JavaScript.</noscript>
-  <script type="module" src="/demos/shor-15-tour/app.js?v=20260824-2"></script>
+  <script type="module" src="/demos/shor-15-tour/app.js?v=20260824-3"></script>
 </body>
 </html>
