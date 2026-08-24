@@ -64,7 +64,8 @@ const steps = [
     focus: [],
     body: [
       "We want the nontrivial factors of <strong>N = 15</strong>. Shor's central move is not to search for those factors directly. It converts factoring into the problem of finding the period of modular exponentiation, uses a quantum computer for that period-finding step, and then returns to ordinary integer arithmetic.",
-      "This example uses seven qubits because three counting qubits can represent eight exponents and four work qubits can represent the integers 0 through 15. All seven begin in |0⟩. By Bloch-sphere convention, |0⟩ is the +Z north pole, so every arrow points upward and the counting-register result 000 initially has 100% probability. The simulation keeps all <strong>2<sup>7</sup> = 128 complex amplitudes</strong>, even when most of them are zero.",
+      "The three counting qubits represent exponent values x = 0 through 7. For a = 2, those eight values produce 2<sup>x</sup> mod 15 = 1, 2, 4, 8, 1, 2, 4, 8: two complete copies of the period-four sequence. Eight is a compact pedagogical choice that makes the repetition and the inverse-QFT peaks visible; it is not Shor's generic counting-register size for an unknown large order.",
+      "Four work qubits represent the integers 0 through 15. All seven qubits begin in |0⟩. By Bloch-sphere convention, |0⟩ is the +Z north pole, so every arrow points upward and the counting-register result 000 initially has 100% probability. The simulation keeps all <strong>2<sup>7</sup> = 128 complex amplitudes</strong>, even when most of them are zero.",
     ],
     equations: [
       "N = 15 = p q",
@@ -74,7 +75,7 @@ const steps = [
     facts: [
       ["Target", "3 × 5"],
       ["Quantum task", "Find the order r"],
-      ["Counting register", "3 qubits"],
+      ["Counting register", "3 qubits → x = 0…7"],
       ["Work register", "4 qubits"],
     ],
   },
