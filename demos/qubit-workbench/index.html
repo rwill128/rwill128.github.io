@@ -4,18 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Qubit Workbench | Richard Williams</title>
-  <meta name="description" content="An interactive Bloch sphere and quantum-circuit simulator for manipulating qubit states, applying gates, and inspecting joint outcomes.">
+  <meta name="description" content="An interactive Bloch sphere and quantum-circuit simulator with editable qubits, multi-qubit gates, entanglement, and a factor-15 order-finding preset.">
   <meta name="author" content="Richard Williams">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive Qubit Workbench">
-  <meta property="og:description" content="Move qubits around the Bloch sphere, arrange real quantum gates, and inspect the simulated joint state.">
+  <meta property="og:description" content="Move qubits around the Bloch sphere, arrange quantum gates, inspect entanglement, and run a factor-15 order-finding circuit.">
   <meta property="og:url" content="https://rwill128.github.io/demos/qubit-workbench/">
   <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/qubit-workbench.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f2f1ec">
   <link rel="canonical" href="https://rwill128.github.io/demos/qubit-workbench/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/qubit-workbench/styles.css?v=20260824-1">
+  <link rel="stylesheet" href="/demos/qubit-workbench/styles.css?v=20260824-2">
   <script type="importmap">
     {
       "imports": {
@@ -172,6 +172,7 @@
       <div class="circuit-actions">
         <button id="load-interference" type="button">Interference</button>
         <button id="load-bell" type="button">Bell pair</button>
+        <button id="load-factor-15" type="button" title="Shor order finding for N = 15 using base 2">Factor 15</button>
         <button id="reset-circuit" type="button">Reset</button>
       </div>
     </section>
@@ -237,6 +238,14 @@
           <div class="outcome-list" id="outcome-list"></div>
         </section>
 
+        <section class="result-section algorithm-result" id="algorithm-result" aria-labelledby="algorithm-result-heading" hidden>
+          <div class="result-section-heading">
+            <h3 id="algorithm-result-heading">Order finding</h3>
+            <span>Classical post-processing</span>
+          </div>
+          <div id="algorithm-result-content"></div>
+        </section>
+
         <section class="result-section" aria-labelledby="qubit-output-heading">
           <div class="result-section-heading">
             <h3 id="qubit-output-heading">Individual qubits</h3>
@@ -249,6 +258,6 @@
   </main>
 
   <noscript>This experiment requires JavaScript.</noscript>
-  <script type="module" src="/demos/qubit-workbench/app.js?v=20260824-2"></script>
+  <script type="module" src="/demos/qubit-workbench/app.js?v=20260824-3"></script>
 </body>
 </html>

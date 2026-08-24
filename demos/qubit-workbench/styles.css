@@ -664,6 +664,7 @@ a {
 }
 
 .circuit-actions {
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -840,7 +841,7 @@ a {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 58px 142px repeat(6, 76px) 142px;
+  grid-template-columns: 66px 142px repeat(var(--column-count), 76px) 142px;
   min-width: max-content;
 }
 
@@ -878,12 +879,40 @@ a {
 }
 
 .qubit-label {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   border-right: 1px solid var(--line);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 17px;
   font-weight: 700;
+}
+
+.remove-qubit-button {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 3px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.remove-qubit-button:hover:not(:disabled) {
+  color: white;
+  background: var(--coral);
+}
+
+.remove-qubit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.25;
 }
 
 .input-state {
@@ -974,6 +1003,20 @@ a {
 
 .linked-gate[data-gate="CNOT"]:not(:empty) {
   font-size: 19px;
+}
+
+.register-gate {
+  width: 46px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.register-gate:empty::after {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--cyan);
+  content: "";
 }
 
 .pending-gate {
@@ -1068,6 +1111,11 @@ a {
   overflow-y: auto;
 }
 
+.outcome-list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 .joint-amplitude {
   display: flex;
   align-items: baseline;
@@ -1107,6 +1155,114 @@ a {
   display: block;
   height: 100%;
   background: var(--coral);
+}
+
+.algorithm-parameters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.algorithm-parameters span,
+.algorithm-pending,
+.factor-derivation {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.algorithm-parameters span {
+  padding: 9px 10px;
+}
+
+.algorithm-parameters small,
+.algorithm-pending small,
+.factor-derivation small {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  text-transform: uppercase;
+}
+
+.algorithm-parameters strong,
+.algorithm-pending strong {
+  font-size: 12px;
+}
+
+.algorithm-pending {
+  display: flex;
+  margin-top: 10px;
+  padding: 12px;
+  flex-direction: column;
+}
+
+.algorithm-pending span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.phase-result-list {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.phase-result {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 29px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+}
+
+.phase-result code {
+  color: var(--cyan);
+  font-family: var(--mono);
+}
+
+.phase-result span {
+  color: var(--muted);
+  font-family: Georgia, serif;
+}
+
+.phase-result strong {
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.factor-derivation {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.factor-derivation > div:first-child,
+.factor-answer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.factor-derivation code {
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.factor-answer {
+  margin-top: 3px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.factor-answer strong {
+  color: var(--coral);
+  font-size: 13px;
 }
 
 .qubit-output {

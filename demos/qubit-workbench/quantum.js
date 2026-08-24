@@ -78,6 +78,20 @@ function qubitMask(qubitCount, qubit) {
   return 1 << (qubitCount - 1 - qubit);
 }
 
+function readRegisterValue(basis, qubitCount, rows) {
+  return rows.reduce((value, row) => (
+    (value << 1) | ((basis & qubitMask(qubitCount, row)) === 0 ? 0 : 1)
+  ), 0);
+}
+
+function writeRegisterValue(basis, qubitCount, rows, value) {
+  return rows.reduce((nextBasis, row, index) => {
+    const mask = qubitMask(qubitCount, row);
+    const bit = 1 << (rows.length - 1 - index);
+    return (value & bit) === 0 ? nextBasis & ~mask : nextBasis | mask;
+  }, basis);
+}
+
 export function applySingleQubitGate(vector, qubitCount, qubit, matrix) {
   const output = vector.map((value) => complex(value.re, value.im));
   const mask = qubitMask(qubitCount, qubit);
@@ -136,6 +150,58 @@ export function applySwap(vector, qubitCount, first, second) {
   return output;
 }
 
+export function applyControlledModularMultiply(
+  vector,
+  qubitCount,
+  control,
+  workRows,
+  multiplier,
+  modulus,
+) {
+  const output = vector.map(() => complex());
+  const controlMask = qubitMask(qubitCount, control);
+
+  for (let basis = 0; basis < vector.length; basis += 1) {
+    let outputBasis = basis;
+    if ((basis & controlMask) !== 0) {
+      const workValue = readRegisterValue(basis, qubitCount, workRows);
+      const multiplied = workValue < modulus
+        ? (workValue * multiplier) % modulus
+        : workValue;
+      outputBasis = writeRegisterValue(basis, qubitCount, workRows, multiplied);
+    }
+    output[outputBasis] = add(output[outputBasis], vector[basis]);
+  }
+
+  return output;
+}
+
+export function applyInverseQft(vector, qubitCount, rows) {
+  const registerSize = 1 << rows.length;
+  const normalization = 1 / Math.sqrt(registerSize);
+  const output = vector.map(() => complex());
+
+  // Transform each register slice while preserving every qubit outside the register.
+  for (let basis = 0; basis < vector.length; basis += 1) {
+    if (readRegisterValue(basis, qubitCount, rows) !== 0) continue;
+    for (let outputValue = 0; outputValue < registerSize; outputValue += 1) {
+      let sum = complex();
+      for (let inputValue = 0; inputValue < registerSize; inputValue += 1) {
+        const inputBasis = writeRegisterValue(basis, qubitCount, rows, inputValue);
+        const angle = (-2 * Math.PI * inputValue * outputValue) / registerSize;
+        sum = add(sum, multiply(
+          complex(Math.cos(angle), Math.sin(angle)),
+          vector[inputBasis],
+        ));
+      }
+      const outputBasis = writeRegisterValue(basis, qubitCount, rows, outputValue);
+      output[outputBasis] = scale(sum, normalization);
+    }
+  }
+
+  return output;
+}
+
 function applyGate(vector, qubitCount, gate) {
   if (MATRICES[gate.type]) {
     return applySingleQubitGate(vector, qubitCount, gate.rows[0], MATRICES[gate.type]);
@@ -148,6 +214,19 @@ function applyGate(vector, qubitCount, gate) {
   }
   if (gate.type === "SWAP") {
     return applySwap(vector, qubitCount, gate.rows[0], gate.rows[1]);
+  }
+  if (gate.type === "CMOD") {
+    return applyControlledModularMultiply(
+      vector,
+      qubitCount,
+      gate.control,
+      gate.workRows,
+      gate.multiplier,
+      gate.modulus,
+    );
+  }
+  if (gate.type === "IQFT") {
+    return applyInverseQft(vector, qubitCount, gate.rows);
   }
   throw new Error(`Unsupported gate: ${gate.type}`);
 }
