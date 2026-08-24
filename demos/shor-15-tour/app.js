@@ -76,7 +76,7 @@ const steps = [
       "u ≡ v (mod N)  ⇔  N divides u − v",
       "r = min{k &gt; 0 : a<sup>k</sup> ≡ 1 (mod N)}",
       "z = a<sup>r/2</sup>  ⇒  N divides (z − 1)(z + 1)",
-      "Candidate factors: gcd(z − 1,N), gcd(z + 1,N)",
+      "Compute p = gcd(z − 1,N) and q = gcd(z + 1,N)",
     ],
     facts: [
       ["Input", "Composite N"],
