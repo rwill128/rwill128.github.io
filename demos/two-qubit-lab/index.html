@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#f2f1ec">
   <link rel="canonical" href="https://rwill128.github.io/demos/two-qubit-lab/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/two-qubit-lab/styles.css?v=20260824-1">
+  <link rel="stylesheet" href="/demos/two-qubit-lab/styles.css?v=20260824-2">
   <script type="importmap">
     {
       "imports": {
@@ -45,13 +45,30 @@
       </div>
 
       <fieldset class="control-group">
-        <legend>Target qubit</legend>
+        <legend>Selected qubit</legend>
         <div class="segmented-control">
           <input type="radio" name="target" id="target-q0" value="0" checked>
           <label for="target-q0">q0</label>
           <input type="radio" name="target" id="target-q1" value="1">
           <label for="target-q1">q1</label>
         </div>
+      </fieldset>
+
+      <fieldset class="control-group preparation-control">
+        <legend>Product input state</legend>
+        <label class="range-row" for="input-theta">
+          <span><i>&theta;</i> Polar angle</span>
+          <output id="input-theta-output" for="input-theta">0&deg;</output>
+        </label>
+        <input id="input-theta" type="range" min="0" max="180" step="1" value="0">
+
+        <label class="range-row" for="input-phi">
+          <span><i>&phi;</i> Relative phase</span>
+          <output id="input-phi-output" for="input-phi">0&deg;</output>
+        </label>
+        <input id="input-phi" type="range" min="0" max="359" step="1" value="0">
+
+        <button id="prepare-input" class="prepare-button" type="button">Prepare q0 &otimes; q1</button>
       </fieldset>
 
       <fieldset class="control-group">
@@ -68,6 +85,20 @@
         </div>
       </fieldset>
 
+      <fieldset class="control-group rotation-control">
+        <legend>Axis rotations</legend>
+        <label class="range-row" for="rotation-angle">
+          <span>Rotation angle</span>
+          <output id="rotation-angle-output" for="rotation-angle">45&deg;</output>
+        </label>
+        <input id="rotation-angle" type="range" min="-180" max="180" step="1" value="45">
+        <div class="rotation-gates">
+          <button type="button" data-rotation="X" title="Rotate around the X axis">R<sub>x</sub></button>
+          <button type="button" data-rotation="Y" title="Rotate around the Y axis">R<sub>y</sub></button>
+          <button type="button" data-rotation="Z" title="Rotate around the Z axis">R<sub>z</sub></button>
+        </div>
+      </fieldset>
+
       <fieldset class="control-group">
         <legend>Two-qubit gates</legend>
         <div class="pair-gates">
@@ -79,11 +110,11 @@
       </fieldset>
 
       <fieldset class="control-group">
-        <legend>Presets</legend>
+        <legend>Gate sequences</legend>
         <div class="preset-actions">
-          <button id="preset-bell" type="button">Bell &Phi;<sup>+</sup></button>
-          <button id="preset-plus" type="button">|++&#10217;</button>
-          <button id="preset-01" type="button">|01&#10217;</button>
+          <button id="preset-bell" type="button" title="H on q0, then CNOT from q0 to q1"><span>Bell &Phi;<sup>+</sup></span><small>H<sub>0</sub> &rarr; CX<sub>01</sub></small></button>
+          <button id="preset-plus" type="button" title="H on q0, then H on q1"><span>|++&#10217;</span><small>H<sub>0</sub> &rarr; H<sub>1</sub></small></button>
+          <button id="preset-01" type="button" title="X on q1"><span>|01&#10217;</span><small>X<sub>1</sub></small></button>
         </div>
       </fieldset>
 
@@ -192,6 +223,6 @@
   </main>
 
   <noscript>This experiment requires JavaScript.</noscript>
-  <script type="module" src="/demos/two-qubit-lab/app.js?v=20260824-1"></script>
+  <script type="module" src="/demos/two-qubit-lab/app.js?v=20260824-2"></script>
 </body>
 </html>

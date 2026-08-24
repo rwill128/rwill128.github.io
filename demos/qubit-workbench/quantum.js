@@ -58,6 +58,31 @@ export const MATRICES = {
   ],
 };
 
+export function rotationMatrix(axis, angle) {
+  const cosine = Math.cos(angle / 2);
+  const sine = Math.sin(angle / 2);
+
+  if (axis === "X") {
+    return [
+      [complex(cosine), complex(0, -sine)],
+      [complex(0, -sine), complex(cosine)],
+    ];
+  }
+  if (axis === "Y") {
+    return [
+      [complex(cosine), complex(-sine)],
+      [complex(sine), complex(cosine)],
+    ];
+  }
+  if (axis === "Z") {
+    return [
+      [complex(cosine, -sine), complex()],
+      [complex(), complex(cosine, sine)],
+    ];
+  }
+  throw new Error(`Unsupported rotation axis: ${axis}`);
+}
+
 export function qubitState(theta, phi) {
   return [
     complex(Math.cos(theta / 2)),

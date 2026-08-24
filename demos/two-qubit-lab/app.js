@@ -7,11 +7,14 @@ import {
   applySingleQubitGate,
   applySwap,
   basisProbabilities,
+  initialStateVector,
   reducedBlochVector,
+  rotationMatrix,
   stateNorm,
 } from "../qubit-workbench/quantum.js";
 
 const EPSILON = 1e-9;
+const DEG = Math.PI / 180;
 
 function complex(re = 0, im = 0) {
   return { re, im };
@@ -299,6 +302,10 @@ class BlochRenderer {
 const model = {
   vector: [complex(1), complex(), complex(), complex()],
   target: 0,
+  preparation: [
+    { theta: 0, phi: 0 },
+    { theta: 0, phi: 0 },
+  ],
   previousReduced: null,
   history: [],
   cursor: 0,
@@ -331,6 +338,12 @@ const historyPosition = document.querySelector("#history-position");
 const currentOperation = document.querySelector("#current-operation");
 const undoButton = document.querySelector("#undo");
 const redoButton = document.querySelector("#redo");
+const inputTheta = document.querySelector("#input-theta");
+const inputPhi = document.querySelector("#input-phi");
+const inputThetaOutput = document.querySelector("#input-theta-output");
+const inputPhiOutput = document.querySelector("#input-phi-output");
+const rotationAngle = document.querySelector("#rotation-angle");
+const rotationAngleOutput = document.querySelector("#rotation-angle-output");
 
 function currentReducedStates() {
   return [0, 1].map((qubit) => reducedBlochVector(model.vector, 2, qubit));
@@ -420,12 +433,43 @@ function refresh() {
   q1Purity.textContent = reduced[1].purity.toFixed(3);
 }
 
-function resetState({ refreshNow = true } = {}) {
+function resetState({ refreshNow = true, resetPreparation = true } = {}) {
+  if (resetPreparation) {
+    model.preparation = [
+      { theta: 0, phi: 0 },
+      { theta: 0, phi: 0 },
+    ];
+    syncPreparationControls();
+  }
   model.vector = [complex(1), complex(), complex(), complex()];
   model.previousReduced = null;
   model.history = [{ vector: cloneVector(model.vector), label: "|00⟩" }];
   model.cursor = 0;
   if (refreshNow) refresh();
+}
+
+function syncPreparationControls() {
+  const selected = model.preparation[model.target];
+  inputTheta.value = String(selected.theta);
+  inputPhi.value = String(selected.phi);
+  inputThetaOutput.value = `${selected.theta}°`;
+  inputPhiOutput.value = `${selected.phi}°`;
+}
+
+function updatePreparedCoordinate(coordinate, value) {
+  model.preparation[model.target][coordinate] = value;
+  syncPreparationControls();
+}
+
+function prepareProductInput() {
+  model.previousReduced = currentReducedStates();
+  model.vector = initialStateVector(model.preparation.map((qubit) => ({
+    theta: qubit.theta * DEG,
+    phi: qubit.phi * DEG,
+  })));
+  model.history = [{ vector: cloneVector(model.vector), label: "Prepared product input" }];
+  model.cursor = 0;
+  refresh();
 }
 
 function applyOperation(label, transform, { refreshNow = true } = {}) {
@@ -464,8 +508,19 @@ function loadSequence(operations) {
 document.querySelectorAll("input[name='target']").forEach((input) => {
   input.addEventListener("change", () => {
     model.target = Number(input.value);
+    syncPreparationControls();
   });
 });
+
+inputTheta.addEventListener("input", () => {
+  updatePreparedCoordinate("theta", Number(inputTheta.value));
+});
+
+inputPhi.addEventListener("input", () => {
+  updatePreparedCoordinate("phi", Number(inputPhi.value));
+});
+
+document.querySelector("#prepare-input").addEventListener("click", prepareProductInput);
 
 document.querySelectorAll("[data-single-gate]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -473,6 +528,25 @@ document.querySelectorAll("[data-single-gate]").forEach((button) => {
     const target = model.target;
     const label = `${gate === "SDG" ? "S†" : gate === "TDG" ? "T†" : gate} q${target}`;
     applyOperation(label, (vector) => applySingleQubitGate(vector, 2, target, MATRICES[gate]));
+  });
+});
+
+rotationAngle.addEventListener("input", () => {
+  rotationAngleOutput.value = `${rotationAngle.value}°`;
+});
+
+document.querySelectorAll("[data-rotation]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const axis = button.dataset.rotation;
+    const target = model.target;
+    const angleDegrees = Number(rotationAngle.value);
+    const label = `R${axis.toLowerCase()}(${angleDegrees}°) q${target}`;
+    applyOperation(label, (vector) => applySingleQubitGate(
+      vector,
+      2,
+      target,
+      rotationMatrix(axis, angleDegrees * DEG),
+    ));
   });
 });
 

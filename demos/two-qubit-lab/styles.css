@@ -207,6 +207,63 @@ a {
   outline-offset: 2px;
 }
 
+.range-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.range-row + input[type="range"],
+.rotation-control input[type="range"] {
+  width: 100%;
+  height: 26px;
+  margin: 0 0 10px;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.range-row i {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  place-items: center;
+  border-radius: 50%;
+  color: white;
+  background: var(--cyan);
+  font-family: Georgia, serif;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.range-row output {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.prepare-button {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 2px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  color: white;
+  background: var(--ink);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.prepare-button:hover {
+  border-color: var(--cyan);
+  background: var(--cyan);
+}
+
 .gate-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -237,6 +294,36 @@ a {
 
 .gate-grid sup,
 .preset-actions sup {
+  font-size: 7px;
+}
+
+.rotation-gates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.rotation-gates button {
+  min-width: 0;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.rotation-gates button:hover {
+  border-color: var(--ink);
+  color: white;
+  background: var(--ink);
+}
+
+.rotation-gates sub,
+.preset-actions sub {
   font-size: 7px;
 }
 
@@ -284,7 +371,25 @@ a {
 }
 
 .preset-actions button {
+  display: grid;
+  align-content: center;
   font-family: Georgia, "Times New Roman", serif;
+}
+
+.preset-actions span,
+.preset-actions small {
+  display: block;
+}
+
+.preset-actions small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.preset-actions button:hover small {
+  color: #ccd4cf;
 }
 
 .history-controls {
