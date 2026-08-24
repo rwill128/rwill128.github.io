@@ -631,6 +631,13 @@ a {
   box-shadow: inset 0 0 0 1px var(--coral);
 }
 
+.trace-cell.is-controlled {
+  border-color: var(--coral);
+  color: #8f342d;
+  background: #f8ded9;
+  font-weight: 850;
+}
+
 .trace-result {
   min-height: 27px;
   padding: 7px 8px;

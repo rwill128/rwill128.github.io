@@ -91,7 +91,7 @@ const steps = [
     focus: [],
     body: [
       "Choose <strong>a = 2</strong>. Before using a quantum computer, Euclid's algorithm checks gcd(2, 15) = 1. Had that GCD been greater than one, we would already have found a factor and would not need order finding.",
-      "Now inspect f(x) = 2<sup>x</sup> mod 15. Its values are 1, 2, 4, 8, then 1 again. The first return to 1 occurs at x = 4, so the order is r = 4. We can calculate this tiny sequence by hand; the quantum portion of the tour demonstrates how period information can instead be extracted from a state containing many exponent branches.",
+      "Now inspect f(x) = 2<sup>x</sup> mod 15. Its values are 1, 2, 4, 8, then 1 again. The first return to 1 occurs at x = 4, so the order is r = 4. We can calculate this tiny sequence by hand; the quantum portion of the tour demonstrates how period information can instead be extracted from a superposition containing eight exponent components.",
       "Once r = 4 has been recovered and verified, set y = 2<sup>4/2</sup> = 4. The two GCD calculations give gcd(4 − 1, 15) = 3 and gcd(4 + 1, 15) = 5. That is the complete reason finding this period factors 15.",
       "A real execution does not directly return the factors or even print r. It returns a phase sample from the counting register. Classical continued fractions propose r from that sample; modular exponentiation verifies it; then the GCD calculations produce the factors.",
     ],
@@ -116,7 +116,7 @@ const steps = [
     circuitStep: 0,
     focus: [0, 1, 2, 3, 4, 5, 6],
     body: [
-      "The upper three qubits form the <strong>counting register</strong>. The name is potentially misleading: this register does not increment until it finds r, and it never directly stores r. Its three qubits label exponent branches x = 0 through 7, then the inverse QFT transforms their periodic correlations into a phase sample. The lower four qubits form the <strong>work register</strong>, which stores values of 2<sup>x</sup> mod 15.",
+      "The upper three qubits form the <strong>counting register</strong>. The name is potentially misleading: this register does not increment until it finds r, and it never directly stores r. Its three qubits encode computational-basis values x = 0 through 7, then the inverse QFT transforms their periodic correlations into a phase sample. The lower four qubits form the <strong>work register</strong>, which stores values of 2<sup>x</sup> mod 15.",
       "The symbol <strong>|0⟩ names a basis state</strong>; it does not mean that the state's amplitude is zero. As a two-entry column vector, |0⟩ = [1, 0]<sup>T</sup>: the amplitude for measuring 0 is 1, and the amplitude for measuring 1 is 0.",
       "The expression <strong>|000⟩<sub>count</sub> ⊗ |0000⟩<sub>work</sub></strong> joins the three counting qubits and four work qubits with a tensor product. It is the same seven-bit basis state as |0000000⟩. It describes the current state of the seven qubits, not an operation performed on them.",
       "A general seven-qubit state assigns a complex coefficient, called an <strong>amplitude</strong>, to each of its 128 possible basis states. Here the coefficient of |0000000⟩ is 1 and the other 127 coefficients are 0. That is what 'one nonzero amplitude' means. Its measurement probability is |1|² = 100%.",
@@ -165,7 +165,7 @@ const steps = [
     circuitStep: 2,
     focus: [0, 1, 2],
     body: [
-      "A Hadamard gate maps each counting qubit from |0⟩ to |+⟩. Together, the three gates create an equal superposition of all eight exponent values x = 0 through 7. Each branch has amplitude 1/√8 and probability 1/8.",
+      "A Hadamard gate maps each counting qubit from |0⟩ to |+⟩. Together, the three gates create an equal superposition of all eight exponent values x = 0 through 7. Each computational-basis term |x⟩|1⟩ has amplitude 1/√8 and probability 1/8.",
       "The register is not a counter ticking from 0 to 7. We have prepared one coherent state containing all eight exponent labels at once; the modular function has not been evaluated yet. The advantage comes from preserving their relative phases and later making the inverse QFT cause those components to interfere.",
     ],
     equations: [
@@ -187,7 +187,8 @@ const steps = [
     circuitStep: 3,
     focus: [0, 3, 4, 5, 6],
     body: [
-      "The most-significant counting bit c0 has binary weight 4, so it controls multiplication by 2<sup>4</sup> mod 15. Because 16 mod 15 = 1, that controlled operation is the identity on the work register.",
+      "The most-significant counting bit c0 contributes 4 to the encoded exponent x. The circuit therefore applies a <strong>controlled modular multiplication</strong>: on basis terms where c0 = 0, the work register is left alone; on terms where c0 = 1, it is multiplied by 2<sup>4</sup> mod 15. This is one coherent quantum operation across the superposition, not a measurement or a program choosing one execution path.",
+      "Here 2⁴ mod 15 = 16 mod 15 = 1, so even the c0 = 1 terms are multiplied only by 1. The controlled operation is therefore the identity on every term and the displayed state does not change.",
       "Nothing visible changes, but this is not an omitted step. The fact that the fourth power becomes identity is exactly the periodic structure we are trying to detect. c0 remains a pure |+⟩ because the work register cannot record whether this control was 0 or 1.",
     ],
     equations: [
@@ -209,13 +210,17 @@ const steps = [
     circuitStep: 4,
     focus: [1, 3, 4, 5, 6],
     body: [
-      "The middle counting bit c1 has weight 2, so it controls multiplication by 2<sup>2</sup> mod 15 = 4. Branches with c1 = 0 leave the work value at 1; branches with c1 = 1 change it to 4.",
+      "The three counting bits encode x as <strong>x = 4c0 + 2c1 + c2</strong>. Calling c1 the weight-2 bit means that changing c1 from 0 to 1 adds 2 to x. Since 2<sup>x</sup> = 2<sup>4c0</sup>2<sup>2c1</sup>2<sup>c2</sup>, the c1 stage must contribute the factor 2² mod 15 = 4 whenever c1 is 1.",
+      "A <strong>controlled gate</strong> is one reversible quantum operation, not an if/else statement and not a measurement. On a computational-basis term with c1 = 0, it applies the identity to the work register. On a term with c1 = 1, it multiplies the work value by 4 modulo 15. Because c1 is in superposition, the operation acts coherently on both kinds of terms in the same state.",
+      "Immediately before this gate, the state contains eight terms labelled |000⟩ through |111⟩, all with work value 0001. The c1 values across those terms are 0, 0, 1, 1, 0, 0, 1, 1. Consequently, the resulting work values are 1, 1, 4, 4, 1, 1, 4, 4. The period-finding trace shows every term and the gate action directly.",
       "Written as work-register bits, those two values are <strong>0001</strong> and <strong>0100</strong>. Comparing them identifies the affected qubits exactly: <strong>w0 remains 0</strong>, <strong>w1 changes from 0 to 1</strong>, <strong>w2 remains 0</strong>, and <strong>w3 changes from 1 to 0</strong>. Therefore w0 and w2 factor out as independent |0⟩ states. The correlated subsystem consists of c1, w1, and w3.",
       "Ignoring the qubits that factor out, that three-qubit state is <strong>(|0⟩<sub>c1</sub>|0⟩<sub>w1</sub>|1⟩<sub>w3</sub> + |1⟩<sub>c1</sub>|1⟩<sub>w1</sub>|0⟩<sub>w3</sub>)/√2</strong>. If c1 is measured as 0, the affected work bits must be w1w3 = 01; if c1 is measured as 1, they must be 10. This is a GHZ-like three-qubit correlation: c1 is entangled with the pair (w1,w3), not independently Bell-entangled with each work qubit.",
       "The reduced state of each of c1, w1, and w3 is therefore a 50/50 mixture, so each has Bloch radius 0 and appears at the center of its sphere. The complete seven-qubit state is still pure because the uncertainty exists only when one qubit is examined without the other correlated qubits. w0 and w2 remain pure |0⟩ states with Bloch radius 1.",
     ],
     equations: [
+      "x = 4c0 + 2c1 + c2",
       "2² mod 15 = 4",
+      "C(U²): |0⟩|y⟩ → |0⟩|y⟩,   |1⟩|y⟩ → |1⟩|4y mod 15⟩",
       "c1 = 0: |0001⟩<sub>work</sub>    c1 = 1: |0100⟩<sub>work</sub>",
       "|Ψ⟩<sub>c1,w1,w3</sub> = (|001⟩ + |110⟩)/√2",
       "c1 = w1,   w3 = 1 − c1,   w0 = w2 = 0",
@@ -235,7 +240,7 @@ const steps = [
     circuitStep: 5,
     focus: [2, 3, 4, 5, 6],
     body: [
-      "The least-significant counting bit c2 has weight 1, so it controls multiplication by 2. Combining all three controls computes the modular function for every exponent branch: the work register now holds 2<sup>x</sup> mod 15 alongside the corresponding |x⟩.",
+      "The least-significant counting bit c2 has weight 1, so it controls multiplication by 2. Combining all three controlled operations computes the modular function for every exponent component: the work register now holds 2<sup>x</sup> mod 15 alongside the corresponding |x⟩.",
       "The eight amplitudes still have equal magnitude. What changed is which seven-bit basis state owns each amplitude. The function values repeat every four exponents: 1, 2, 4, 8, then 1, 2, 4, 8 again.",
     ],
     equations: [
@@ -246,7 +251,7 @@ const steps = [
       ["Control", "c2, weight 1"],
       ["Multiplier", "2 mod 15"],
       ["Distinct work values", "4"],
-      ["Period", "4 branches"],
+      ["Period", "4 exponents"],
     ],
   },
   {
@@ -738,21 +743,22 @@ function tracePipeline(nodes) {
   `;
 }
 
-function traceSequence(values, valueLabel = "f(x)") {
+function traceSequence(values, valueLabel = "f(x)", additionalRows = []) {
+  const rows = [
+    ["x", values.map((_, index) => index), "x"],
+    ...additionalRows,
+    [valueLabel, values, "value"],
+  ];
   return `
     <div class="trace-sequence">
-      <div class="trace-row">
-        <span class="trace-row-label">x</span>
-        ${values.map((_, index) => (
-          `<span class="trace-cell" data-trace-row="x" data-trace-index="${index}">${index}</span>`
-        )).join("")}
-      </div>
-      <div class="trace-row">
-        <span class="trace-row-label">${valueLabel}</span>
-        ${values.map((value, index) => (
-          `<span class="trace-cell" data-trace-row="value" data-trace-index="${index}">${value}</span>`
-        )).join("")}
-      </div>
+      ${rows.map(([label, rowValues, rowName]) => `
+        <div class="trace-row">
+          <span class="trace-row-label">${label}</span>
+          ${rowValues.map((value, index) => (
+            `<span class="trace-cell" data-trace-row="${rowName}" data-trace-index="${index}">${value}</span>`
+          )).join("")}
+        </div>
+      `).join("")}
       <div class="trace-result"></div>
     </div>
   `;
@@ -871,8 +877,8 @@ function renderPeriodTrace(index, vector) {
     const values = workValuesByExponent(vector);
     const traceStates = {
       4: [
-        "All x branches prepared",
-        "The Hadamard gates create all eight exponent labels simultaneously. No modular powers have been computed yet, so every branch still has work value 1.",
+        "All x components prepared",
+        "The Hadamard gates create all eight exponent labels simultaneously. No modular powers have been computed yet, so every component still has work value 1.",
         "All eight x labels coexist in one state; the register did not count through them.",
         "work",
       ],
@@ -884,19 +890,19 @@ function renderPeriodTrace(index, vector) {
       ],
       6: [
         "Partial modular function",
-        "The middle exponent bit now controls multiplication by 4. Work values 0001 and 0100 differ only at w1 and w3, so c1 becomes entangled with the pair (w1,w3); w0 and w2 remain pure |0⟩.",
-        "The partial mapping is 1, 1, 4, 4, 1, 1, 4, 4. Correlations: c1 = w1 and w3 = 1 − c1. The low exponent bit has not been applied yet.",
+        "This is one controlled quantum operation, not program control flow. It applies identity where c1 = 0 and modular ×4 where c1 = 1, without measuring c1.",
+        "The table shows every basis term. Columns with c1 = 1 receive ×4, producing 1, 1, 4, 4, 1, 1, 4, 4. The low exponent bit has not been applied yet.",
         "work",
       ],
       7: [
         "Function encoded",
-        "The low exponent bit completes the reversible modular calculation. Each exponent branch is now correlated with its value of 2ˣ mod 15.",
+        "The low exponent bit completes the reversible modular calculation. Each exponent component is now correlated with its value of 2ˣ mod 15.",
         "f(x) = 1, 2, 4, 8, 1, 2, 4, 8. The repetition now exists in the joint quantum state.",
         "f(x)",
       ],
       8: [
         "Period visible in correlations",
-        "The period is not a number stored in one qubit. It is the repeated spacing between exponent branches that share the same work value.",
+        "The period is not a number stored in one qubit. It is the repeated spacing between exponent components that share the same work value.",
         "(0,4), (1,5), (2,6), and (3,7) share outputs. Every pair is separated by 4, so r = 4.",
         "f(x)",
       ],
@@ -904,9 +910,20 @@ function renderPeriodTrace(index, vector) {
     const [status, copy, result, valueLabel] = traceStates[index];
     periodTraceStatus.textContent = status;
     periodTraceCopy.innerHTML = copy;
-    periodTraceVisual.innerHTML = traceSequence(values, valueLabel);
+    const controlRows = index === 6 ? [
+      ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+      ["c1", [0, 0, 1, 1, 0, 0, 1, 1], "control"],
+      ["gate", ["I", "I", "×4", "×4", "I", "I", "×4", "×4"], "gate"],
+    ] : [];
+    periodTraceVisual.innerHTML = traceSequence(values, valueLabel, controlRows);
     periodTraceVisual.querySelectorAll(".trace-cell")
       .forEach((cell) => cell.classList.add("is-seen"));
+    if (index === 6) {
+      [2, 3, 6, 7].forEach((controlledIndex) => {
+        periodTraceVisual.querySelectorAll(`[data-trace-index="${controlledIndex}"]`)
+          .forEach((cell) => cell.classList.add("is-controlled"));
+      });
+    }
     if (index === 8) {
       periodTraceVisual.querySelectorAll(".trace-cell")
         .forEach((cell) => cell.classList.add("is-repeat"));
