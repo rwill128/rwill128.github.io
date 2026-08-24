@@ -12,6 +12,7 @@ const QUBIT_COUNT = 7;
 const COUNTING_ROWS = [0, 1, 2];
 const WORK_ROWS = [3, 4, 5, 6];
 const QUBIT_LABELS = ["c0", "c1", "c2", "w0", "w1", "w2", "w3"];
+const PERIOD_VALUES = [1, 2, 4, 8, 1, 2, 4, 8];
 const COUNTING_COLOR = 0xff695a;
 const WORK_COLOR = 0x40d2d6;
 
@@ -115,7 +116,7 @@ const steps = [
     circuitStep: 0,
     focus: [0, 1, 2, 3, 4, 5, 6],
     body: [
-      "The upper three qubits form the <strong>counting register</strong>. Their bit string will eventually encode an estimate of a phase. The lower four form the <strong>work register</strong>, which stores values modulo 15.",
+      "The upper three qubits form the <strong>counting register</strong>. The name is potentially misleading: this register does not increment until it finds r, and it never directly stores r. Its three qubits label exponent branches x = 0 through 7, then the inverse QFT transforms their periodic correlations into a phase sample. The lower four qubits form the <strong>work register</strong>, which stores values of 2<sup>x</sup> mod 15.",
       "The symbol <strong>|0⟩ names a basis state</strong>; it does not mean that the state's amplitude is zero. As a two-entry column vector, |0⟩ = [1, 0]<sup>T</sup>: the amplitude for measuring 0 is 1, and the amplitude for measuring 1 is 0.",
       "The expression <strong>|000⟩<sub>count</sub> ⊗ |0000⟩<sub>work</sub></strong> joins the three counting qubits and four work qubits with a tensor product. It is the same seven-bit basis state as |0000000⟩. It describes the current state of the seven qubits, not an operation performed on them.",
       "A general seven-qubit state assigns a complex coefficient, called an <strong>amplitude</strong>, to each of its 128 possible basis states. Here the coefficient of |0000000⟩ is 1 and the other 127 coefficients are 0. That is what 'one nonzero amplitude' means. Its measurement probability is |1|² = 100%.",
@@ -165,7 +166,7 @@ const steps = [
     focus: [0, 1, 2],
     body: [
       "A Hadamard gate maps each counting qubit from |0⟩ to |+⟩. Together, the three gates create an equal superposition of all eight exponent values x = 0 through 7. Each branch has amplitude 1/√8 and probability 1/8.",
-      "It is important not to describe this as eight classical calculations that have already happened. We have prepared one coherent state with eight basis components. The advantage comes from preserving their relative phases and later making the inverse QFT cause those components to interfere.",
+      "The register is not a counter ticking from 0 to 7. We have prepared one coherent state containing all eight exponent labels at once; the modular function has not been evaluated yet. The advantage comes from preserving their relative phases and later making the inverse QFT cause those components to interfere.",
     ],
     equations: [
       "H|0⟩ = (|0⟩ + |1⟩)/√2 = |+⟩",
@@ -374,6 +375,9 @@ const stepBody = document.querySelector("#step-body");
 const stateStageLabel = document.querySelector("#state-stage-label");
 const equationList = document.querySelector("#equation-list");
 const stepFacts = document.querySelector("#step-facts");
+const periodTraceStatus = document.querySelector("#period-trace-status");
+const periodTraceCopy = document.querySelector("#period-trace-copy");
+const periodTraceVisual = document.querySelector("#period-trace-visual");
 const nonzeroCount = document.querySelector("#nonzero-count");
 const countingDistribution = document.querySelector("#counting-distribution");
 const basisAmplitudes = document.querySelector("#basis-amplitudes");
@@ -382,6 +386,7 @@ const previousStepButton = document.querySelector("#previous-step");
 const nextStepButton = document.querySelector("#next-step");
 const stepTrack = document.querySelector("#step-track");
 const stepProgressLabel = document.querySelector("#step-progress-label");
+let periodTraceTimer = null;
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -718,6 +723,239 @@ function countingMarginal(vector) {
   return [...marginal.entries()];
 }
 
+function tracePipeline(nodes) {
+  return `
+    <div class="trace-pipeline">
+      ${nodes.map(([value, label], index) => `
+        ${index === 0 ? "" : '<span class="trace-arrow" aria-hidden="true">→</span>'}
+        <div class="trace-node"><strong>${value}</strong><small>${label}</small></div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function traceSequence(values, valueLabel = "f(x)") {
+  return `
+    <div class="trace-sequence">
+      <div class="trace-row">
+        <span class="trace-row-label">x</span>
+        ${values.map((_, index) => (
+          `<span class="trace-cell" data-trace-row="x" data-trace-index="${index}">${index}</span>`
+        )).join("")}
+      </div>
+      <div class="trace-row">
+        <span class="trace-row-label">${valueLabel}</span>
+        ${values.map((value, index) => (
+          `<span class="trace-cell" data-trace-row="value" data-trace-index="${index}">${value}</span>`
+        )).join("")}
+      </div>
+      <div class="trace-result"></div>
+    </div>
+  `;
+}
+
+function workValuesByExponent(vector) {
+  const workProbabilities = Array.from({ length: 8 }, () => new Map());
+  basisProbabilities(vector, QUBIT_COUNT)
+    .filter((entry) => entry.probability > EPSILON)
+    .forEach((entry) => {
+      const exponent = Number.parseInt(entry.basis.slice(0, 3), 2);
+      const workValue = Number.parseInt(entry.basis.slice(3), 2);
+      const probabilities = workProbabilities[exponent];
+      probabilities.set(
+        workValue,
+        (probabilities.get(workValue) ?? 0) + entry.probability,
+      );
+    });
+
+  return workProbabilities.map((probabilities) => {
+    if (probabilities.size === 0) return "–";
+    return [...probabilities.entries()]
+      .sort((left, right) => right[1] - left[1])[0][0];
+  });
+}
+
+function paintClassicalCounter(index) {
+  periodTraceVisual.querySelectorAll(".trace-cell").forEach((cell) => {
+    const cellIndex = Number.parseInt(cell.dataset.traceIndex, 10);
+    cell.classList.toggle("is-seen", cellIndex <= index);
+    cell.classList.toggle("is-current", cellIndex === index);
+    cell.classList.remove("is-repeat");
+  });
+
+  const result = periodTraceVisual.querySelector(".trace-result");
+  if (index === 0) {
+    result.innerHTML = "Start at f(0) = 1. Now look for the smallest positive x that returns to 1.";
+    return;
+  }
+  if (index < 4) {
+    result.innerHTML = `f(${index}) = ${PERIOD_VALUES[index]}. It has not returned to 1 yet.`;
+    return;
+  }
+
+  periodTraceVisual.querySelectorAll('[data-trace-index="0"], [data-trace-index="4"]')
+    .forEach((cell) => cell.classList.add("is-repeat"));
+  result.innerHTML = "f(4) = f(0) = 1. The first return occurred after 4 steps, so <strong>r = 4</strong>.";
+}
+
+function renderPeriodTrace(index, vector) {
+  if (periodTraceTimer !== null) {
+    window.clearInterval(periodTraceTimer);
+    periodTraceTimer = null;
+  }
+
+  if (index === 0) {
+    periodTraceStatus.textContent = "Why r matters";
+    periodTraceCopy.innerHTML = "An even order turns one modular equality into a difference of squares. That gives ordinary GCD calculations a way to separate factors of N.";
+    periodTraceVisual.innerHTML = `${tracePipeline([
+      ["r = 4", "order found"],
+      ["2² = 4", "half-order power"],
+      ["gcd(3,15)<br>gcd(5,15)", "classical extraction"],
+      ["3 × 5", "factors"],
+    ])}<div class="trace-result">The quantum circuit targets r. Once r is known, the factor extraction is classical.</div>`;
+    return;
+  }
+
+  if (index === 1) {
+    periodTraceStatus.textContent = "Classical counter (comparison)";
+    periodTraceCopy.innerHTML = "A conventional program could evaluate one exponent at a time. This animation is a reference for what period means; it is <strong>not</strong> how the quantum circuit runs.";
+    periodTraceVisual.innerHTML = traceSequence(PERIOD_VALUES);
+    let counter = 0;
+    paintClassicalCounter(counter);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      paintClassicalCounter(4);
+      return;
+    }
+    periodTraceTimer = window.setInterval(() => {
+      counter += 1;
+      paintClassicalCounter(counter);
+      if (counter === 4) {
+        window.clearInterval(periodTraceTimer);
+        periodTraceTimer = null;
+      }
+    }, 750);
+    return;
+  }
+
+  if (index === 2 || index === 3) {
+    const initialized = index === 3;
+    periodTraceStatus.textContent = initialized ? "Work register seeded" : "Register roles";
+    periodTraceCopy.innerHTML = "There is <strong>no period-counter qubit</strong>. The circuit creates correlations between exponent labels and modular-function values, then infers r from an interference pattern after measurement.";
+    periodTraceVisual.innerHTML = `
+      <div class="trace-registers">
+        <div class="trace-register">
+          <strong>Counting register</strong>
+          <span>${initialized ? "|000⟩" : "|000⟩ initially"}</span>
+          <small>labels x; later yields a phase sample</small>
+        </div>
+        <div class="trace-register">
+          <strong>Work register</strong>
+          <span>${initialized ? "|0001⟩ = 1" : "|0000⟩ initially"}</span>
+          <small>stores 2ˣ mod 15</small>
+        </div>
+        <div class="trace-register is-warning">
+          <strong>Not present</strong>
+          <span>no register containing r</span>
+          <small>r is recovered after the QFT</small>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (index >= 4 && index <= 8) {
+    const values = workValuesByExponent(vector);
+    const traceStates = {
+      4: [
+        "All x branches prepared",
+        "The Hadamard gates create all eight exponent labels simultaneously. No modular powers have been computed yet, so every branch still has work value 1.",
+        "All eight x labels coexist in one state; the register did not count through them.",
+        "work",
+      ],
+      5: [
+        "Controlled U⁴",
+        "The high exponent bit controls multiplication by 2⁴ mod 15 = 1. This is an identity, so every work value remains 1.",
+        "U⁴ is already a clue: advancing an exponent by four leaves the modular value unchanged.",
+        "work",
+      ],
+      6: [
+        "Partial modular function",
+        "The middle exponent bit now controls multiplication by 4. Only part of each binary exponent has affected the work register.",
+        "The partial mapping is 1, 1, 4, 4, 1, 1, 4, 4. The low exponent bit has not been applied yet.",
+        "work",
+      ],
+      7: [
+        "Function encoded",
+        "The low exponent bit completes the reversible modular calculation. Each exponent branch is now correlated with its value of 2ˣ mod 15.",
+        "f(x) = 1, 2, 4, 8, 1, 2, 4, 8. The repetition now exists in the joint quantum state.",
+        "f(x)",
+      ],
+      8: [
+        "Period visible in correlations",
+        "The period is not a number stored in one qubit. It is the repeated spacing between exponent branches that share the same work value.",
+        "(0,4), (1,5), (2,6), and (3,7) share outputs. Every pair is separated by 4, so r = 4.",
+        "f(x)",
+      ],
+    };
+    const [status, copy, result, valueLabel] = traceStates[index];
+    periodTraceStatus.textContent = status;
+    periodTraceCopy.innerHTML = copy;
+    periodTraceVisual.innerHTML = traceSequence(values, valueLabel);
+    periodTraceVisual.querySelectorAll(".trace-cell")
+      .forEach((cell) => cell.classList.add("is-seen"));
+    if (index === 8) {
+      periodTraceVisual.querySelectorAll(".trace-cell")
+        .forEach((cell) => cell.classList.add("is-repeat"));
+    }
+    periodTraceVisual.querySelector(".trace-result").innerHTML = result;
+    return;
+  }
+
+  if (index === 9) {
+    periodTraceStatus.textContent = "Fourier peaks";
+    periodTraceCopy.innerHTML = "The inverse QFT does not write r into a qubit. It converts spacing in exponent space into peaks in the counting register's measurement distribution.";
+    periodTraceVisual.innerHTML = `${tracePipeline([
+      ["Δx = 4", "repeated spacing"],
+      ["QFT†", "interference"],
+      ["y = 0,2,4,6", "measurement peaks"],
+    ])}<div class="trace-result">With Q = 8 exponent labels, peak spacing is Q/r = 8/4 = 2. The simulator shows all peaks; hardware returns one sample per run.</div>`;
+    return;
+  }
+
+  if (index === 10) {
+    periodTraceStatus.textContent = "One measured sample";
+    periodTraceCopy.innerHTML = "Use one possible hardware result, |010⟩, as a concrete path through post-processing. Other runs may return a different peak.";
+    periodTraceVisual.innerHTML = `${tracePipeline([
+      ["|010⟩", "measured bits"],
+      ["y = 2", "measured integer"],
+      ["y/Q = 2/8", "phase estimate"],
+      ["1/4", "reduced fraction"],
+    ])}<div class="trace-result">One sample does not display the whole period. A zero or ambiguous sample means run the circuit again.</div>`;
+    return;
+  }
+
+  if (index === 11) {
+    periodTraceStatus.textContent = "Recover r classically";
+    periodTraceCopy.innerHTML = "Continued fractions converts the measured phase estimate into a candidate denominator. Modular arithmetic then verifies whether that denominator is actually an order.";
+    periodTraceVisual.innerHTML = `${tracePipeline([
+      ["1/4", "phase estimate"],
+      ["denominator 4", "candidate r"],
+      ["2⁴ mod 15 = 1", "verification"],
+      ["r = 4", "order recovered"],
+    ])}<div class="trace-result">This is where r finally becomes an explicit classical number.</div>`;
+    return;
+  }
+
+  periodTraceStatus.textContent = "Use r to factor N";
+  periodTraceCopy.innerHTML = "The period matters because an even r produces a modular square root of 1. Factoring the resulting difference of squares exposes the factors of N.";
+  periodTraceVisual.innerHTML = `${tracePipeline([
+    ["r = 4", "recovered order"],
+    ["2² = 4", "half-order power"],
+    ["gcd(3,15)<br>gcd(5,15)", "factor extraction"],
+    ["3 × 5", "answer"],
+  ])}<div class="trace-result">Quantum period finding supplied r = 4; ordinary integer arithmetic turned it into 15 = 3 × 5.</div>`;
+}
+
 function renderDistribution(vector) {
   countingDistribution.innerHTML = "";
   countingMarginal(vector).forEach(([bits, probability]) => {
@@ -807,6 +1045,7 @@ function showStep(index, { updateHash = true } = {}) {
   currentStepIndex = nextIndex;
   currentVector = nextVector;
   renderExplanation(step, nextIndex);
+  renderPeriodTrace(nextIndex, nextVector);
   renderDistribution(nextVector);
   renderBasisAmplitudes(nextVector);
   renderProgress(nextIndex);

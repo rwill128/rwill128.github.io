@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#101413">
   <link rel="canonical" href="https://rwill128.github.io/demos/shor-15-tour/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/shor-15-tour/styles.css?v=20260824-2">
+  <link rel="stylesheet" href="/demos/shor-15-tour/styles.css?v=20260824-3">
   <script type="importmap">
     {
       "imports": {
@@ -89,7 +89,13 @@
 
       <aside class="state-evidence" aria-labelledby="evidence-heading">
         <div class="panel-heading">
-          <h3 id="evidence-heading">Counting-register measurement</h3>
+          <h3 id="evidence-heading">Period-finding trace</h3>
+          <span id="period-trace-status">Why r matters</span>
+        </div>
+        <p class="period-trace-copy" id="period-trace-copy"></p>
+        <div class="period-trace-visual" id="period-trace-visual"></div>
+        <div class="measurement-heading">
+          <h4>Counting-register measurement</h4>
           <span>Marginal P(c0c1c2)</span>
         </div>
         <p class="evidence-scope">These tiles show the probability of each counting-register result, summed over every possible work-register state.</p>
@@ -112,6 +118,6 @@
   </main>
 
   <noscript>This walkthrough requires JavaScript.</noscript>
-  <script type="module" src="/demos/shor-15-tour/app.js?v=20260824-6"></script>
+  <script type="module" src="/demos/shor-15-tour/app.js?v=20260824-7"></script>
 </body>
 </html>
