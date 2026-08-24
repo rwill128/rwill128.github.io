@@ -210,17 +210,21 @@ const steps = [
     focus: [1, 3, 4, 5, 6],
     body: [
       "The middle counting bit c1 has weight 2, so it controls multiplication by 2<sup>2</sup> mod 15 = 4. Branches with c1 = 0 leave the work value at 1; branches with c1 = 1 change it to 4.",
-      "Now c1 and parts of the work register become entangled. Their individual Bloch vectors can collapse to the center even though the complete seven-qubit state remains pure. The missing local information has not been destroyed; it now exists in correlations such as “c1 = 0 goes with work = 1” and “c1 = 1 goes with work = 4.”",
+      "Written as work-register bits, those two values are <strong>0001</strong> and <strong>0100</strong>. Comparing them identifies the affected qubits exactly: <strong>w0 remains 0</strong>, <strong>w1 changes from 0 to 1</strong>, <strong>w2 remains 0</strong>, and <strong>w3 changes from 1 to 0</strong>. Therefore w0 and w2 factor out as independent |0⟩ states. The correlated subsystem consists of c1, w1, and w3.",
+      "Ignoring the qubits that factor out, that three-qubit state is <strong>(|0⟩<sub>c1</sub>|0⟩<sub>w1</sub>|1⟩<sub>w3</sub> + |1⟩<sub>c1</sub>|1⟩<sub>w1</sub>|0⟩<sub>w3</sub>)/√2</strong>. If c1 is measured as 0, the affected work bits must be w1w3 = 01; if c1 is measured as 1, they must be 10. This is a GHZ-like three-qubit correlation: c1 is entangled with the pair (w1,w3), not independently Bell-entangled with each work qubit.",
+      "The reduced state of each of c1, w1, and w3 is therefore a 50/50 mixture, so each has Bloch radius 0 and appears at the center of its sphere. The complete seven-qubit state is still pure because the uncertainty exists only when one qubit is examined without the other correlated qubits. w0 and w2 remain pure |0⟩ states with Bloch radius 1.",
     ],
     equations: [
       "2² mod 15 = 4",
-      "|0⟩|1⟩ → |0⟩|1⟩,   |1⟩|1⟩ → |1⟩|4⟩",
+      "c1 = 0: |0001⟩<sub>work</sub>    c1 = 1: |0100⟩<sub>work</sub>",
+      "|Ψ⟩<sub>c1,w1,w3</sub> = (|001⟩ + |110⟩)/√2",
+      "c1 = w1,   w3 = 1 − c1,   w0 = w2 = 0",
     ],
     facts: [
-      ["Control", "c1, weight 2"],
-      ["Multiplier", "4 mod 15"],
-      ["Work values", "1 or 4"],
-      ["c1 Bloch radius", "0.000"],
+      ["Entangled partition", "c1 ↔ (w1,w3)"],
+      ["Correlated radii", "c1,w1,w3 = 0"],
+      ["Unaffected work bits", "w0,w2 = |0⟩"],
+      ["Global state", "Pure"],
     ],
   },
   {
@@ -880,8 +884,8 @@ function renderPeriodTrace(index, vector) {
       ],
       6: [
         "Partial modular function",
-        "The middle exponent bit now controls multiplication by 4. Only part of each binary exponent has affected the work register.",
-        "The partial mapping is 1, 1, 4, 4, 1, 1, 4, 4. The low exponent bit has not been applied yet.",
+        "The middle exponent bit now controls multiplication by 4. Work values 0001 and 0100 differ only at w1 and w3, so c1 becomes entangled with the pair (w1,w3); w0 and w2 remain pure |0⟩.",
+        "The partial mapping is 1, 1, 4, 4, 1, 1, 4, 4. Correlations: c1 = w1 and w3 = 1 − c1. The low exponent bit has not been applied yet.",
         "work",
       ],
       7: [
