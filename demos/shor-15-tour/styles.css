@@ -638,6 +638,34 @@ a {
   font-weight: 850;
 }
 
+.trace-cell.pair-0 {
+  border-color: #238e98;
+  color: #075f68;
+  background: #dff0ef;
+  font-weight: 850;
+}
+
+.trace-cell.pair-1 {
+  border-color: #db665a;
+  color: #843028;
+  background: #f8ded9;
+  font-weight: 850;
+}
+
+.trace-cell.pair-2 {
+  border-color: #ae8e28;
+  color: #66520e;
+  background: #f4ebc9;
+  font-weight: 850;
+}
+
+.trace-cell.pair-3 {
+  border-color: #66746d;
+  color: #38413d;
+  background: #e1e6e1;
+  font-weight: 850;
+}
+
 .trace-result {
   min-height: 27px;
   padding: 7px 8px;

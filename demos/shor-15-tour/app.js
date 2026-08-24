@@ -58,28 +58,31 @@ const gates = [
 const steps = [
   {
     kicker: "Classical reduction",
-    title: "How a period exposes factors",
+    title: "Why finding an order can reveal factors",
     operation: "No gates yet",
     stateLabel: "Quantum register not used yet",
     circuitStep: 0,
     focus: [],
     body: [
-      "Start with the composite number <strong>N</strong> that we want to factor. Choose an integer <strong>a</strong> between 1 and N that shares no factor with N, then examine the modular-power function <strong>f(x) = a<sup>x</sup> mod N</strong>. Because a is coprime to N, its powers eventually return to 1 and repeat. The smallest positive exponent that returns to 1 is the <strong>order r</strong> of a modulo N.",
-      "If r is even, define <strong>y = a<sup>r/2</sup></strong>. Since a<sup>r</sup> ≡ 1 mod N, we know y² ≡ 1 mod N. Therefore N divides y² − 1 = (y − 1)(y + 1). If y is neither +1 nor −1 modulo N, neither parenthesis contains all of N, but together their product does. The shared divisors <strong>gcd(y − 1, N)</strong> and <strong>gcd(y + 1, N)</strong> reveal nontrivial factors of N.",
-      "The quantum computer is used only for the difficult middle step: obtaining information from which we can recover r. Choosing a, checking gcd(a, N), validating the candidate order, and calculating the final GCDs are classical operations. If r is odd or y ≡ −1 mod N, this choice of a did not help and we choose another a.",
-      "In this tour, N = 15 and a = 2. The exact periodic function we ask the quantum circuit to analyze is <strong>f(x) = 2<sup>x</sup> mod 15</strong>.",
+      "The input is a composite integer <strong>N</strong> that we want to split into factors. Choose an integer <strong>a</strong> with 1 &lt; a &lt; N, then compute <strong>gcd(a,N)</strong>, the greatest positive integer that divides both numbers. If that GCD is greater than 1, it is already a factor of N. The interesting case is gcd(a,N) = 1, which means a and N are <strong>coprime</strong>.",
+      "Now repeatedly multiply by a while reducing every result modulo N. The notation <strong>u ≡ v (mod N)</strong> means that u and v leave the same remainder when divided by N, equivalently that N divides u − v. Because there are only finitely many nonzero remainders coprime to N, the sequence a¹ mod N, a² mod N, … eventually returns to 1.",
+      "The <strong>order r of a modulo N</strong> is the smallest positive exponent for which a<sup>r</sup> ≡ 1 (mod N). This is the number the quantum portion is designed to recover. It is a period because multiplying the exponent by another r does not change the remainder: a<sup>x+r</sup> ≡ a<sup>x</sup> (mod N).",
+      "Why does r help? If r is even, let <strong>z = a<sup>r/2</sup></strong>. Then z² = a<sup>r</sup> ≡ 1 (mod N), so N divides z² − 1 = (z − 1)(z + 1). If z is not congruent to +1 or −1 modulo N, some factors of N divide z − 1 and others divide z + 1. The ordinary calculations gcd(z − 1,N) and gcd(z + 1,N) can therefore expose nontrivial factors.",
+      "The quantum computer does not perform the final factorization. It supplies information about r. Choosing a, checking the initial GCD, recovering and verifying r from measurements, and computing the final GCDs are classical. If r is odd or the half-order power gives only a trivial ±1 result, this choice of a failed and the algorithm tries another a.",
+      "This tour uses N = 15 and a = 2, so the function examined by the quantum circuit is f(x) = 2<sup>x</sup> mod 15.",
     ],
     equations: [
-      "f(x) = a<sup>x</sup> mod N",
+      "gcd(a,N) = 1",
+      "u ≡ v (mod N)  ⇔  N divides u − v",
       "r = min{k &gt; 0 : a<sup>k</sup> ≡ 1 (mod N)}",
-      "a<sup>r</sup> − 1 = (a<sup>r/2</sup> − 1)(a<sup>r/2</sup> + 1)",
-      "Factors ← gcd(a<sup>r/2</sup> − 1, N), gcd(a<sup>r/2</sup> + 1, N)",
+      "z = a<sup>r/2</sup>  ⇒  N divides (z − 1)(z + 1)",
+      "Candidate factors: gcd(z − 1,N), gcd(z + 1,N)",
     ],
     facts: [
-      ["Classical input", "N and a"],
-      ["Periodic function", "aˣ mod N"],
-      ["Quantum objective", "Recover r"],
-      ["Classical output", "Factors of N"],
+      ["Input", "Composite N"],
+      ["Chosen base", "a coprime to N"],
+      ["Quantum target", "Order r"],
+      ["Final operation", "Classical GCDs"],
     ],
   },
   {
@@ -90,15 +93,15 @@ const steps = [
     circuitStep: 0,
     focus: [],
     body: [
-      "Choose <strong>a = 2</strong>. Before using a quantum computer, Euclid's algorithm checks gcd(2, 15) = 1. Had that GCD been greater than one, we would already have found a factor and would not need order finding.",
-      "Now inspect f(x) = 2<sup>x</sup> mod 15. Its values are 1, 2, 4, 8, then 1 again. The first return to 1 occurs at x = 4, so the order is r = 4. We can calculate this tiny sequence by hand; the quantum portion of the tour demonstrates how period information can instead be extracted from a superposition containing eight exponent components.",
-      "Once r = 4 has been recovered and verified, set y = 2<sup>4/2</sup> = 4. The two GCD calculations give gcd(4 − 1, 15) = 3 and gcd(4 + 1, 15) = 5. That is the complete reason finding this period factors 15.",
-      "A real execution does not directly return the factors or even print r. It returns a phase sample from the counting register. Classical continued fractions propose r from that sample; modular exponentiation verifies it; then the GCD calculations produce the factors.",
+      "Set N = 15 and choose a = 2. Euclid's algorithm gives gcd(2,15) = 1, so the initial GCD does not reveal a factor and 2 is valid for order finding.",
+      "Evaluate f(x) = 2<sup>x</sup> mod 15 one exponent at a time: f(0) = 1, f(1) = 2, f(2) = 4, f(3) = 8, and f(4) = 16 mod 15 = 1. The first positive exponent that returns the value to 1 is 4, so the order is r = 4. From then on the four-value sequence repeats: f(x + 4) = f(x).",
+      "We can see r = 4 by inspection only because this example is tiny. The quantum circuit will encode the eight input values x = 0 through 7 simultaneously, transform their repeated spacing into a measurable frequency pattern, and produce samples from which a classical program can recover r.",
+      "Once r = 4 is known, compute z = 2<sup>r/2</sup> = 2² = 4. Because 4² − 1 = 15 = (4 − 1)(4 + 1), the two GCDs are gcd(3,15) = 3 and gcd(5,15) = 5. This is the exact connection between the period four and the factors of 15.",
     ],
     equations: [
       "gcd(2, 15) = 1",
       "2⁰, 2¹, 2², 2³, 2⁴ (mod 15) = 1, 2, 4, 8, 1",
-      "r = 4  ⇒  y = 2<sup>r/2</sup> = 4",
+      "r = 4  ⇒  z = 2<sup>r/2</sup> = 4",
       "gcd(4 − 1, 15) = 3,   gcd(4 + 1, 15) = 5",
     ],
     facts: [
@@ -116,23 +119,25 @@ const steps = [
     circuitStep: 0,
     focus: [0, 1, 2, 3, 4, 5, 6],
     body: [
-      "The upper three qubits form the <strong>counting register</strong>. The name is potentially misleading: this register does not increment until it finds r, and it never directly stores r. Its three qubits encode computational-basis values x = 0 through 7, then the inverse QFT transforms their periodic correlations into a phase sample. The lower four qubits form the <strong>work register</strong>, which stores values of 2<sup>x</sup> mod 15.",
-      "The symbol <strong>|0⟩ names a basis state</strong>; it does not mean that the state's amplitude is zero. As a two-entry column vector, |0⟩ = [1, 0]<sup>T</sup>: the amplitude for measuring 0 is 1, and the amplitude for measuring 1 is 0.",
-      "The expression <strong>|000⟩<sub>count</sub> ⊗ |0000⟩<sub>work</sub></strong> joins the three counting qubits and four work qubits with a tensor product. It is the same seven-bit basis state as |0000000⟩. It describes the current state of the seven qubits, not an operation performed on them.",
-      "A general seven-qubit state assigns a complex coefficient, called an <strong>amplitude</strong>, to each of its 128 possible basis states. Here the coefficient of |0000000⟩ is 1 and the other 127 coefficients are 0. That is what 'one nonzero amplitude' means. Its measurement probability is |1|² = 100%.",
-      "Each qubit is <strong>pure</strong> because it is completely described by |0⟩ rather than a statistical mixture. The joint state is a <strong>product state</strong> because it factors into seven independent single-qubit states; none of the qubits are entangled yet.",
+      "The circuit uses two registers. The three counting qubits c0,c1,c2 encode an unsigned binary integer x = 4c0 + 2c1 + c2, so their eight computational-basis labels represent x = 0 through 7. The four work qubits w0,w1,w2,w3 encode an integer y = 8w0 + 4w1 + 2w2 + w3, so they can represent 0 through 15; the modular arithmetic uses values 0 through 14.",
+      "Three counting qubits are enough for this compiled demonstration because Q = 2³ = 8 covers two complete repetitions of the order-four function. A general implementation uses more counting qubits to estimate an unknown period accurately. There is no separate qubit that counts or stores r.",
+      "The ket <strong>|0⟩</strong> names the first computational-basis state of one qubit. As a vector it is [1,0]<sup>T</sup>: coefficient 1 for outcome 0 and coefficient 0 for outcome 1. The ket's digit is a basis label, not an amplitude.",
+      "Writing <strong>|000⟩<sub>count</sub>|0000⟩<sub>work</sub></strong> concatenates the two register labels. It names one basis state of the complete seven-qubit system, |0000000⟩. The tensor-product symbol is often omitted between adjacent kets; no operation is being performed by writing them together.",
+      "A general seven-qubit state is a weighted sum of 2⁷ = 128 joint basis states. Each weight is a complex amplitude. Initially only |0000000⟩ has a nonzero amplitude, equal to 1, so measuring all seven qubits would return 0000000 with probability |1|² = 100%.",
+      "At this moment every qubit has its own definite pure state |0⟩, and the complete state factors into seven independent pieces. That is a <strong>product state</strong>. No qubit's state depends on any other qubit, so there is no entanglement.",
     ],
     equations: [
       "|0⟩ = [1, 0]<sup>T</sup>",
+      "x = 4c0 + 2c1 + c2,   y = 8w0 + 4w1 + 2w2 + w3",
       "|000⟩<sub>count</sub> ⊗ |0000⟩<sub>work</sub> = |0000000⟩",
       "|Ψ₀⟩ = 1·|0000000⟩ + 0·|0000001⟩ + … + 0·|1111111⟩",
       "P(0000000) = |1|² = 1",
     ],
     facts: [
-      ["Basis states", "2⁷ = 128"],
+      ["Counting labels", "Q = 2³ = 8"],
+      ["Joint basis states", "2⁷ = 128"],
       ["Nonzero coefficients", "1"],
-      ["Certain outcome", "000 | 0000"],
-      ["Entanglement", "None"],
+      ["State type", "Pure product"],
     ],
   },
   {
@@ -143,8 +148,9 @@ const steps = [
     circuitStep: 1,
     focus: [6],
     body: [
-      "Modular exponentiation needs the work register to start at the multiplicative identity, <strong>1</strong>, rather than 0. An X gate flips the least-significant work qubit w3 from |0⟩ to |1⟩.",
-      "This is still a product state. Nothing is in superposition and nothing is entangled. We have simply encoded the integer 1 as the four-bit string 0001 so subsequent controlled multiplications can transform it into 2<sup>x</sup> mod 15.",
+      "The work bits use the order w0w1w2w3, with w0 worth 8 and w3 worth 1. The initial label 0000 represents the integer 0. An X gate exchanges |0⟩ and |1⟩ on its target, so applying X to w3 changes the work-register label from 0000 to 0001.",
+      "The work register must begin at <strong>1</strong>, the multiplicative identity, because the next gates build 2<sup>x</sup> by multiplying this stored value. Starting from 1 gives 1·2<sup>x</sup> = 2<sup>x</sup>. Starting from 0 would be useless because every multiplication would leave it at 0.",
+      "Only one joint basis state still has nonzero amplitude: |000⟩<sub>count</sub>|0001⟩<sub>work</sub> with coefficient 1. The state remains a product state; the X gate changed one definite bit but created neither superposition nor entanglement.",
     ],
     equations: [
       "X|0⟩ = |1⟩",
@@ -165,41 +171,46 @@ const steps = [
     circuitStep: 2,
     focus: [0, 1, 2],
     body: [
-      "A Hadamard gate maps each counting qubit from |0⟩ to |+⟩. Together, the three gates create an equal superposition of all eight exponent values x = 0 through 7. Each computational-basis term |x⟩|1⟩ has amplitude 1/√8 and probability 1/8.",
-      "The register is not a counter ticking from 0 to 7. We have prepared one coherent state containing all eight exponent labels at once; the modular function has not been evaluated yet. The advantage comes from preserving their relative phases and later making the inverse QFT cause those components to interfere.",
+      "A Hadamard gate transforms |0⟩ into |+⟩ = (|0⟩ + |1⟩)/√2. Applying H separately to c0, c1, and c2 multiplies those three two-term sums together, producing all eight counting-register labels 000 through 111.",
+      "The complete state is (1/√8)(|000⟩ + |001⟩ + |010⟩ + |011⟩ + |100⟩ + |101⟩ + |110⟩ + |111⟩)|0001⟩. Every listed joint basis state has coefficient +1/√8. If the registers were measured now, every x value would therefore have probability 1/8 = 12.5%, and the work result would certainly be 0001.",
+      "These eight terms are not eight independently running programs, and the counting register did not iterate through eight values. They are simultaneous components of one state vector. Their signs and complex phases can later make them add or cancel when another operation maps several components into the same output component.",
+      "At this step all eight coefficients have the same positive phase, and the state still factors as |+⟩<sub>c0</sub>|+⟩<sub>c1</sub>|+⟩<sub>c2</sub>|0001⟩<sub>work</sub>. Every qubit is still independent; superposition by itself is not entanglement.",
     ],
     equations: [
       "H|0⟩ = (|0⟩ + |1⟩)/√2 = |+⟩",
-      "|Ψ₂⟩ = (1/√8) Σ<sub>x=0</sub><sup>7</sup> |x⟩|1⟩",
+      "|Ψ₂⟩ = (1/√8) Σ<sub>x=0</sub><sup>7</sup> |x⟩|0001⟩",
+      "P(x) = |1/√8|² = 1/8 = 12.5%",
     ],
     facts: [
-      ["Branches", "8"],
+      ["Nonzero joint states", "8"],
       ["Amplitude each", "1/√8 ≈ 0.354"],
       ["Probability each", "12.5%"],
-      ["Work value", "Still 1"],
+      ["Entanglement", "None"],
     ],
   },
   {
     kicker: "Controlled modular power",
-    title: "The high exponent bit controls an identity",
+    title: "The c0 gate contributes the 2⁴ factor",
     operation: "Controlled ×1 mod 15",
     stateLabel: "After controlled U⁴",
     circuitStep: 3,
     focus: [0, 3, 4, 5, 6],
     body: [
-      "The most-significant counting bit c0 contributes 4 to the encoded exponent x. The circuit therefore applies a <strong>controlled modular multiplication</strong>: on basis terms where c0 = 0, the work register is left alone; on terms where c0 = 1, it is multiplied by 2<sup>4</sup> mod 15. This is one coherent quantum operation across the superposition, not a measurement or a program choosing one execution path.",
-      "Here 2⁴ mod 15 = 16 mod 15 = 1, so even the c0 = 1 terms are multiplied only by 1. The controlled operation is therefore the identity on every term and the displayed state does not change.",
-      "Nothing visible changes, but this is not an omitted step. The fact that the fourth power becomes identity is exactly the periodic structure we are trying to detect. c0 remains a pure |+⟩ because the work register cannot record whether this control was 0 or 1.",
+      "The binary expansion x = 4c0 + 2c1 + c2 lets the circuit build 2<sup>x</sup> from three precomputed powers: 2⁴ for c0, 2² for c1, and 2¹ for c2. This first controlled gate handles the c0 contribution.",
+      "For every computational-basis term with c0 = 0, the gate leaves the work register unchanged. For every term with c0 = 1, it maps a work value y to (2⁴·y) mod 15. This is a single linear operation on the entire superposition. It does not measure c0 or choose one term to execute.",
+      "In this example 2⁴ mod 15 = 16 mod 15 = 1. Multiplying any reached work value by 1 changes nothing, so all eight joint basis labels and all eight coefficients remain exactly as they were before the gate.",
+      "Because the work output is identical whether c0 is 0 or 1, the work register contains no information about c0. The complete state still factors with c0 in |+⟩, so c0 remains pure and unentangled. This identity also foreshadows the period: increasing x by 4 contributes a multiplier of 1 and therefore repeats the modular value.",
     ],
     equations: [
       "2⁴ mod 15 = 16 mod 15 = 1",
-      "U⁴|y⟩ = |1 · y mod 15⟩ = |y⟩",
+      "C(U⁴): |0⟩|y⟩ → |0⟩|y⟩,   |1⟩|y⟩ → |1⟩|(2⁴y) mod 15⟩",
+      "2⁴ mod 15 = 1  ⇒  U⁴ = I on the work register",
     ],
     facts: [
-      ["Control", "c0, weight 4"],
-      ["Multiplier", "1 mod 15"],
-      ["Visible change", "None"],
-      ["c0 purity", "1.000"],
+      ["Exponent contribution", "4c0"],
+      ["Conditional multiplier", "2⁴ mod 15 = 1"],
+      ["State-vector change", "None"],
+      ["c0 state", "Pure |+⟩"],
     ],
   },
   {
@@ -214,8 +225,8 @@ const steps = [
       "A <strong>controlled gate</strong> is one reversible quantum operation, not an if/else statement and not a measurement. On a computational-basis term with c1 = 0, it applies the identity to the work register. On a term with c1 = 1, it multiplies the work value by 4 modulo 15. Because c1 is in superposition, the operation acts coherently on both kinds of terms in the same state.",
       "Immediately before this gate, the state contains eight terms labelled |000⟩ through |111⟩, all with work value 0001. The c1 values across those terms are 0, 0, 1, 1, 0, 0, 1, 1. Consequently, the resulting work values are 1, 1, 4, 4, 1, 1, 4, 4. The period-finding trace shows every term and the gate action directly.",
       "Written as work-register bits, those two values are <strong>0001</strong> and <strong>0100</strong>. Comparing them identifies the affected qubits exactly: <strong>w0 remains 0</strong>, <strong>w1 changes from 0 to 1</strong>, <strong>w2 remains 0</strong>, and <strong>w3 changes from 1 to 0</strong>. Therefore w0 and w2 factor out as independent |0⟩ states. The correlated subsystem consists of c1, w1, and w3.",
-      "Ignoring the qubits that factor out, that three-qubit state is <strong>(|0⟩<sub>c1</sub>|0⟩<sub>w1</sub>|1⟩<sub>w3</sub> + |1⟩<sub>c1</sub>|1⟩<sub>w1</sub>|0⟩<sub>w3</sub>)/√2</strong>. If c1 is measured as 0, the affected work bits must be w1w3 = 01; if c1 is measured as 1, they must be 10. This is a GHZ-like three-qubit correlation: c1 is entangled with the pair (w1,w3), not independently Bell-entangled with each work qubit.",
-      "The reduced state of each of c1, w1, and w3 is therefore a 50/50 mixture, so each has Bloch radius 0 and appears at the center of its sphere. The complete seven-qubit state is still pure because the uncertainty exists only when one qubit is examined without the other correlated qubits. w0 and w2 remain pure |0⟩ states with Bloch radius 1.",
+      "Ignoring c0, c2, w0, and w2, which still factor out, the affected three-qubit state is <strong>(|0⟩<sub>c1</sub>|0⟩<sub>w1</sub>|1⟩<sub>w3</sub> + |1⟩<sub>c1</sub>|1⟩<sub>w1</sub>|0⟩<sub>w3</sub>)/√2</strong>. If c1 is measured as 0, w1w3 must be 01; if c1 is measured as 1, w1w3 must be 10. No product of three independent one-qubit states can reproduce those two linked alternatives, so c1 is entangled with the pair (w1,w3).",
+      "When c1, w1, or w3 is examined by itself, its two outcomes each have probability 1/2 and no local phase information remains. Its reduced Bloch vector therefore has length 0 and is drawn at the sphere's center. The complete seven-qubit state is nevertheless pure: the information missing from each one-qubit view is present in the exact correlations among the three qubits. w0 and w2 remain pure |0⟩ states with Bloch radius 1.",
     ],
     equations: [
       "x = 4c0 + 2c1 + c2",
@@ -241,7 +252,7 @@ const steps = [
     focus: [2, 3, 4, 5, 6],
     body: [
       "The word <strong>mod</strong> means remainder after division. For example, 16 mod 15 = 1 because 16 = 1·15 + 1, and 32 mod 15 = 2 because 32 = 2·15 + 2. Therefore <strong>f(x) = 2<sup>x</sup> mod 15</strong> is the function that raises 2 to x and returns only the remainder after division by 15. Any remainder modulo 15 lies between 0 and 14; this particular function cycles through only 1, 2, 4, and 8. That use of modular arithmetic is all that makes this a modular function.",
-      "The circuit does not somehow merge three controls. It applies three controlled multiplication gates <strong>sequentially</strong>. The work register starts at y = 1. The c0 gate conditionally multiplies y by 2⁴ mod 15 = 1; the c1 gate conditionally multiplies it by 2² mod 15 = 4; and this c2 gate conditionally multiplies it by 2¹ mod 15 = 2. After every multiplication, the result is reduced modulo 15.",
+      "The circuit applies three controlled multiplication gates <strong>sequentially</strong>. The work register starts at y = 1. The c0 gate conditionally multiplies y by 2⁴ mod 15 = 1; the c1 gate conditionally multiplies it by 2² mod 15 = 4; and this c2 gate conditionally multiplies it by 2¹ mod 15 = 2. After every multiplication, the result is reduced modulo 15.",
       "These three factors correspond exactly to the binary expansion x = 4c0 + 2c1 + c2. Algebraically, the final work value is y = 1·(2⁴)<sup>c0</sup>(2²)<sup>c1</sup>(2¹)<sup>c2</sup> mod 15 = 2<sup>x</sup> mod 15. For x = 3, the counting bits are 011: c0 contributes no multiplication, c1 contributes ×4, and c2 contributes ×2, so the work value moves 1 → 4 → 8.",
       "After this final gate, the complete state is the sum of eight terms shown below. A label such as <strong>|011⟩<sub>count</sub>|1000⟩<sub>work</sub></strong> is one computational-basis state of the complete seven-qubit register: the three counting bits encode x = 3 and the four work bits encode 8. It is not a basis state belonging to one individual qubit. Seven qubits have 2⁷ = 128 possible joint basis states; only the eight listed here have nonzero coefficients at this step.",
       "The number multiplying each listed joint basis state is its <strong>amplitude</strong>. Every one of these eight coefficients is exactly +1/√8 because the Hadamard gates created eight equal coefficients and the controlled modular multiplications only moved those coefficients to different joint basis labels; they did not change their values. Consequently, each listed seven-bit result has probability |1/√8|² = 1/8 = 12.5% if measured now.",
@@ -261,47 +272,55 @@ const steps = [
   },
   {
     kicker: "The encoded pattern",
-    title: "The period lives in joint correlations",
+    title: "Exponent values four apart have the same output",
     operation: "Inspect correlations",
     stateLabel: "Modular function encoded",
     circuitStep: 5,
     focus: [0, 1, 2, 3, 4, 5, 6],
     body: [
-      "At this stage the counting register alone still has a uniform measurement distribution. Looking only at its eight probabilities would not reveal the period. The useful structure is in the <strong>joint</strong> mapping between exponent and work value.",
-      "Pairs separated by four share a work value: 0 and 4 map to 1, 1 and 5 map to 2, 2 and 6 map to 4, and 3 and 7 map to 8. This is why individual Bloch spheres are insufficient to describe a multi-qubit algorithm: seven local summaries cannot reconstruct the 128-amplitude joint state or its correlations.",
+      "The word <strong>pair</strong> here refers to two numerical exponent values x encoded by the counting register. The pair x = 0 and x = 4 differs by 4 and produces the same work value 1. Likewise, x = 1 and 5 both produce 2; x = 2 and 6 both produce 4; and x = 3 and 7 both produce 8.",
+      "In complete register notation, the first equality is between the terms |000⟩<sub>count</sub>|0001⟩<sub>work</sub> and |100⟩<sub>count</sub>|0001⟩<sub>work</sub>. Their counting labels represent 0 and 4, while their identical work label 0001 represents the shared function value 1. The other three pairs have the same structure.",
+      "Grouping the eight-term state by shared work output gives four sums: (|0⟩ + |4⟩)|1⟩, (|1⟩ + |5⟩)|2⟩, (|2⟩ + |6⟩)|4⟩, and (|3⟩ + |7⟩)|8⟩, all multiplied by 1/√8. In every sum, the two exponent values differ by exactly 4. This equality f(x + 4) = f(x), and the fact that no smaller positive shift works for every x, is the encoded period r = 4.",
+      "If the counting register were measured now, every x from 0 through 7 would still occur with probability 12.5%. That list of individual probabilities is called the counting-register <strong>marginal distribution</strong>: it ignores which work value accompanies each x. The marginal is uniform, so it does not reveal the period by itself. The period is in the pairing between counting labels and work labels.",
+      "A Bloch sphere shows only the reduced state of one qubit after all other qubits have been ignored. Here c0 remains pure |+⟩ because changing c0 changes x by 4 without changing the work output. c1 and c2 individually appear maximally mixed, and each work qubit has Bloch radius 0.5. Those one-qubit summaries omit the multi-qubit statement that specific x values share specific work outputs, which is why the full joint-state table is required.",
     ],
     equations: [
-      "0,4 → 1    1,5 → 2    2,6 → 4    3,7 → 8",
-      "f(x + 4) = f(x)",
+      "x = 0,4 → f(x) = 1    x = 1,5 → 2    x = 2,6 → 4    x = 3,7 → 8",
+      "|Ψ₅⟩ = (1/√8)[(|0⟩+|4⟩)|1⟩ + (|1⟩+|5⟩)|2⟩ + (|2⟩+|6⟩)|4⟩ + (|3⟩+|7⟩)|8⟩]",
+      "f(x + 4) = f(x),   and 4 is the smallest positive shift",
     ],
     facts: [
-      ["Counting marginal", "Uniform"],
-      ["Joint pattern", "Pairs Δx = 4"],
-      ["c0 radius", "1.000"],
-      ["Work radii", "0.500 each"],
+      ["Exponent pairs", "(0,4), (1,5), (2,6), (3,7)"],
+      ["Difference in each pair", "4"],
+      ["Counting probability", "12.5% per x"],
+      ["Encoded order", "r = 4"],
     ],
   },
   {
     kicker: "Interference",
-    title: "The inverse QFT turns periodic phase into peaks",
+    title: "The inverse QFT cancels every odd counting value",
     operation: "Inverse QFT on c0-c2",
     stateLabel: "After QFT†",
     circuitStep: 6,
     focus: [0, 1, 2],
     body: [
-      "The inverse quantum Fourier transform acts only on the counting register. It combines all eight exponent amplitudes with carefully chosen phases. Contributions inconsistent with the period cancel, while contributions at frequencies compatible with period four reinforce one another.",
-      "The counting register is still entangled with the work register, so this is not one ordinary three-qubit pure state. The individual c0 and c1 Bloch vectors sit at the center. Nevertheless, their <strong>joint measurement distribution</strong> has become sharply concentrated at four bit strings.",
+      "The inverse quantum Fourier transform, written QFT†, acts on the three counting qubits and leaves the four work qubits untouched. It is a change of basis: each input counting state |x⟩ contributes a complex amplitude to every output counting state |y⟩, with phase e<sup>−2πixy/8</sup>. The number 8 is Q = 2³, the number of counting-register basis states.",
+      "Before QFT†, every work output is attached to a pair of exponent states separated by four, such as (|0⟩ + |4⟩)|1⟩. For a proposed output y, those two exponent terms contribute a common factor 1 + e<sup>−2πi·4y/8</sup> = 1 + (−1)<sup>y</sup>.",
+      "When y is odd, (−1)<sup>y</sup> = −1, so the two contributions add to 1 − 1 = 0 and cancel exactly. When y is even, (−1)<sup>y</sup> = +1, so they add to 2 and reinforce. Every one of the four exponent pairs has the same four-step separation, so all odd counting outcomes vanish and only y = 0, 2, 4, and 6 remain.",
+      "The resulting state has sixteen nonzero joint terms: each of the four surviving counting labels can accompany each of the four work values 1, 2, 4, and 8. Every joint term has amplitude magnitude 1/4 and probability 1/16 = 6.25%. Summing the four work possibilities for one counting value gives 4·6.25% = 25%, so each surviving counting outcome has probability 25%.",
+      "No measurement has happened yet. The counting and work registers remain entangled. Locally, c0 and c1 each have a zero-length Bloch vector because each is individually 50/50 with no retained one-qubit phase; c2 is pure |0⟩ because every surviving binary y value is even and therefore ends in 0.",
     ],
     equations: [
       "QFT†|x⟩ = (1/√8) Σ<sub>y=0</sub><sup>7</sup> e<sup>−2πixy/8</sup>|y⟩",
-      "Constructive peaks: y = 0, 2, 4, 6",
-      "y/8 = 0, 1/4, 1/2, 3/4",
+      "Pair separated by 4: 1 + e<sup>−2πi·4y/8</sup> = 1 + (−1)<sup>y</sup>",
+      "Odd y: 1 − 1 = 0    Even y: 1 + 1 = 2",
+      "Surviving y values: 0, 2, 4, 6",
     ],
     facts: [
-      ["Operation", "QFT† on 3 qubits"],
-      ["Nonzero amplitudes", "16 joint terms"],
-      ["Counting outcomes", "4"],
-      ["Probability each", "25%"],
+      ["Input spacing", "4"],
+      ["Cancelled outcomes", "y = 1,3,5,7"],
+      ["Surviving outcomes", "y = 0,2,4,6"],
+      ["Counting probability", "25% each"],
     ],
   },
   {
@@ -312,19 +331,22 @@ const steps = [
     circuitStep: 6,
     focus: [0, 1, 2],
     body: [
-      "A real execution measures one counting bit string, not the whole probability table. In this exact simulation, 000, 010, 100, and 110 each occur with probability 25%. Dividing the measured integer y by 8 converts that bit string into a phase estimate.",
-      "Not every sample is equally useful. 010 gives 1/4 and 110 gives 3/4, both of which reveal denominator 4. The 100 result reduces to 1/2 and suggests only a divisor of the true order. The 000 result provides no period information. Shor's algorithm is probabilistic, so unsuccessful samples are handled by repeating the experiment.",
+      "Measuring the counting register converts its three qubits into one classical three-bit result. A physical run returns one of 000, 010, 100, or 110, not the complete probability chart. Each occurs with probability 25% in this exact circuit. The work register is not measured for order recovery.",
+      "Interpret the measured bits as an integer y from 0 through Q − 1, where Q = 2³ = 8. The ratio y/Q is an estimate of a fraction k/r, where r is the unknown order and k is an integer selected by the quantum measurement. Because Q is exactly divisible by r = 4 here, the possible fractions are exact rather than approximate: k/r = 0/4, 1/4, 2/4, or 3/4.",
+      "The four possible bit strings therefore mean: 000 gives y/8 = 0/8 = 0/4; 010 gives 2/8 = 1/4; 100 gives 4/8 = 2/4 = 1/2; and 110 gives 6/8 = 3/4. The quantum circuit does not label k or r separately; it returns only y, from which the classical code analyzes the fraction y/8.",
+      "A sample is directly useful only when reducing k/r to lowest terms does not remove a factor from r. Results 1/4 and 3/4 retain denominator 4. Result 1/2 has denominator 2 because k = 2 shares a factor with r = 4, so it reveals only a divisor of the order. Result 0 contains no denominator information. Unhelpful samples require another run or combination with other samples.",
     ],
     equations: [
-      "010₂ = 2,   θ = 2/8 = 1/4",
-      "110₂ = 6,   θ = 6/8 = 3/4",
+      "y/Q ≈ k/r,   with Q = 8",
+      "000 → 0/8 = 0    010 → 2/8 = 1/4",
+      "100 → 4/8 = 1/2    110 → 6/8 = 3/4",
       "P(000) = P(010) = P(100) = P(110) = 1/4",
     ],
     facts: [
-      ["Useful directly", "010 or 110"],
-      ["Partial information", "100"],
-      ["No information", "000"],
-      ["Response", "Repeat if needed"],
+      ["Measured register", "c0c1c2 only"],
+      ["Directly useful", "010 or 110"],
+      ["Order divisor only", "100"],
+      ["No order information", "000"],
     ],
   },
   {
@@ -335,19 +357,22 @@ const steps = [
     circuitStep: 6,
     focus: [0, 1, 2],
     body: [
-      "Suppose measurement produced 010. The phase estimate is 2/8 = 1/4, whose denominator proposes <strong>r = 4</strong>. For larger instances the phase will generally be an approximation, so continued fractions recover a nearby rational number with a suitably small denominator.",
-      "The candidate must be verified classically by checking 2<sup>r</sup> mod 15 = 1. If a sample yields 1/2, its denominator 2 fails that verification because 2² mod 15 = 4. We then repeat or combine information from additional samples rather than accepting the denominator blindly.",
+      "Suppose the measurement is 010. Its integer value is y = 2, so y/Q = 2/8 = 1/4. In this compiled example the fraction is already exact. The denominator 4 is therefore a candidate for the order r.",
+      "In a larger circuit, y/Q will usually be only close to k/r. The <strong>continued-fraction algorithm</strong> rewrites a real number as a sequence of integer quotients and uses its convergents to find nearby fractions with small denominators. Applied to a sufficiently accurate y/Q, one of those fractions is k/r reduced to lowest terms. Its denominator divides r but is not guaranteed to equal r.",
+      "Every denominator must therefore be checked with ordinary modular arithmetic. Candidate 4 passes because 2⁴ mod 15 = 1. It is the actual order because the smaller positive divisors 1 and 2 fail: 2¹ mod 15 = 2 and 2² mod 15 = 4.",
+      "If the measured result were 100, then y/Q = 1/2 and the proposed denominator 2 would fail the order test. The classical program would reject it and run the quantum circuit again, try suitable multiples, or combine independent samples. It never accepts a denominator merely because it came from one measurement.",
     ],
     equations: [
-      "y/2ᵐ = 2/8 = 1/4  ⇒  candidate r = 4",
+      "y/Q = 2/8 = 1/4  ⇒  candidate denominator 4",
       "Verify: 2⁴ mod 15 = 1",
-      "Reject r = 2 because 2² mod 15 = 4 ≠ 1",
+      "Minimality: 2¹ mod 15 = 2,   2² mod 15 = 4",
+      "Reject denominator 2 because 2² mod 15 ≠ 1",
     ],
     facts: [
       ["Example sample", "y = 2"],
-      ["Phase", "1/4"],
-      ["Candidate order", "r = 4"],
-      ["Verification", "2⁴ mod 15 = 1"],
+      ["Measured fraction", "1/4"],
+      ["Candidate denominator", "4"],
+      ["Verified order", "r = 4"],
     ],
   },
   {
@@ -358,19 +383,22 @@ const steps = [
     circuitStep: 6,
     focus: [],
     body: [
-      "The recovered order is even, so compute x = 2<sup>r/2</sup> mod 15 = 4. This x is neither +1 nor −1 modulo 15, which means x² − 1 is divisible by 15 while neither x − 1 nor x + 1 is divisible by 15 on its own.",
-      "That forces nontrivial factors of 15 to be distributed across x − 1 and x + 1. Two ordinary GCD calculations recover them: gcd(3, 15) = 3 and gcd(5, 15) = 5. The quantum computer supplied the order; the final extraction is entirely classical.",
-      "This is a compact compiled demonstration, not a claim that present hardware can factor useful RSA keys. The same mathematical reduction scales, while fault-tolerant modular arithmetic at cryptographic sizes requires vastly larger circuits. The derivation follows the <a href=\"https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm\">IBM Quantum treatment of Shor's algorithm</a>.",
+      "The classical program now has the verified order r = 4. Because r is even, compute <strong>z = 2<sup>r/2</sup> mod 15 = 2² mod 15 = 4</strong>. The new symbol z avoids confusing this number with the exponent variable x used earlier.",
+      "The two trivial square roots of 1 modulo 15 are +1 and −1, represented by remainders 1 and 14. Our value z = 4 is neither one. Yet z² = 16 ≡ 1 (mod 15), so 15 divides z² − 1.",
+      "Factor the difference of squares: z² − 1 = (z − 1)(z + 1). Substituting z = 4 gives 15 = 3·5. The GCD calculations recover those shared divisors even when the factorization is not visually obvious: gcd(z − 1,15) = gcd(3,15) = 3 and gcd(z + 1,15) = gcd(5,15) = 5.",
+      "Everything after the order was recovered is classical integer arithmetic. If r had been odd, or if the half-order power had produced the trivial remainder −1, this attempt would not split N and the algorithm would choose another base a.",
+      "This seven-qubit circuit is a compact educational implementation specialized for N = 15, not a claim that current hardware can factor cryptographic RSA moduli. The mathematical reduction is the same, but useful key sizes require fault-tolerant modular-arithmetic circuits vastly larger than this demonstration. The derivation follows the <a href=\"https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm\">IBM Quantum treatment of Shor's algorithm</a>.",
     ],
     equations: [
-      "x = 2<sup>4/2</sup> mod 15 = 4",
-      "gcd(x − 1, 15) = gcd(3, 15) = 3",
-      "gcd(x + 1, 15) = gcd(5, 15) = 5",
+      "z = 2<sup>4/2</sup> mod 15 = 4",
+      "z² − 1 = (z − 1)(z + 1) = 3·5 = 15",
+      "gcd(z − 1, 15) = gcd(3, 15) = 3",
+      "gcd(z + 1, 15) = gcd(5, 15) = 5",
       "15 = 3 × 5",
     ],
     facts: [
       ["Recovered order", "r = 4"],
-      ["Half-order power", "x = 4"],
+      ["Half-order power", "z = 4"],
       ["First factor", "3"],
       ["Second factor", "5"],
     ],
@@ -820,14 +848,14 @@ function renderPeriodTrace(index, vector) {
   }
 
   if (index === 0) {
-    periodTraceStatus.textContent = "Why r matters";
-    periodTraceCopy.innerHTML = "An even order turns one modular equality into a difference of squares. That gives ordinary GCD calculations a way to separate factors of N.";
+    periodTraceStatus.textContent = "Classical reduction";
+    periodTraceCopy.innerHTML = "The quantum circuit only has to find an order r. If r is even, define z = a<sup>r/2</sup>. Then z² ≡ 1 (mod N), so N divides (z − 1)(z + 1), and two GCD calculations may expose factors of N.";
     periodTraceVisual.innerHTML = `${tracePipeline([
-      ["r = 4", "order found"],
-      ["2² = 4", "half-order power"],
-      ["gcd(3,15)<br>gcd(5,15)", "classical extraction"],
-      ["3 × 5", "factors"],
-    ])}<div class="trace-result">The quantum circuit targets r. Once r is known, the factor extraction is classical.</div>`;
+      ["r even", "order condition"],
+      ["z = a<sup>r/2</sup>", "half-order power"],
+      ["N | (z−1)(z+1)", "difference of squares"],
+      ["gcd(z±1,N)", "candidate factors"],
+    ])}<div class="trace-result">The quantum part estimates r. The substitutions, verification, and GCD calculations afterward are ordinary classical arithmetic.</div>`;
     return;
   }
 
@@ -855,23 +883,23 @@ function renderPeriodTrace(index, vector) {
   if (index === 2 || index === 3) {
     const initialized = index === 3;
     periodTraceStatus.textContent = initialized ? "Work register seeded" : "Register roles";
-    periodTraceCopy.innerHTML = "There is <strong>no period-counter qubit</strong>. The circuit creates correlations between exponent labels and modular-function values, then infers r from an interference pattern after measurement.";
+    periodTraceCopy.innerHTML = "There is <strong>no qubit that stores r</strong>. The counting register labels an exponent x, the work register stores the corresponding remainder 2<sup>x</sup> mod 15, and the inverse QFT later converts repetition in those paired values into measurable probabilities.";
     periodTraceVisual.innerHTML = `
       <div class="trace-registers">
         <div class="trace-register">
           <strong>Counting register</strong>
           <span>${initialized ? "|000⟩" : "|000⟩ initially"}</span>
-          <small>labels x; later yields a phase sample</small>
+          <small>three bits encode x = 0 through 7</small>
         </div>
         <div class="trace-register">
           <strong>Work register</strong>
           <span>${initialized ? "|0001⟩ = 1" : "|0000⟩ initially"}</span>
-          <small>stores 2ˣ mod 15</small>
+          <small>four bits encode a value from 0 through 15</small>
         </div>
         <div class="trace-register is-warning">
           <strong>Not present</strong>
           <span>no register containing r</span>
-          <small>r is recovered after the QFT</small>
+          <small>r is inferred from repeated measurement results</small>
         </div>
       </div>
     `;
@@ -882,15 +910,15 @@ function renderPeriodTrace(index, vector) {
     const values = workValuesByExponent(vector);
     const traceStates = {
       4: [
-        "All x components prepared",
-        "The Hadamard gates create all eight exponent labels simultaneously. No modular powers have been computed yet, so every component still has work value 1.",
-        "All eight x labels coexist in one state; the register did not count through them.",
+        "Eight complete joint-state terms",
+        "The Hadamard gates create one term for every counting-register value x = 0 through 7. The work register remains |0001⟩ in every term because modular exponentiation has not started.",
+        "Each column is one complete seven-qubit state |x⟩|0001⟩ with amplitude +1/√8 and probability 1/8. The circuit did not count through these values one after another.",
         "work",
       ],
       5: [
-        "Controlled U⁴",
-        "The high exponent bit controls multiplication by 2⁴ mod 15 = 1. This is an identity, so every work value remains 1.",
-        "U⁴ is already a clue: advancing an exponent by four leaves the modular value unchanged.",
+        "c0 contributes the 2⁴ factor",
+        "For x = 4c0 + 2c1 + c2, c0 is the four's-place bit. When c0 = 1, this gate multiplies the work value by 2⁴ mod 15 = 1; when c0 = 0, it does nothing.",
+        "The c0 = 1 columns are x = 4, 5, 6, and 7, but multiplication by 1 changes none of them. This identity is the first visible consequence of the period being four.",
         "work",
       ],
       6: [
@@ -906,9 +934,9 @@ function renderPeriodTrace(index, vector) {
         "f(x)",
       ],
       8: [
-        "Period visible in correlations",
-        "The period is not a number stored in one qubit. It is the repeated spacing between exponent components that share the same work value.",
-        "(0,4), (1,5), (2,6), and (3,7) share outputs. Every pair is separated by 4, so r = 4.",
+        "Four pairs of exponent values",
+        "The pairs are values of x encoded by the counting register. In each pair, the two exponent values produce the same work-register result: x = 0 and 4 both produce 1, x = 1 and 5 both produce 2, and so on.",
+        "A: x = 0 and 4 → 1. B: x = 1 and 5 → 2. C: x = 2 and 6 → 4. D: x = 3 and 7 → 8. Every second exponent is exactly four larger, so f(x + 4) = f(x).",
         "f(x)",
       ],
     };
@@ -923,6 +951,19 @@ function renderPeriodTrace(index, vector) {
         ["gate", ["I", "I", "×4", "×4", "I", "I", "×4", "×4"], "gate"],
       ];
     }
+    if (index === 4) {
+      controlRows = [
+        ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+        ["amplitude", ["1/√8", "1/√8", "1/√8", "1/√8", "1/√8", "1/√8", "1/√8", "1/√8"], "amplitude"],
+      ];
+    }
+    if (index === 5) {
+      controlRows = [
+        ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+        ["c0", [0, 0, 0, 0, 1, 1, 1, 1], "control"],
+        ["gate", ["I", "I", "I", "I", "×1", "×1", "×1", "×1"], "gate"],
+      ];
+    }
     if (index === 7) {
       controlRows = [
         ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
@@ -930,6 +971,12 @@ function renderPeriodTrace(index, vector) {
         ["after c0", [1, 1, 1, 1, 1, 1, 1, 1], "after-c0"],
         ["after c1", [1, 1, 4, 4, 1, 1, 4, 4], "after-c1"],
         ["c2 gate", ["I", "×2", "I", "×2", "I", "×2", "I", "×2"], "gate"],
+      ];
+    }
+    if (index === 8) {
+      controlRows = [
+        ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+        ["pair", ["A", "B", "C", "D", "A", "B", "C", "D"], "pair"],
       ];
     }
     periodTraceVisual.innerHTML = traceSequence(values, valueLabel, controlRows);
@@ -941,6 +988,12 @@ function renderPeriodTrace(index, vector) {
           .forEach((cell) => cell.classList.add("is-controlled"));
       });
     }
+    if (index === 5) {
+      [4, 5, 6, 7].forEach((controlledIndex) => {
+        periodTraceVisual.querySelectorAll(`[data-trace-index="${controlledIndex}"]`)
+          .forEach((cell) => cell.classList.add("is-controlled"));
+      });
+    }
     if (index === 7) {
       [1, 3, 5, 7].forEach((controlledIndex) => {
         periodTraceVisual.querySelectorAll(`[data-trace-index="${controlledIndex}"]`)
@@ -948,54 +1001,57 @@ function renderPeriodTrace(index, vector) {
       });
     }
     if (index === 8) {
-      periodTraceVisual.querySelectorAll(".trace-cell")
-        .forEach((cell) => cell.classList.add("is-repeat"));
+      periodTraceVisual.querySelectorAll(".trace-cell").forEach((cell) => {
+        cell.classList.add(`pair-${Number.parseInt(cell.dataset.traceIndex, 10) % 4}`);
+      });
     }
     periodTraceVisual.querySelector(".trace-result").innerHTML = result;
     return;
   }
 
   if (index === 9) {
-    periodTraceStatus.textContent = "Fourier peaks";
-    periodTraceCopy.innerHTML = "The inverse QFT does not write r into a qubit. It converts spacing in exponent space into peaks in the counting register's measurement distribution.";
+    periodTraceStatus.textContent = "Why only four counting values survive";
+    periodTraceCopy.innerHTML = "Each work value appears beside two exponent values separated by four: x and x + 4. For a proposed measurement y, those two contributions differ by the phase factor e<sup>−2πi·4y/8</sup> = (−1)<sup>y</sup>.";
     periodTraceVisual.innerHTML = `${tracePipeline([
-      ["Δx = 4", "repeated spacing"],
-      ["QFT†", "interference"],
-      ["y = 0,2,4,6", "measurement peaks"],
-    ])}<div class="trace-result">With Q = 8 exponent labels, peak spacing is Q/r = 8/4 = 2. The simulator shows all peaks; hardware returns one sample per run.</div>`;
+      ["Δx = 4", "paired exponents"],
+      ["1 + (−1)<sup>y</sup>", "combined amplitude"],
+      ["odd y → 0", "destructive interference"],
+      ["even y → 2", "constructive interference"],
+    ])}<div class="trace-result">Odd values y = 1, 3, 5, 7 cancel. Even values y = 0, 2, 4, 6 reinforce, so each has 25% counting-register probability. One hardware run measures one of those four values.</div>`;
     return;
   }
 
   if (index === 10) {
     periodTraceStatus.textContent = "One measured sample";
-    periodTraceCopy.innerHTML = "Use one possible hardware result, |010⟩, as a concrete path through post-processing. Other runs may return a different peak.";
+    periodTraceCopy.innerHTML = "Only the three counting qubits are measured here. Suppose one run returns |010⟩. Those bits encode the integer y = 2, and Q = 8 is the number of counting-register values.";
     periodTraceVisual.innerHTML = `${tracePipeline([
       ["|010⟩", "measured bits"],
       ["y = 2", "measured integer"],
       ["y/Q = 2/8", "phase estimate"],
       ["1/4", "reduced fraction"],
-    ])}<div class="trace-result">One sample does not display the whole period. A zero or ambiguous sample means run the circuit again.</div>`;
+    ])}<div class="trace-result">The four possible outcomes correspond to 000 → 0, 010 → 1/4, 100 → 1/2, and 110 → 3/4 after dividing y by Q. A single run returns only one of them.</div>`;
     return;
   }
 
   if (index === 11) {
     periodTraceStatus.textContent = "Recover r classically";
-    periodTraceCopy.innerHTML = "Continued fractions converts the measured phase estimate into a candidate denominator. Modular arithmetic then verifies whether that denominator is actually an order.";
+    periodTraceCopy.innerHTML = "The measured fraction y/Q approximates k/r for some integer k. Continued fractions finds simple fractions near y/Q; the denominator is a candidate that may equal r or divide r, so it must be checked.";
     periodTraceVisual.innerHTML = `${tracePipeline([
-      ["1/4", "phase estimate"],
-      ["denominator 4", "candidate r"],
+      ["2/8 = 1/4", "measured fraction"],
+      ["k/r = 1/4", "simple nearby fraction"],
+      ["candidate 4", "denominator"],
       ["2⁴ mod 15 = 1", "verification"],
-      ["r = 4", "order recovered"],
-    ])}<div class="trace-result">This is where r finally becomes an explicit classical number.</div>`;
+    ])}<div class="trace-result">The smaller divisors 1 and 2 do not return 2<sup>d</sup> mod 15 to 1, so 4 is the smallest valid exponent and therefore the order r.</div>`;
     return;
   }
 
   periodTraceStatus.textContent = "Use r to factor N";
-  periodTraceCopy.innerHTML = "The period matters because an even r produces a modular square root of 1. Factoring the resulting difference of squares exposes the factors of N.";
+  periodTraceCopy.innerHTML = "Let z = 2<sup>r/2</sup> mod 15. Because 2<sup>r</sup> ≡ 1 (mod 15), z² ≡ 1 (mod 15), so 15 divides (z − 1)(z + 1). The two GCDs test how the factors of 15 split between those neighboring integers.";
   periodTraceVisual.innerHTML = `${tracePipeline([
     ["r = 4", "recovered order"],
-    ["2² = 4", "half-order power"],
-    ["gcd(3,15)<br>gcd(5,15)", "factor extraction"],
+    ["z = 2² mod 15 = 4", "half-order power"],
+    ["gcd(z−1,15) = 3", "first factor"],
+    ["gcd(z+1,15) = 5", "second factor"],
     ["3 × 5", "answer"],
   ])}<div class="trace-result">Quantum period finding supplied r = 4; ordinary integer arithmetic turned it into 15 = 3 × 5.</div>`;
 }
