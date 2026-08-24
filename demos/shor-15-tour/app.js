@@ -240,18 +240,23 @@ const steps = [
     circuitStep: 5,
     focus: [2, 3, 4, 5, 6],
     body: [
-      "The least-significant counting bit c2 has weight 1, so it controls multiplication by 2. Combining all three controlled operations computes the modular function for every exponent component: the work register now holds 2<sup>x</sup> mod 15 alongside the corresponding |x⟩.",
-      "The eight amplitudes still have equal magnitude. What changed is which seven-bit basis state owns each amplitude. The function values repeat every four exponents: 1, 2, 4, 8, then 1, 2, 4, 8 again.",
+      "The word <strong>mod</strong> means remainder after division. For example, 16 mod 15 = 1 because 16 = 1·15 + 1, and 32 mod 15 = 2 because 32 = 2·15 + 2. Therefore <strong>f(x) = 2<sup>x</sup> mod 15</strong> is the function that raises 2 to x and returns only the remainder after division by 15. Any remainder modulo 15 lies between 0 and 14; this particular function cycles through only 1, 2, 4, and 8. That use of modular arithmetic is all that makes this a modular function.",
+      "The circuit does not somehow merge three controls. It applies three controlled multiplication gates <strong>sequentially</strong>. The work register starts at y = 1. The c0 gate conditionally multiplies y by 2⁴ mod 15 = 1; the c1 gate conditionally multiplies it by 2² mod 15 = 4; and this c2 gate conditionally multiplies it by 2¹ mod 15 = 2. After every multiplication, the result is reduced modulo 15.",
+      "These three factors correspond exactly to the binary expansion x = 4c0 + 2c1 + c2. Algebraically, the final work value is y = 1·(2⁴)<sup>c0</sup>(2²)<sup>c1</sup>(2¹)<sup>c2</sup> mod 15 = 2<sup>x</sup> mod 15. For x = 3, the counting bits are 011: c0 contributes no multiplication, c1 contributes ×4, and c2 contributes ×2, so the work value moves 1 → 4 → 8.",
+      "After this final gate, the complete state is the sum of eight terms shown below. A label such as <strong>|011⟩<sub>count</sub>|1000⟩<sub>work</sub></strong> is one computational-basis state of the complete seven-qubit register: the three counting bits encode x = 3 and the four work bits encode 8. It is not a basis state belonging to one individual qubit. Seven qubits have 2⁷ = 128 possible joint basis states; only the eight listed here have nonzero coefficients at this step.",
+      "The number multiplying each listed joint basis state is its <strong>amplitude</strong>. Every one of these eight coefficients is exactly +1/√8 because the Hadamard gates created eight equal coefficients and the controlled modular multiplications only moved those coefficients to different joint basis labels; they did not change their values. Consequently, each listed seven-bit result has probability |1/√8|² = 1/8 = 12.5% if measured now.",
     ],
     equations: [
-      "|Ψ₅⟩ = (1/√8) Σ<sub>x=0</sub><sup>7</sup> |x⟩|2ˣ mod 15⟩",
-      "f(x) = 2ˣ mod 15 = 1, 2, 4, 8, 1, 2, 4, 8",
+      "a mod 15 = the remainder when a is divided by 15",
+      "y = 1·(2⁴)<sup>c0</sup>(2²)<sup>c1</sup>(2¹)<sup>c2</sup> mod 15 = 2ˣ mod 15",
+      "|Ψ₅⟩ = (1/√8)(|000⟩|0001⟩ + |001⟩|0010⟩ + |010⟩|0100⟩ + |011⟩|1000⟩ + |100⟩|0001⟩ + |101⟩|0010⟩ + |110⟩|0100⟩ + |111⟩|1000⟩)",
+      "P(each listed joint state) = |1/√8|² = 1/8 = 12.5%",
     ],
     facts: [
-      ["Control", "c2, weight 1"],
-      ["Multiplier", "2 mod 15"],
-      ["Distinct work values", "4"],
-      ["Period", "4 exponents"],
+      ["Sequential gates", "c0, then c1, then c2"],
+      ["Nonzero joint states", "8 of 128"],
+      ["Amplitude each", "+1/√8"],
+      ["Probability each", "12.5%"],
     ],
   },
   {
@@ -896,8 +901,8 @@ function renderPeriodTrace(index, vector) {
       ],
       7: [
         "Function encoded",
-        "The low exponent bit completes the reversible modular calculation. Each exponent component is now correlated with its value of 2ˣ mod 15.",
-        "f(x) = 1, 2, 4, 8, 1, 2, 4, 8. The repetition now exists in the joint quantum state.",
+        "Read each column downward. The work value begins at 1, then the c0, c1, and c2 controlled gates act sequentially. The last row is the resulting remainder 2ˣ mod 15.",
+        "The eight nonzero joint states are |x⟩|f(x)⟩. Each has coefficient +1/√8; f(x) = 1, 2, 4, 8, 1, 2, 4, 8.",
         "f(x)",
       ],
       8: [
@@ -910,16 +915,34 @@ function renderPeriodTrace(index, vector) {
     const [status, copy, result, valueLabel] = traceStates[index];
     periodTraceStatus.textContent = status;
     periodTraceCopy.innerHTML = copy;
-    const controlRows = index === 6 ? [
-      ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
-      ["c1", [0, 0, 1, 1, 0, 0, 1, 1], "control"],
-      ["gate", ["I", "I", "×4", "×4", "I", "I", "×4", "×4"], "gate"],
-    ] : [];
+    let controlRows = [];
+    if (index === 6) {
+      controlRows = [
+        ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+        ["c1", [0, 0, 1, 1, 0, 0, 1, 1], "control"],
+        ["gate", ["I", "I", "×4", "×4", "I", "I", "×4", "×4"], "gate"],
+      ];
+    }
+    if (index === 7) {
+      controlRows = [
+        ["|x⟩", ["000", "001", "010", "011", "100", "101", "110", "111"], "basis"],
+        ["start", [1, 1, 1, 1, 1, 1, 1, 1], "start"],
+        ["after c0", [1, 1, 1, 1, 1, 1, 1, 1], "after-c0"],
+        ["after c1", [1, 1, 4, 4, 1, 1, 4, 4], "after-c1"],
+        ["c2 gate", ["I", "×2", "I", "×2", "I", "×2", "I", "×2"], "gate"],
+      ];
+    }
     periodTraceVisual.innerHTML = traceSequence(values, valueLabel, controlRows);
     periodTraceVisual.querySelectorAll(".trace-cell")
       .forEach((cell) => cell.classList.add("is-seen"));
     if (index === 6) {
       [2, 3, 6, 7].forEach((controlledIndex) => {
+        periodTraceVisual.querySelectorAll(`[data-trace-index="${controlledIndex}"]`)
+          .forEach((cell) => cell.classList.add("is-controlled"));
+      });
+    }
+    if (index === 7) {
+      [1, 3, 5, 7].forEach((controlledIndex) => {
         periodTraceVisual.querySelectorAll(`[data-trace-index="${controlledIndex}"]`)
           .forEach((cell) => cell.classList.add("is-controlled"));
       });
