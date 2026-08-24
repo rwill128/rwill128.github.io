@@ -124,7 +124,8 @@ const steps = [
       "The ket <strong>|0⟩</strong> names the first computational-basis state of one qubit. As a vector it is [1,0]<sup>T</sup>: coefficient 1 for outcome 0 and coefficient 0 for outcome 1. The ket's digit is a basis label, not an amplitude.",
       "Writing <strong>|000⟩<sub>count</sub>|0000⟩<sub>work</sub></strong> concatenates the two register labels. It names one basis state of the complete seven-qubit system, |0000000⟩. The tensor-product symbol is often omitted between adjacent kets; no operation is being performed by writing them together.",
       "A general seven-qubit state is a weighted sum of 2⁷ = 128 joint basis states. Each weight is a complex amplitude. Initially only |0000000⟩ has a nonzero amplitude, equal to 1, so measuring all seven qubits would return 0000000 with probability |1|² = 100%.",
-      "At this moment every qubit has its own definite pure state |0⟩, and the complete state factors into seven independent pieces. That is a <strong>product state</strong>. No qubit's state depends on any other qubit, so there is no entanglement.",
+      "Quantum states are classified along two separate axes. <strong>Pure versus mixed</strong> asks whether one coherent state vector completely describes the system or whether its description requires probabilities over different states. <strong>Product versus entangled</strong> asks whether a multi-qubit state can be separated into independent states for its component qubits. The combinations include pure product, pure entangled, mixed separable, and mixed entangled states; superposition is not an opposing category because a product state such as |+⟩|0⟩ can contain superposition without entanglement.",
+      "At this moment the complete seven-qubit system is both <strong>pure</strong> and a <strong>product state</strong>: one state vector describes it, and that vector factors into seven independent |0⟩ states. Calling it a product state specifically establishes that no qubit is entangled with another. Later controlled gates will make the state non-factorable, which is the meaningful contrast tracked by this label.",
     ],
     equations: [
       "|0⟩ = [1, 0]<sup>T</sup>",
@@ -137,7 +138,7 @@ const steps = [
       ["Counting labels", "Q = 2³ = 8"],
       ["Joint basis states", "2⁷ = 128"],
       ["Nonzero coefficients", "1"],
-      ["State type", "Pure product"],
+      ["Entanglement", "None (product state)"],
     ],
   },
   {
@@ -150,7 +151,7 @@ const steps = [
     body: [
       "The work bits use the order w0w1w2w3, with w0 worth 8 and w3 worth 1. The initial label 0000 represents the integer 0. An X gate exchanges |0⟩ and |1⟩ on its target, so applying X to w3 changes the work-register label from 0000 to 0001.",
       "The work register must begin at <strong>1</strong>, the multiplicative identity, because the next gates build 2<sup>x</sup> by multiplying this stored value. Starting from 1 gives 1·2<sup>x</sup> = 2<sup>x</sup>. Starting from 0 would be useless because every multiplication would leave it at 0.",
-      "Only one joint basis state still has nonzero amplitude: |000⟩<sub>count</sub>|0001⟩<sub>work</sub> with coefficient 1. More explicitly, the complete state can be written as seven separate one-qubit states multiplied together: |0⟩<sub>c0</sub>⊗|0⟩<sub>c1</sub>⊗|0⟩<sub>c2</sub>⊗|0⟩<sub>w0</sub>⊗|0⟩<sub>w1</sub>⊗|0⟩<sub>w2</sub>⊗|1⟩<sub>w3</sub>. That separability is what <strong>product state</strong> means. The X gate changed w3 from |0⟩ to |1⟩ without making any qubit's state depend on another qubit, so no entanglement exists yet.",
+      "Only one joint basis state still has nonzero amplitude: |000⟩<sub>count</sub>|0001⟩<sub>work</sub> with coefficient 1. More explicitly, the complete state can be written as seven separate one-qubit states multiplied together: |0⟩<sub>c0</sub>⊗|0⟩<sub>c1</sub>⊗|0⟩<sub>c2</sub>⊗|0⟩<sub>w0</sub>⊗|0⟩<sub>w1</sub>⊗|0⟩<sub>w2</sub>⊗|1⟩<sub>w3</sub>. That separability is what <strong>product state</strong> means. The useful information is that the X gate changed w3 without correlating it with another qubit: measuring any qubit would not reveal a previously unknown measurement result for another one. Later controlled modular-multiplication gates will create exactly those correlations and make the state entangled.",
     ],
     equations: [
       "X|0⟩ = |1⟩",
@@ -160,7 +161,7 @@ const steps = [
     facts: [
       ["Changed qubit", "w3"],
       ["Work value", "0001₂ = 1"],
-      ["State type", "Product"],
+      ["Entanglement", "None (product state)"],
       ["Nonzero amplitudes", "1"],
     ],
   },
