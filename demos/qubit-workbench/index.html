@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qubit Workbench | Richard Williams</title>
+  <meta name="description" content="An interactive Bloch sphere and quantum-circuit simulator for manipulating qubit states, applying gates, and inspecting joint outcomes.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Interactive Qubit Workbench">
+  <meta property="og:description" content="Move qubits around the Bloch sphere, arrange real quantum gates, and inspect the simulated joint state.">
+  <meta property="og:url" content="https://rwill128.github.io/demos/qubit-workbench/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/qubit-workbench.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f2f1ec">
+  <link rel="canonical" href="https://rwill128.github.io/demos/qubit-workbench/">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/demos/qubit-workbench/styles.css?v=20260824-1">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#controls">Skip to controls</a>
+
+  <header class="lab-header">
+    <a class="back-link" href="/" aria-label="Back to Richard Williams home page">&larr; Richard Williams</a>
+    <div class="header-center">
+      <div class="title-lockup">
+        <span>Quantum mechanics</span>
+        <strong>Qubit Workbench</strong>
+      </div>
+      <div class="workspace-switch" role="group" aria-label="Workspace">
+        <button id="show-state-workspace" class="is-active" type="button">State</button>
+        <button id="show-circuit-workspace" type="button">Circuit</button>
+      </div>
+    </div>
+    <a class="source-link" href="https://github.com/rwill128/rwill128.github.io/tree/master/demos/qubit-workbench">Source</a>
+  </header>
+
+  <main class="lab-layout" id="state-workspace">
+    <section class="control-panel" id="controls" aria-labelledby="controls-heading">
+      <div class="panel-heading">
+        <p id="state-context">Pure state &middot; q0 input</p>
+        <h1 id="controls-heading">Single-qubit explorer</h1>
+      </div>
+
+      <fieldset class="control-group mode-control">
+        <legend>Interaction</legend>
+        <div class="segmented-control">
+          <input type="radio" name="interaction" id="mode-state" value="state" checked>
+          <label for="mode-state">Move state</label>
+          <input type="radio" name="interaction" id="mode-view" value="view">
+          <label for="mode-view">Rotate view</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="control-group angle-controls">
+        <legend>Coordinates</legend>
+        <label class="range-row" for="theta">
+          <span><i>&theta;</i> Polar angle</span>
+          <output id="theta-output" for="theta">50&deg;</output>
+        </label>
+        <input id="theta" type="range" min="0" max="180" step="1" value="50">
+
+        <label class="range-row" for="phi">
+          <span><i>&phi;</i> Relative phase</span>
+          <output id="phi-output" for="phi">135&deg;</output>
+        </label>
+        <input id="phi" type="range" min="0" max="359" step="1" value="135">
+      </fieldset>
+
+      <fieldset class="control-group preset-control">
+        <legend>Basis states</legend>
+        <div class="preset-grid">
+          <button type="button" data-theta="0" data-phi="0">|0&#10217;</button>
+          <button type="button" data-theta="180" data-phi="0">|1&#10217;</button>
+          <button type="button" data-theta="90" data-phi="0">|+&#10217;</button>
+          <button type="button" data-theta="90" data-phi="180">|&minus;&#10217;</button>
+          <button type="button" data-theta="90" data-phi="90">|+i&#10217;</button>
+          <button type="button" data-theta="90" data-phi="270">|&minus;i&#10217;</button>
+        </div>
+        <button class="random-button" id="random-state" type="button">Random pure state</button>
+      </fieldset>
+    </section>
+
+    <section class="scene-panel" aria-label="Interactive three-dimensional Bloch sphere">
+      <div class="scene-stage" id="scene-stage">
+        <canvas id="bloch-canvas"></canvas>
+        <div class="scene-labels" id="scene-labels" aria-hidden="true"></div>
+        <div class="angle-badge theta-badge" id="theta-badge" aria-hidden="true">&theta;</div>
+        <div class="angle-badge phi-badge" id="phi-badge" aria-hidden="true">&phi;</div>
+      </div>
+      <div class="scene-footer" aria-hidden="true">
+        <span>x</span>
+        <span>y</span>
+        <span>z</span>
+        <span class="scene-footer-rule"></span>
+        <span id="mode-status">STATE</span>
+      </div>
+    </section>
+
+    <aside class="state-panel" aria-labelledby="state-heading">
+      <div class="panel-heading">
+        <p>State vector</p>
+        <h2 id="state-heading">|&psi;&#10217;</h2>
+      </div>
+
+      <div class="equation" aria-live="polite">
+        <div>
+          <span class="coefficient alpha-value" id="alpha-value">0.906</span>
+          <span>|0&#10217;</span>
+        </div>
+        <span class="equation-plus">+</span>
+        <div>
+          <span class="coefficient beta-value" id="beta-value">-0.299 + 0.299i</span>
+          <span>|1&#10217;</span>
+        </div>
+      </div>
+
+      <section class="readout-group" aria-labelledby="measurement-heading">
+        <div class="readout-heading">
+          <h3 id="measurement-heading">Z measurement</h3>
+          <span>Probability</span>
+        </div>
+        <div class="probability-row">
+          <div class="probability-label">
+            <span>|0&#10217;</span>
+            <strong id="probability-zero">82.1%</strong>
+          </div>
+          <div class="probability-track"><span id="probability-zero-bar"></span></div>
+        </div>
+        <div class="probability-row">
+          <div class="probability-label">
+            <span>|1&#10217;</span>
+            <strong id="probability-one">17.9%</strong>
+          </div>
+          <div class="probability-track probability-one-track"><span id="probability-one-bar"></span></div>
+        </div>
+      </section>
+
+      <section class="readout-group" aria-labelledby="coordinates-heading">
+        <div class="readout-heading">
+          <h3 id="coordinates-heading">Bloch vector</h3>
+          <span>Unit length</span>
+        </div>
+        <dl class="coordinate-list">
+          <div><dt>x</dt><dd id="x-value">-0.542</dd></div>
+          <div><dt>y</dt><dd id="y-value">0.542</dd></div>
+          <div><dt>z</dt><dd id="z-value">0.643</dd></div>
+        </dl>
+      </section>
+
+      <div class="state-definition">
+        <span>Global phase fixed</span>
+        <code>|&psi;&#10217; = cos(&theta;/2)|0&#10217; + e<sup>i&phi;</sup> sin(&theta;/2)|1&#10217;</code>
+      </div>
+    </aside>
+  </main>
+
+  <main class="circuit-workspace" id="circuit-workspace" hidden>
+    <section class="circuit-topbar">
+      <div>
+        <p class="circuit-kicker">State-vector simulation</p>
+        <h1>Quantum circuit</h1>
+      </div>
+      <div class="circuit-actions">
+        <button id="load-interference" type="button">Interference</button>
+        <button id="load-bell" type="button">Bell pair</button>
+        <button id="reset-circuit" type="button">Reset</button>
+      </div>
+    </section>
+
+    <section class="gate-toolbar" aria-label="Quantum gate palette">
+      <span class="toolbar-label">Gates</span>
+      <div class="gate-tools" role="group" aria-label="Select a gate">
+        <button class="gate-tool is-active" type="button" data-gate-tool="H" title="Hadamard gate">H</button>
+        <button class="gate-tool" type="button" data-gate-tool="X" title="Pauli X gate">X</button>
+        <button class="gate-tool" type="button" data-gate-tool="Y" title="Pauli Y gate">Y</button>
+        <button class="gate-tool" type="button" data-gate-tool="Z" title="Pauli Z gate">Z</button>
+        <button class="gate-tool" type="button" data-gate-tool="S" title="S phase gate">S</button>
+        <button class="gate-tool" type="button" data-gate-tool="T" title="T phase gate">T</button>
+        <span class="tool-divider" aria-hidden="true"></span>
+        <button class="gate-tool multi-gate-tool" type="button" data-gate-tool="CNOT" title="Controlled X gate">CNOT</button>
+        <button class="gate-tool multi-gate-tool" type="button" data-gate-tool="CZ" title="Controlled Z gate">CZ</button>
+        <button class="gate-tool multi-gate-tool" type="button" data-gate-tool="SWAP" title="Swap gate">SWAP</button>
+        <span class="tool-divider" aria-hidden="true"></span>
+        <button class="gate-tool erase-tool" type="button" data-gate-tool="ERASE" title="Remove gate">&times;</button>
+      </div>
+      <button class="add-qubit-button" id="add-qubit" type="button"><span aria-hidden="true">+</span> Qubit</button>
+    </section>
+
+    <div class="circuit-layout">
+      <section class="circuit-board-region" aria-labelledby="circuit-board-heading">
+        <div class="circuit-board-heading">
+          <div>
+            <p>Operations</p>
+            <h2 id="circuit-board-heading">Circuit grid</h2>
+          </div>
+          <div class="step-controls">
+            <button id="previous-step" type="button" aria-label="Previous circuit step" title="Previous step">&#9664;</button>
+            <output id="step-output">Output</output>
+            <button id="next-step" type="button" aria-label="Next circuit step" title="Next step">&#9654;</button>
+          </div>
+        </div>
+        <input class="step-range" id="circuit-step" type="range" min="0" max="6" step="1" value="6" aria-label="Circuit simulation step">
+        <div class="circuit-scroll" id="circuit-scroll">
+          <div class="circuit-grid" id="circuit-grid"></div>
+        </div>
+        <div class="circuit-status" id="circuit-status" role="status">Hadamard selected</div>
+      </section>
+
+      <aside class="circuit-results" aria-labelledby="results-heading">
+        <div class="results-heading">
+          <p>Simulated state</p>
+          <h2 id="results-heading">Output</h2>
+        </div>
+
+        <section class="result-section" aria-labelledby="joint-state-heading">
+          <div class="result-section-heading">
+            <h3 id="joint-state-heading">Joint state</h3>
+            <span id="joint-state-dimension">2 amplitudes</span>
+          </div>
+          <div class="joint-state" id="joint-state"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="outcomes-heading">
+          <div class="result-section-heading">
+            <h3 id="outcomes-heading">Z outcomes</h3>
+            <span>Probability</span>
+          </div>
+          <div class="outcome-list" id="outcome-list"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="qubit-output-heading">
+          <div class="result-section-heading">
+            <h3 id="qubit-output-heading">Individual qubits</h3>
+            <span>Reduced state</span>
+          </div>
+          <div class="qubit-output-list" id="qubit-output-list"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <noscript>This experiment requires JavaScript.</noscript>
+  <script type="module" src="/demos/qubit-workbench/app.js?v=20260824-2"></script>
+</body>
+</html>
