@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deutsch-Jozsa Algorithm | Richard Williams</title>
+  <meta name="description" content="A step-by-step visual walkthrough of the Deutsch-Jozsa algorithm with three input qubits, eight function inputs, phase kickback, and exact measurement probabilities.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Deutsch-Jozsa: Eight Inputs, One Query">
+  <meta property="og:description" content="Trace how one quantum query distinguishes a constant three-bit Boolean function from a balanced one.">
+  <meta property="og:url" content="https://rwill128.github.io/demos/deutsch-jozsa/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/projects/deutsch-jozsa.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0d1211">
+  <link rel="canonical" href="https://rwill128.github.io/demos/deutsch-jozsa/">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/demos/deutsch-jozsa/styles.css?v=20260825-1">
+</head>
+<body>
+  <a class="skip-link" href="#guide-heading">Skip to explanation</a>
+
+  <header class="site-header">
+    <a class="back-link" href="/" aria-label="Back to Richard Williams home page">&larr; Richard Williams</a>
+    <div class="title-lockup">
+      <span>Quantum query algorithms</span>
+      <strong>Deutsch-Jozsa</strong>
+    </div>
+    <a class="source-link" href="https://github.com/rwill128/rwill128.github.io/tree/master/demos/deutsch-jozsa">Source</a>
+  </header>
+
+  <section class="oracle-band" aria-labelledby="oracle-heading">
+    <div class="oracle-intro">
+      <p>Choose the hidden three-bit function</p>
+      <h1 id="oracle-heading">Are eight outputs all equal, or split four and four?</h1>
+    </div>
+    <div class="oracle-options" role="radiogroup" aria-label="Hidden three-bit Boolean function">
+      <button class="oracle-option is-selected" type="button" role="radio" aria-checked="true" data-oracle="constant-zero">
+        <span class="oracle-name">Constant zero</span>
+        <span class="truth-pattern">00000000</span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="constant-one">
+        <span class="oracle-name">Constant one</span>
+        <span class="truth-pattern">11111111</span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="balanced-low-bit">
+        <span class="oracle-name">Balanced: low bit</span>
+        <span class="truth-pattern">01010101</span>
+      </button>
+      <button class="oracle-option" type="button" role="radio" aria-checked="false" data-oracle="balanced-irregular">
+        <span class="oracle-name">Balanced: irregular</span>
+        <span class="truth-pattern">01110001</span>
+      </button>
+    </div>
+  </section>
+
+  <main>
+    <section class="quantum-stage" aria-labelledby="stage-title">
+      <div class="stage-heading">
+        <div>
+          <p id="stage-kicker">Problem setup</p>
+          <h2 id="stage-title">One function with eight possible inputs</h2>
+        </div>
+        <div class="query-meter" aria-label="Oracle query count">
+          <span>Oracle queries</span>
+          <strong id="query-count">0</strong>
+        </div>
+      </div>
+
+      <div class="circuit dj-circuit" aria-label="Deutsch-Jozsa circuit with three input qubits and one target qubit">
+        <div class="circuit-row dj-circuit-row">
+          <span class="wire-label"><strong>x₂</strong><small>input bit 4</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span><span class="wire-node spacer"></span><span class="wire-node spacer"></span><span class="wire-node gate" data-stage="3">H</span><span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span><span class="wire-node gate" data-stage="5">H</span><span class="wire-node measure" data-stage="6">M</span>
+        </div>
+        <div class="circuit-row dj-circuit-row">
+          <span class="wire-label"><strong>x₁</strong><small>input bit 2</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span><span class="wire-node spacer"></span><span class="wire-node spacer"></span><span class="wire-node gate" data-stage="3">H</span><span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span><span class="wire-node gate" data-stage="5">H</span><span class="wire-node measure" data-stage="6">M</span>
+        </div>
+        <div class="circuit-row dj-circuit-row">
+          <span class="wire-label"><strong>x₀</strong><small>input bit 1</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span><span class="wire-node spacer"></span><span class="wire-node spacer"></span><span class="wire-node gate" data-stage="3">H</span><span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span><span class="wire-node gate" data-stage="5">H</span><span class="wire-node measure" data-stage="6">M</span>
+        </div>
+        <div class="circuit-row dj-circuit-row">
+          <span class="wire-label"><strong>y</strong><small>target</small></span>
+          <span class="wire-node initial" data-stage="0">|0&#10217;</span><span class="wire-node gate" data-stage="1">X</span><span class="wire-node gate" data-stage="2">H</span><span class="wire-node spacer"></span><span class="wire-node oracle-gate" data-stage="4">U<sub>f</sub></span><span class="wire-node spacer"></span><span class="wire-node unmeasured">&mdash;</span>
+        </div>
+      </div>
+
+      <div class="register-visuals">
+        <section class="register-panel" aria-labelledby="input-register-heading">
+          <div class="register-heading">
+            <div><p>Three-qubit input register</p><h3 id="input-register-heading">Eight input components</h3></div>
+            <strong id="input-register-status">Only 000</strong>
+          </div>
+          <div class="input-state-grid" id="input-state-grid"></div>
+          <div class="register-meaning">
+            <span>What the input register represents now</span>
+            <p id="input-register-meaning">Only the ordinary input 000 is currently present.</p>
+          </div>
+        </section>
+
+        <section class="target-panel" aria-labelledby="target-heading">
+          <div class="register-heading">
+            <div><p>One-qubit target register</p><h3 id="target-heading">Phase workspace y</h3></div>
+            <strong id="target-state-name">|0&#10217;</strong>
+          </div>
+          <div class="target-state-visual" id="target-state-visual">
+            <div><span>|0&#10217;</span><strong id="target-zero-sign">+1</strong></div>
+            <div><span>|1&#10217;</span><strong id="target-one-sign">0</strong></div>
+          </div>
+          <div class="register-meaning">
+            <span>What the target represents now</span>
+            <p id="target-meaning">Blank workspace initialized to zero.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="evidence-panel" aria-labelledby="evidence-heading">
+      <div class="panel-heading">
+        <p>Exact simulated state</p>
+        <h2 id="evidence-heading">Function and measurement evidence</h2>
+      </div>
+
+      <section class="evidence-section" aria-labelledby="truth-heading">
+        <div class="section-heading"><h3 id="truth-heading">Eight function values</h3><span id="promise-status">Constant</span></div>
+        <div class="truth-table" id="truth-table"></div>
+      </section>
+
+      <section class="evidence-section" aria-labelledby="distribution-heading">
+        <div class="section-heading"><h3 id="distribution-heading">Input measurement</h3><span>Probability</span></div>
+        <div class="distribution-list" id="distribution-list"></div>
+      </section>
+
+      <section class="evidence-section result-section" aria-labelledby="result-heading">
+        <div class="classification" id="classification">
+          <span>Decision rule</span>
+          <strong>Not measured</strong>
+        </div>
+        <p class="decision-note" id="decision-note">The input register has not been measured.</p>
+      </section>
+    </aside>
+
+    <section class="guide-band" aria-labelledby="guide-heading">
+      <article class="step-explanation">
+        <div class="step-heading"><p id="step-number">Step 1 of 12</p><h2 id="guide-heading">Expand Deutsch's question</h2></div>
+        <div class="step-body" id="step-body"></div>
+      </article>
+      <aside class="math-explanation" aria-labelledby="math-heading">
+        <div class="section-heading"><h3 id="math-heading">Mathematical state</h3><span id="math-stage">Before the circuit</span></div>
+        <div class="equation-list" id="equation-list"></div>
+        <dl class="step-facts" id="step-facts"></dl>
+      </aside>
+    </section>
+
+    <nav class="step-controls" aria-label="Walkthrough controls">
+      <button id="previous-step" type="button" aria-label="Previous step" title="Previous step">&#8592;</button>
+      <div class="step-progress"><div class="step-track" id="step-track"></div><output id="step-progress-label">1 / 12</output></div>
+      <button id="next-step" type="button" aria-label="Next step" title="Next step">&#8594;</button>
+    </nav>
+  </main>
+
+  <noscript>This walkthrough requires JavaScript.</noscript>
+  <script type="module" src="/demos/deutsch-jozsa/app.js?v=20260825-1"></script>
+</body>
+</html>

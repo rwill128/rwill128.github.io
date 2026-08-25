@@ -8,7 +8,7 @@ import {
   stateNorm,
 } from "../qubit-workbench/quantum.js?v=20260824-2";
 import { BlochRenderer } from "./bloch-renderer.js?v=20260824-1";
-import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-2";
+import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-3";
 
 const EPSILON = 1e-9;
 
@@ -52,6 +52,10 @@ function stateName(vector) {
   if (Math.abs(vector.y - 1) < 0.001) return "|+i⟩";
   if (Math.abs(vector.y + 1) < 0.001) return "|−i⟩";
   return "Pure state";
+}
+
+function resultBit(oracle) {
+  return oracle.values[0] ^ oracle.values[1];
 }
 
 function applyOracle(vector, oracle) {
@@ -126,6 +130,8 @@ const queryCount = document.querySelector("#query-count");
 const inputStateName = document.querySelector("#input-state-name");
 const targetStateName = document.querySelector("#target-state-name");
 const targetPhaseStatus = document.querySelector("#target-phase-status");
+const inputStateMeaning = document.querySelector("#input-state-meaning");
+const targetStateMeaning = document.querySelector("#target-state-meaning");
 const amplitudeList = document.querySelector("#amplitude-list");
 const stateNormElement = document.querySelector("#state-norm");
 const branchStatus = document.querySelector("#branch-status");
@@ -180,6 +186,41 @@ function renderBlochReadout(index, vector) {
     });
 }
 
+function stateMeanings(step, oracle) {
+  const result = resultBit(oracle);
+  const meanings = {
+    0: {
+      input: "The input is definitely 0. The circuit has not yet prepared the alternative input 1, and the oracle has not been queried.",
+      target: "This is an ordinary zero used as blank workspace. It is not an answer from the hidden function.",
+    },
+    1: {
+      input: "The input is still definitely 0 and has not participated in the computation yet.",
+      target: "The target is definitely 1. This is a deliberate preparation step, not the value of f(0) or f(1).",
+    },
+    2: {
+      input: "The input remains definitely 0 while the target is prepared for the oracle.",
+      target: "A measurement would return 0 or 1 equally often. More importantly, the two possibilities carry opposite signs, so an oracle-requested flip can become a sign change instead of a lasting bit change.",
+    },
+    3: {
+      input: "The state contains an x=0 component and an x=1 component with equal weight and the same sign. The single oracle operation will act on both components, but neither function value can be read out separately.",
+      target: "The target is the phase-sensitive workspace. It is arranged so a requested flip leaves its measurable state unchanged while marking the corresponding input component with a minus sign.",
+    },
+    4: {
+      input: result === 0
+        ? `The two input components still have matching signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} agree. This matching-sign pattern represents “constant”; it does not reveal which shared value the function returned.`
+        : `The x=0 and x=1 components now have opposite signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} differ. This opposite-sign pattern represents “balanced”; it does not preserve both outputs as readable bits.`,
+      target: "The target looks exactly as it did before the query. Its job was to turn conditional flips into signs on the input components; it does not retain the function's output.",
+    },
+    5: {
+      input: result === 0
+        ? "The matching-sign pattern has been converted into the definite bit 0. Here 0 means the two function outputs were equal, so the function is constant."
+        : "The opposite-sign pattern has been converted into the definite bit 1. Here 1 means the two function outputs differed, so the function is balanced.",
+      target: "The target has finished its role and remains in the same phase-sensitive state. The algorithm ignores it and measures only the input qubit.",
+    },
+  };
+  return meanings[step.stateIndex];
+}
+
 function renderQubits(vector) {
   const reduced = reducedStatesFor(vector);
   const previous = previousReducedStates();
@@ -198,6 +239,10 @@ function renderQubits(vector) {
       ? "After X: same Bloch point · phase ×−1"
       : "Oracle result: Bloch point unchanged · signs moved to x components";
   }
+
+  const meanings = stateMeanings(step, currentOracle());
+  inputStateMeaning.textContent = meanings.input;
+  targetStateMeaning.textContent = meanings.target;
 }
 
 function renderAmplitudes(vector) {
