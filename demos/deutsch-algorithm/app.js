@@ -8,7 +8,7 @@ import {
   stateNorm,
 } from "../qubit-workbench/quantum.js?v=20260824-2";
 import { BlochRenderer } from "./bloch-renderer.js?v=20260824-1";
-import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-3";
+import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-4";
 
 const EPSILON = 1e-9;
 
@@ -35,6 +35,14 @@ function formatComplex(value) {
   if (im === 0) return formatNumber(re);
   if (re === 0) return `${formatNumber(im)}i`;
   return `${formatNumber(re)} ${im < 0 ? "−" : "+"} ${Math.abs(im).toFixed(3)}i`;
+}
+
+function formatSignedAmplitude(value) {
+  const re = Math.abs(value.re) < 0.0005 ? 0 : value.re;
+  const im = Math.abs(value.im) < 0.0005 ? 0 : value.im;
+  if (im === 0) return `${re < 0 ? "−" : "+"}${Math.abs(re).toFixed(3)}`;
+  if (re === 0) return `${im < 0 ? "−" : "+"}${Math.abs(im).toFixed(3)}i`;
+  return `(${formatComplex({ re, im })})`;
 }
 
 function vectorsEqual(left, right) {
@@ -186,6 +194,35 @@ function renderBlochReadout(index, vector) {
     });
 }
 
+function computationalBasisComponents(vector) {
+  const rawProbabilityZero = Math.max(0, Math.min(1, (1 + vector.z) / 2));
+  const probabilityZero = rawProbabilityZero < 1e-8
+    ? 0
+    : rawProbabilityZero > 1 - 1e-8 ? 1 : rawProbabilityZero;
+  const alpha = complex(Math.sqrt(probabilityZero));
+  if (alpha.re < EPSILON) return [alpha, complex(1)];
+  return [alpha, complex(vector.x / (2 * alpha.re), vector.y / (2 * alpha.re))];
+}
+
+function renderBasisDecomposition(index, vector) {
+  const prefix = index === 0 ? "input" : "target";
+  const components = computationalBasisComponents(vector);
+  const equation = document.querySelector(`#${prefix}-basis-equation`);
+  equation.textContent = `${stateName(vector)} = (${formatSignedAmplitude(components[0])} × |0⟩) + (${formatSignedAmplitude(components[1])} × |1⟩)`;
+
+  document.querySelectorAll(`#${prefix}-basis-components .basis-component`)
+    .forEach((element, basis) => {
+      const amplitude = components[basis];
+      const amount = magnitude(amplitude);
+      const negative = amplitude.re < -0.0005 || (Math.abs(amplitude.re) < 0.0005 && amplitude.im < -0.0005);
+      element.classList.toggle("is-negative", negative);
+      element.querySelector(".signed-amplitude i").style.width = `${amount * 50}%`;
+      const values = element.querySelectorAll("dd");
+      values[0].textContent = formatSignedAmplitude(amplitude);
+      values[1].textContent = `${(amount * amount * 100).toFixed(1)}%`;
+    });
+}
+
 function stateMeanings(step, oracle) {
   const result = resultBit(oracle);
   const meanings = {
@@ -227,6 +264,7 @@ function renderQubits(vector) {
   reduced.forEach((state, index) => {
     renderers[index].update(state, previous?.[index] ?? null);
     renderBlochReadout(index, state);
+    renderBasisDecomposition(index, state);
   });
   inputStateName.textContent = stateName(reduced[0]);
   targetStateName.textContent = stateName(reduced[1]);

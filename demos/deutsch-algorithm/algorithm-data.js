@@ -204,6 +204,7 @@ export const STEPS = [
     body: () => [
       "The symbol |1⟩ names the two-component state vector [0, 1]ᵀ; it is not the number 1. The Hadamard gate is a matrix. Multiplying that matrix by [0, 1]ᵀ produces the new vector [1, −1]ᵀ/√2.",
       "That output vector is given the shorthand name |−⟩. Because |0⟩ = [1, 0]ᵀ and |1⟩ = [0, 1]ᵀ, the same output vector can also be written (|0⟩ − |1⟩)/√2. These are equivalent descriptions of one vector, not a value being mapped to an equation.",
+      "The computational-basis display beneath the target sphere shows those two components directly: signed amplitude +0.707 on |0⟩ and −0.707 on |1⟩. Each has 50% Z-measurement probability, but their opposite signs are what make this state useful to the oracle.",
       "Applying X does <strong>not</strong> point the Bloch arrow in the opposite direction. X is a 180-degree rotation around the X axis, and |−⟩ already lies on that axis. Its Bloch arrow therefore remains fixed at the −X point. The opposite Bloch point is |+⟩, not −|−⟩.",
       "Algebraically, X exchanges the |0⟩ and |1⟩ components of |−⟩. Because those components have opposite signs, the resulting vector is −|−⟩. A common multiplier of −1 is a phase shift of π and does not change the target's physical state. During the oracle, however, X is applied conditionally: only the input components for which f(x) = 1 acquire that sign. It can therefore become a relative phase between the x = 0 and x = 1 components, which the final Hadamard can reveal through interference.",
       "The target is not random or mixed. It is a pure state pointing along the negative X axis of its Bloch sphere.",
@@ -229,6 +230,7 @@ export const STEPS = [
     mathStage: "After H(x)",
     body: () => [
       "The input state |0⟩ is the vector [1, 0]ᵀ. Multiplying it by the Hadamard matrix produces [1, 1]ᵀ/√2. That resulting vector is named |+⟩ and can equivalently be expanded as (|0⟩ + |1⟩)/√2.",
+      "The computational-basis display beneath the input sphere now shows both components explicitly: signed amplitude +0.707 on |0⟩ and +0.707 on |1⟩, giving each a 50% Z-measurement probability. The single +X arrow and those two component bars are two representations of the same qubit state.",
       "The complete two-qubit state now contains components for both possible x values, each paired with the same target state |−⟩.",
       "Expanding the product produces four joint basis amplitudes: +1/2 for |00⟩, −1/2 for |01⟩, +1/2 for |10⟩, and −1/2 for |11⟩. These signs come from the target's |−⟩ state, not from evaluating f.",
       "The state remains unentangled because it still factors exactly into |+⟩ₓ|−⟩ᵧ. The oracle will act on both input components coherently in its single application.",

@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#0d1211">
   <link rel="canonical" href="https://rwill128.github.io/demos/deutsch-algorithm/">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/demos/deutsch-algorithm/styles.css?v=20260825-3">
+  <link rel="stylesheet" href="/demos/deutsch-algorithm/styles.css?v=20260825-4">
   <script type="importmap">
     {
       "imports": {
@@ -110,12 +110,26 @@
           <div class="sphere-stage" id="input-stage">
             <canvas id="input-canvas"></canvas>
             <div class="sphere-labels" id="input-labels" aria-hidden="true"></div>
+            <div class="bloch-vector-label"><strong>Bloch vector</strong><span>One arrow represents the complete qubit state</span></div>
           </div>
-          <dl class="bloch-readout" id="input-readout">
-            <div><dt>x</dt><dd>0.000</dd></div>
-            <div><dt>y</dt><dd>0.000</dd></div>
-            <div><dt>z</dt><dd>1.000</dd></div>
-          </dl>
+          <section class="basis-decomposition" aria-labelledby="input-basis-heading">
+            <div class="basis-heading">
+              <div><span>Computational-basis decomposition</span><strong id="input-basis-heading">The two components inside this state</strong></div>
+              <code id="input-basis-equation">|0&#10217; = 1.000|0&#10217; + 0.000|1&#10217;</code>
+            </div>
+            <div class="basis-component-grid" id="input-basis-components">
+              <div class="basis-component" data-basis="0"><strong>|0&#10217; component</strong><div class="signed-amplitude"><i></i></div><dl><div><dt>Signed amplitude</dt><dd>+1.000</dd></div><div><dt>Z measurement</dt><dd>100.0%</dd></div></dl></div>
+              <div class="basis-component" data-basis="1"><strong>|1&#10217; component</strong><div class="signed-amplitude"><i></i></div><dl><div><dt>Signed amplitude</dt><dd>+0.000</dd></div><div><dt>Z measurement</dt><dd>0.0%</dd></div></dl></div>
+            </div>
+          </section>
+          <div class="bloch-coordinate-panel">
+            <div class="bloch-coordinate-heading"><span>Bloch arrow coordinates</span><small>These are not the |0&#10217; and |1&#10217; amplitudes</small></div>
+            <dl class="bloch-readout" id="input-readout">
+              <div><dt>x</dt><dd>0.000</dd></div>
+              <div><dt>y</dt><dd>0.000</dd></div>
+              <div><dt>z</dt><dd>1.000</dd></div>
+            </dl>
+          </div>
           <div class="state-meaning">
             <span>What this state means here</span>
             <p id="input-state-meaning">Only input 0 is currently represented.</p>
@@ -136,12 +150,26 @@
           <div class="sphere-stage" id="target-stage">
             <canvas id="target-canvas"></canvas>
             <div class="sphere-labels" id="target-labels" aria-hidden="true"></div>
+            <div class="bloch-vector-label"><strong>Bloch vector</strong><span>One arrow represents the complete qubit state</span></div>
           </div>
-          <dl class="bloch-readout" id="target-readout">
-            <div><dt>x</dt><dd>0.000</dd></div>
-            <div><dt>y</dt><dd>0.000</dd></div>
-            <div><dt>z</dt><dd>1.000</dd></div>
-          </dl>
+          <section class="basis-decomposition" aria-labelledby="target-basis-heading">
+            <div class="basis-heading">
+              <div><span>Computational-basis decomposition</span><strong id="target-basis-heading">The two components inside this state</strong></div>
+              <code id="target-basis-equation">|0&#10217; = 1.000|0&#10217; + 0.000|1&#10217;</code>
+            </div>
+            <div class="basis-component-grid" id="target-basis-components">
+              <div class="basis-component" data-basis="0"><strong>|0&#10217; component</strong><div class="signed-amplitude"><i></i></div><dl><div><dt>Signed amplitude</dt><dd>+1.000</dd></div><div><dt>Z measurement</dt><dd>100.0%</dd></div></dl></div>
+              <div class="basis-component" data-basis="1"><strong>|1&#10217; component</strong><div class="signed-amplitude"><i></i></div><dl><div><dt>Signed amplitude</dt><dd>+0.000</dd></div><div><dt>Z measurement</dt><dd>0.0%</dd></div></dl></div>
+            </div>
+          </section>
+          <div class="bloch-coordinate-panel">
+            <div class="bloch-coordinate-heading"><span>Bloch arrow coordinates</span><small>These are not the |0&#10217; and |1&#10217; amplitudes</small></div>
+            <dl class="bloch-readout" id="target-readout">
+              <div><dt>x</dt><dd>0.000</dd></div>
+              <div><dt>y</dt><dd>0.000</dd></div>
+              <div><dt>z</dt><dd>1.000</dd></div>
+            </dl>
+          </div>
           <div class="state-meaning">
             <span>What this state means here</span>
             <p id="target-state-meaning">The oracle's workspace starts as an ordinary zero.</p>
@@ -224,6 +252,6 @@
   </main>
 
   <noscript>This walkthrough requires JavaScript.</noscript>
-  <script type="module" src="/demos/deutsch-algorithm/app.js?v=20260825-3"></script>
+  <script type="module" src="/demos/deutsch-algorithm/app.js?v=20260825-4"></script>
 </body>
 </html>
