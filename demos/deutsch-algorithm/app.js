@@ -8,7 +8,7 @@ import {
   stateNorm,
 } from "../qubit-workbench/quantum.js?v=20260824-2";
 import { BlochRenderer } from "./bloch-renderer.js?v=20260824-1";
-import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-4";
+import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-5";
 
 const EPSILON = 1e-9;
 
@@ -225,6 +225,14 @@ function renderBasisDecomposition(index, vector) {
 
 function stateMeanings(step, oracle) {
   const result = resultBit(oracle);
+  const reversedTerms = oracle.values
+    .map((value, input) => value === 1 ? `|${input}⟩` : null)
+    .filter(Boolean);
+  const reversalDescription = reversedTerms.length === 0
+    ? "Neither input amplitude was reversed because the function returned 0 for both input values."
+    : reversedTerms.length === 2
+      ? "The amplitudes of both the |0⟩ term and the |1⟩ term were reversed because the function returned 1 for both input values."
+      : `The amplitude of the input's ${reversedTerms[0]} term was reversed because the function returned 1 for that input value.`;
   const meanings = {
     0: {
       input: "The input is definitely 0. The circuit has not yet prepared the alternative input 1, and the oracle has not been queried.",
@@ -239,14 +247,14 @@ function stateMeanings(step, oracle) {
       target: "A measurement would return 0 or 1 equally often. More importantly, the two possibilities carry opposite signs, so an oracle-requested flip can become a sign change instead of a lasting bit change.",
     },
     3: {
-      input: "The state contains an x=0 component and an x=1 component with equal weight and the same sign. The single oracle operation will act on both components, but neither function value can be read out separately.",
-      target: "The target is the phase-sensitive workspace. It is arranged so a requested flip leaves its measurable state unchanged while marking the corresponding input component with a minus sign.",
+      input: "This is one qubit whose state is written as +0.707 × |0⟩ + 0.707 × |1⟩. The first term means ‘amplitude +0.707 for input value 0.’ The second means ‘amplitude +0.707 for input value 1.’ That is what ‘the input's |0⟩ term’ and ‘the input's |1⟩ term’ refer to; they are not separate qubits or independently readable copies.",
+      target: "The complete state pairs both input terms with the same target state: (+0.707 × |0⟩)|−⟩ + (+0.707 × |1⟩)|−⟩. The oracle uses f(0) for the first term and f(1) for the second. When either function value is 1, flipping the paired target reverses that whole term's amplitude. The target itself returns to the same |−⟩ state.",
     },
     4: {
       input: result === 0
-        ? `The two input components still have matching signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} agree. This matching-sign pattern represents “constant”; it does not reveal which shared value the function returned.`
-        : `The x=0 and x=1 components now have opposite signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} differ. This opposite-sign pattern represents “balanced”; it does not preserve both outputs as readable bits.`,
-      target: "The target looks exactly as it did before the query. Its job was to turn conditional flips into signs on the input components; it does not retain the function's output.",
+        ? `The amplitudes of the input's |0⟩ and |1⟩ terms still have matching signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} agree. This matching-sign pattern represents “constant”; it does not reveal which shared value the function returned.`
+        : `The amplitudes of the input's |0⟩ and |1⟩ terms now have opposite signs because f(0)=${oracle.values[0]} and f(1)=${oracle.values[1]} differ. This opposite-sign pattern represents “balanced”; it does not preserve both outputs as readable bits.`,
+      target: `The target looks exactly as it did before the query and does not retain the function's output. ${reversalDescription}`,
     },
     5: {
       input: result === 0
@@ -275,7 +283,7 @@ function renderQubits(vector) {
   if (targetIsMinus) {
     targetPhaseStatus.textContent = step.stateIndex < 4
       ? "After X: same Bloch point · phase ×−1"
-      : "Oracle result: Bloch point unchanged · signs moved to x components";
+      : "Oracle result: Bloch point unchanged · input-term amplitudes updated";
   }
 
   const meanings = stateMeanings(step, currentOracle());
@@ -326,7 +334,7 @@ function renderBranches(oracle, mode) {
         ? `truth-table value ${oracle.values[x]}`
         : mode === "result"
           ? `contributed to result ${oracle.values[0] ^ oracle.values[1]}`
-          : `multiplies the |${x}⟩ input component`;
+          : `multiplies the amplitude of the |${x}⟩ input term by −1`;
     const row = document.createElement("div");
     row.className = `branch-row${mode === "hidden" ? " is-muted" : ""}`;
     row.innerHTML = `

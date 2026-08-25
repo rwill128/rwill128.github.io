@@ -206,7 +206,7 @@ export const STEPS = [
       "That output vector is given the shorthand name |−⟩. Because |0⟩ = [1, 0]ᵀ and |1⟩ = [0, 1]ᵀ, the same output vector can also be written (|0⟩ − |1⟩)/√2. These are equivalent descriptions of one vector, not a value being mapped to an equation.",
       "The computational-basis display beneath the target sphere shows those two components directly: signed amplitude +0.707 on |0⟩ and −0.707 on |1⟩. Each has 50% Z-measurement probability, but their opposite signs are what make this state useful to the oracle.",
       "Applying X does <strong>not</strong> point the Bloch arrow in the opposite direction. X is a 180-degree rotation around the X axis, and |−⟩ already lies on that axis. Its Bloch arrow therefore remains fixed at the −X point. The opposite Bloch point is |+⟩, not −|−⟩.",
-      "Algebraically, X exchanges the |0⟩ and |1⟩ components of |−⟩. Because those components have opposite signs, the resulting vector is −|−⟩. A common multiplier of −1 is a phase shift of π and does not change the target's physical state. During the oracle, however, X is applied conditionally: only the input components for which f(x) = 1 acquire that sign. It can therefore become a relative phase between the x = 0 and x = 1 components, which the final Hadamard can reveal through interference.",
+      "Algebraically, X exchanges the |0⟩ and |1⟩ terms of |−⟩. Because those terms have opposite signs, the resulting vector is −|−⟩. A common multiplier of −1 is a phase shift of π and does not change the target's physical state. During the oracle, however, X is applied only to joint-state terms whose input label x has f(x) = 1. The resulting minus sign therefore changes one or both input-term amplitudes. The final Hadamard can detect whether those two amplitudes have matching or opposite signs.",
       "The target is not random or mixed. It is a pure state pointing along the negative X axis of its Bloch sphere.",
     ],
     equations: () => [
@@ -231,9 +231,10 @@ export const STEPS = [
     body: () => [
       "The input state |0⟩ is the vector [1, 0]ᵀ. Multiplying it by the Hadamard matrix produces [1, 1]ᵀ/√2. That resulting vector is named |+⟩ and can equivalently be expanded as (|0⟩ + |1⟩)/√2.",
       "The computational-basis display beneath the input sphere now shows both components explicitly: signed amplitude +0.707 on |0⟩ and +0.707 on |1⟩, giving each a 50% Z-measurement probability. The single +X arrow and those two component bars are two representations of the same qubit state.",
-      "The complete two-qubit state now contains components for both possible x values, each paired with the same target state |−⟩.",
+      "The input is still one qubit, and its state is written as a sum of two terms: +0.707|0⟩ and +0.707|1⟩. In each term, the signed number is the amplitude and the ket is the possible input value carrying that amplitude. The first term therefore means ‘amplitude +0.707 for input 0’; the second means ‘amplitude +0.707 for input 1.’ They are not separate qubits, separate executions, or two values that can both be read out.",
+      "Each of those input terms is paired with the same target state |−⟩. For the term whose input label is |0⟩, the oracle uses f(0) to decide whether to flip the paired target. For the term labeled |1⟩, it uses f(1).",
       "Expanding the product produces four joint basis amplitudes: +1/2 for |00⟩, −1/2 for |01⟩, +1/2 for |10⟩, and −1/2 for |11⟩. These signs come from the target's |−⟩ state, not from evaluating f.",
-      "The state remains unentangled because it still factors exactly into |+⟩ₓ|−⟩ᵧ. The oracle will act on both input components coherently in its single application.",
+      "The state remains unentangled because it still factors exactly into |+⟩ₓ|−⟩ᵧ. The oracle will act on both terms in the input's state equation during its single application.",
     ],
     equations: () => [
       "H = (1/√2) [[1, 1], [1, −1]]",
@@ -245,7 +246,7 @@ export const STEPS = [
     facts: () => [
       ["Gate", "H(x)"],
       ["Input qubit", "|+⟩"],
-      ["Input components", "x = 0 and x = 1"],
+      ["Terms in input state", "|0⟩ and |1⟩"],
       ["Entanglement", "None"],
     ],
   }),
@@ -257,7 +258,7 @@ export const STEPS = [
     body: (oracle) => [
       "The reversible oracle U<sub>f</sub> preserves x and XORs f(x) into y. On an ordinary basis state, it performs |x⟩|y⟩ → |x⟩|y ⊕ f(x)⟩. This is one invocation of the hidden function even though the input register is in superposition.",
       `For the selected ${oracle.name} oracle, a concrete circuit decomposition is: <strong>${oracle.decomposition}</strong>. That decomposition is how this small demonstration realizes the black box; query complexity still counts the complete U<sub>f</sub> block as one function query.`,
-      `The x = 0 component uses f(0) = ${oracle.values[0]}, while the x = 1 component uses f(1) = ${oracle.values[1]}. Because y is |−⟩, each requested target flip returns y to the same |−⟩ state while contributing a minus sign to that input component.`,
+      `For the term labeled |0⟩, the oracle uses f(0) = ${oracle.values[0]} to decide whether to flip the paired target. For the term labeled |1⟩, it uses f(1) = ${oracle.values[1]}. Because the target is |−⟩, a flip leaves its Bloch arrow unchanged but multiplies that entire joint term by −1. After the unchanged target is factored back out, this appears as a reversal of the input term's amplitude.`,
     ],
     equations: () => [
       "U_f|x⟩|y⟩ = |x⟩|y⊕f(x)⟩",
@@ -272,12 +273,12 @@ export const STEPS = [
   }),
 
   interpretation(1, 4, {
-    title: "Read the phase kickback branch by branch",
+    title: "Track the two input terms after the oracle",
     mathStage: "The function is now encoded in phase",
     body: (oracle) => [
-      "Phase kickback means the oracle's output has been converted from a target-bit change into a sign on each input component. A branch with f(x) = 0 receives sign +1; a branch with f(x) = 1 receives sign −1.",
+      "Phase kickback means the oracle has changed the amplitude of each term in the input's state equation instead of leaving a changed target bit behind. The amplitude of the |0⟩ term is multiplied by (−1) raised to f(0), and the amplitude of the |1⟩ term is multiplied by (−1) raised to f(1). That multiplier is +1 when the function value is 0 and −1 when it is 1.",
       `For this oracle, the input state after removing the unchanged |−⟩ target factor is ${sign(oracle.values[0])}|0⟩ + ${sign(oracle.values[1])}|1⟩, with the common normalization 1/√2. The two signs are ${oracle.values[0] === oracle.values[1] ? "equal" : "opposite"}.`,
-      "The target has not learned or retained f(x); it ends in exactly |−⟩. The useful information is the relative sign between the x = 0 and x = 1 components. A common sign on both components would only be an unobservable global phase.",
+      "The target has not learned or retained f(x); it ends in exactly |−⟩. The useful information is whether the amplitudes of the input's |0⟩ and |1⟩ terms have matching or opposite signs. Reversing both signs together would only add an unobservable global phase.",
     ],
     equations: (oracle) => [
       `x=0: (−1)^{f(0)} = ${sign(oracle.values[0])}`,
@@ -296,8 +297,8 @@ export const STEPS = [
     title: "Calculate which output amplitude will cancel",
     mathStage: "Before the final Hadamard",
     body: (oracle) => [
-      "The final Hadamard does not reveal both function values. It combines the two signed input components into a sum for output |0⟩ and a difference for output |1⟩.",
-      `Here the two branch signs are s₀ = ${sign(oracle.values[0])} and s₁ = ${sign(oracle.values[1])}. The |0⟩ amplitude is (s₀+s₁)/2 = ${(Math.pow(-1, oracle.values[0]) + Math.pow(-1, oracle.values[1])) / 2}. The |1⟩ amplitude is (s₀−s₁)/2 = ${(Math.pow(-1, oracle.values[0]) - Math.pow(-1, oracle.values[1])) / 2}.`,
+      "The final Hadamard does not reveal both function values. It adds the signed amplitudes of the two input terms to calculate the output amplitude of |0⟩, and subtracts them to calculate the output amplitude of |1⟩.",
+      `Here the two input-term multipliers are s₀ = ${sign(oracle.values[0])} and s₁ = ${sign(oracle.values[1])}. The |0⟩ output amplitude is (s₀+s₁)/2 = ${(Math.pow(-1, oracle.values[0]) + Math.pow(-1, oracle.values[1])) / 2}. The |1⟩ output amplitude is (s₀−s₁)/2 = ${(Math.pow(-1, oracle.values[0]) - Math.pow(-1, oracle.values[1])) / 2}.`,
       `Therefore the input qubit's ${resultBit(oracle) === 0 ? "|1⟩" : "|0⟩"} amplitude becomes exactly 0, while its ${resultBit(oracle) === 0 ? "|0⟩" : "|1⟩"} amplitude has magnitude 1. Measuring x must return ${resultBit(oracle)}: ${resultBit(oracle) === 0 ? "the function values are equal, so the oracle is constant" : "the function values differ, so the oracle is balanced"}.`,
     ],
     equations: (oracle) => [
@@ -318,7 +319,7 @@ export const STEPS = [
     mathStage: "After H(x)",
     branchMode: "interference",
     body: (oracle) => [
-      "Hadamard now performs the addition and subtraction described in the previous step. Equal branch signs reinforce at |0⟩ and cancel at |1⟩. Opposite branch signs cancel at |0⟩ and reinforce at |1⟩.",
+      "Hadamard now performs the addition and subtraction described in the previous step. Matching signs on the two input terms produce a nonzero |0⟩ output amplitude and a zero |1⟩ output amplitude. Opposite signs produce a zero |0⟩ output amplitude and a nonzero |1⟩ output amplitude.",
       `Because ${oracle.name} has ${oracle.values[0] === oracle.values[1] ? "equal" : "opposite"} function values, the input qubit becomes ${resultBit(oracle) === 0 ? "|0⟩" : "|1⟩"}, up to a possible global minus sign. Its Bloch vector therefore points to the ${resultBit(oracle) === 0 ? "+Z |0⟩" : "−Z |1⟩"} pole.`,
       "The target remains |−⟩ and is not measured. The two-qubit state remains a product state throughout this algorithm; entanglement was not required for the speedup in this particular problem.",
     ],
