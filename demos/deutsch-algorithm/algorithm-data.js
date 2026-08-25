@@ -294,7 +294,7 @@ export const STEPS = [
     body: (oracle) => [
       "The final Hadamard does not reveal both function values. It combines the two signed input components into a sum for output |0⟩ and a difference for output |1⟩.",
       `Here the two branch signs are s₀ = ${sign(oracle.values[0])} and s₁ = ${sign(oracle.values[1])}. The |0⟩ amplitude is (s₀+s₁)/2 = ${(Math.pow(-1, oracle.values[0]) + Math.pow(-1, oracle.values[1])) / 2}. The |1⟩ amplitude is (s₀−s₁)/2 = ${(Math.pow(-1, oracle.values[0]) - Math.pow(-1, oracle.values[1])) / 2}.`,
-      `Therefore the ${resultBit(oracle) === 0 ? "|1⟩" : "|0⟩"} output cancels completely. This is the computational purpose of interference: amplitudes carrying the unwanted alternative add to zero before measurement.`,
+      `Therefore the input qubit's ${resultBit(oracle) === 0 ? "|1⟩" : "|0⟩"} amplitude becomes exactly 0, while its ${resultBit(oracle) === 0 ? "|0⟩" : "|1⟩"} amplitude has magnitude 1. Measuring x must return ${resultBit(oracle)}: ${resultBit(oracle) === 0 ? "the function values are equal, so the oracle is constant" : "the function values differ, so the oracle is balanced"}.`,
     ],
     equations: (oracle) => [
       "A(0) = [(−1)^{f(0)} + (−1)^{f(1)}]/2",
