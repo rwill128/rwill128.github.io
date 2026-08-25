@@ -8,7 +8,7 @@ import {
   stateNorm,
 } from "../qubit-workbench/quantum.js?v=20260824-2";
 import { BlochRenderer } from "./bloch-renderer.js?v=20260824-1";
-import { ORACLES, STEPS } from "./algorithm-data.js?v=20260824-1";
+import { ORACLES, STEPS } from "./algorithm-data.js?v=20260825-2";
 
 const EPSILON = 1e-9;
 

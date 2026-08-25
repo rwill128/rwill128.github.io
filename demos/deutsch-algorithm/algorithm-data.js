@@ -153,6 +153,8 @@ export const STEPS = [
     body: () => [
       "The bracket-shaped notation |...⟩ is called a <strong>ket</strong>. A ket names a quantum state vector; the vertical bar and angle bracket are not an absolute-value operation. The symbols |0⟩ and |1⟩ name the two computational-basis vectors [1, 0]ᵀ and [0, 1]ᵀ.",
       "The symbol |ψ₀⟩ names the complete two-qubit state at stage zero. The Greek letter ψ (psi) is just a conventional variable name for a quantum state, while its subscript 0 identifies this point in the circuit. It does not mean that the state has the numeric value zero.",
+      "The names <strong>input</strong> and <strong>target</strong> describe the qubits' jobs inside the oracle. The input register x supplies the argument to f: its |0⟩ component selects f(0), and its |1⟩ component selects f(1). The oracle preserves x so that the operation remains reversible.",
+      "The target register y is the qubit the oracle conditionally changes. If f(x) = 0, the oracle leaves y unchanged. If f(x) = 1, it flips y between |0⟩ and |1⟩. Equivalently, y becomes y XOR f(x). 'Target' does not mean that y holds the algorithm's final answer; Deutsch's algorithm ultimately measures x, while y is prepared in |−⟩ and used to convert those conditional flips into phase signs.",
       "The labels below the individual kets identify the registers: |0⟩ₓ means that the input qubit x is in state |0⟩, and |0⟩ᵧ means that the target qubit y is in state |0⟩. Putting the two states together requires a <strong>tensor product</strong>, written ⊗. The common shorthand |0⟩ₓ|0⟩ᵧ silently omits that ⊗ symbol.",
       "Because the register order is x followed by y, |0⟩ₓ ⊗ |0⟩ᵧ is abbreviated |00⟩. The first digit describes x and the second describes y. The four possible computational-basis states are therefore |00⟩, |01⟩, |10⟩, and |11⟩.",
       "A general two-qubit state assigns a complex amplitude to each of those four basis states. Here the expansion is 1|00⟩ + 0|01⟩ + 0|10⟩ + 0|11⟩. Saying amplitude(|00⟩) = 1 means that the coefficient multiplying |00⟩ is the real number 1; all three other coefficients are zero.",
@@ -169,10 +171,10 @@ export const STEPS = [
       "P(00) = magnitude(1)² = 1 = 100%",
     ],
     facts: () => [
+      ["Input x", "Selects f(0) or f(1)"],
+      ["Target y", "Updated to y XOR f(x)"],
       ["Register order", "x, then y"],
-      ["State-vector size", "4 amplitudes"],
-      ["Nonzero amplitudes", "1 of 4"],
-      ["Entanglement", "None"],
+      ["Final measured qubit", "x, not y"],
     ],
   }),
 
