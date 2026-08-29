@@ -1,0 +1,207 @@
+{
+  "schema": "cross-layer-rsa2048-clean-room-spec-v2",
+  "version": "1.2",
+  "published_date": "2026-08-28",
+  "status": "positive_operation_model_reproduction_open_physical_claim_unestablished",
+  "purpose": "Define the complete public input and acceptance boundary for an independent implementation of the corrected modulus-specific operation-scheduling result.",
+  "versioning": {
+    "historical_v1_factoring_instance_claim": "permanently_withdrawn",
+    "historical_specification": "reproduction-spec-v1.json",
+    "withdrawal_erratum": "reproduction-spec-v1.1.json",
+    "replacement_is_a_new_result": true
+  },
+  "clean_room_input_envelope": {
+    "included_public_inputs": [
+      "the rendered v1.2 methods article",
+      "source.md",
+      "reproduction-spec-v1.2.json",
+      "rns-periods-v1.2.txt",
+      "publication-manifest-v1.2.json",
+      "verification-map.svg and verification-map.png",
+      "the externally cited papers and frozen source archives"
+    ],
+    "not_published_or_linked": [
+      "author scheduler implementation",
+      "author RNS search implementation",
+      "generated author schedule trace",
+      "author verifier implementation",
+      "author resource certificate implementation",
+      "author factory-composition implementation",
+      "saved positive-result artifacts"
+    ],
+    "period_list_role": "The period list is the explicit benchmark workload input. A reproducer must independently validate it but need not rediscover the same random-search trajectory.",
+    "implementation_independence": "The reproducer must implement the described logic independently and must disclose any additional source or prior implementation it consults."
+  },
+  "external_sources": {
+    "gidney_paper": "https://arxiv.org/abs/2505.15917v1",
+    "gidney_paper_source": "https://arxiv.org/src/2505.15917v1",
+    "gidney_zenodo_record": "https://zenodo.org/records/15347487",
+    "gidney_code_archive": "https://zenodo.org/api/records/15347487/files/code.zip/content",
+    "gidney_code_archive_sha256": "e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d",
+    "ekera_hastad_paper": "https://arxiv.org/abs/1702.00249v1",
+    "qualtran_commit": "096a2d009059faee0cfae462c3d59cb055300eb9",
+    "qualtran_commit_page": "https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9",
+    "qualtran_archive": "https://github.com/quantumlib/Qualtran/archive/096a2d009059faee0cfae462c3d59cb055300eb9.zip",
+    "qualtran_archive_sha256": "9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df",
+    "cain_architecture_paper": "https://arxiv.org/abs/2603.28627v1",
+    "cain_source": "https://arxiv.org/src/2603.28627v1",
+    "cain_source_sha256": "24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953",
+    "draper_qcla_paper": "https://arxiv.org/abs/quant-ph/0406142v1",
+    "draper_qcla_source": "https://arxiv.org/src/quant-ph/0406142v1",
+    "draper_qcla_source_sha256": "4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549"
+  },
+  "configuration": {
+    "rsa2048_modulus_decimal": "25195908475657893494027183240048398571429282126204032027777137836043662020707595556264018525880784406918290641249515082189298559149176184502808489120072844992687392807287776735971418347270261896375014971824691165077613379859095700097330459748808428401797429100642458691817195118746121515172654632282216869987549182422433637259085141865462043576798423387184774447920739934236584823824281198163815010674810451660377306056201619676256133844143603833904414952634432190114657544454178424020924616515723350778707749817125772467962926386356373289912154831438167899885040445364023527381951378636564391212010397122822120720357",
+    "generator": 3,
+    "num_input_qubits": 1708,
+    "rns_prime_bit_length": 20,
+    "window1": 7,
+    "window3a": 4,
+    "window3b": 4,
+    "window4": 5,
+    "len_accumulator": 31,
+    "min_wraparound_gap": 31,
+    "mask_bits": 25,
+    "num_shots": 4,
+    "postprocessing_success": 0.99,
+    "num_windows1": 244,
+    "streams": 30,
+    "output_parallelism": 32,
+    "lane_parallelism": 37,
+    "processor_distance": 20,
+    "measurement_cycle_seconds": 0.001,
+    "logical_parallelism_capacity": 1160,
+    "processor_logical_capacity": 8216
+  },
+  "rns_workload": {
+    "period_file": "rns-periods-v1.2.txt",
+    "period_file_url": "https://rwill128.github.io/writing/cross-layer-shor-scheduling/rns-periods-v1.2.txt",
+    "canonical_encoding": "ASCII decimal, one prime per line, ascending order, trailing newline",
+    "sha256": "deb506e83c8a80c3036de9ad4d2e80286a2fd043fa03bdbb2401c70dd90afa06",
+    "period_count": 25341,
+    "first_period": 608759,
+    "last_period": 1048573,
+    "available_20_bit_primes": 38635,
+    "primes_excluded_by_required_multipliers": 1555,
+    "admissible_20_bit_primes": 37080,
+    "minimum_admissible_count_for_exact_capacity": 25339,
+    "exact_product_capacity_bits": 499624.38099527627,
+    "exact_target_log2_N_pow_244": 499624.37860603165,
+    "exact_capacity_margin_bits": 0.0023892446188256145,
+    "product_bit_length": 499625,
+    "centered_product_residue": "563627456069766884418526969191594534527121573622440159733651132927544010355575395451843196554535750340357718501512915798245822748233684630848485737975363900187282844901636587680658940677699766130425475874813985062395489977715055627887799014655179768307566733005324800700657707019819004130526793767512657391979286135373999294275450335640849617127518814675462438580299280930388250718951296816049861255668381263555320647155958379053855660872036002063265626064956079955380543456374189810886968995946395580147713983993068067897464312812925849640392657928434364318843876469508833647274551206670362070828123094225",
+    "strict_threshold_N_shift_31": "11732759175662833030348263327054864993053154147325098527491622528081602426575308459002533241119601021948405840084662233567470013699110683287870366647873467296682015437301144346581501116636331144894945887767100317905476959356617042840146673726294389181676054885910106213678231052470450063782117623967219549225433348874763416712677637983794344392045598191760841034315871044172246392734479717055249498539981642579835516426806161029383602479539627131961479295340567915753767613533036049465148065479343454716125386681931918704865000390613625426735801078117530746331922917330648529986828276252636868139733745308044",
+    "achieved_gap_bits": 35.379656627923225,
+    "threshold_margin_factor": 20.81651461317479,
+    "required_multipliers_checked": 31232,
+    "required_checks": [
+      "all periods are sorted distinct 20-bit primes",
+      "exact product(periods) >= N^244",
+      "min(product mod N, N - product mod N) < N >> 31",
+      "gcd(product(periods), 3^(k * 2^(7j)) mod N) = 1 for j in [0,243] and k in [0,127]"
+    ]
+  },
+  "deterministic_modulus_specific_tables": {
+    "source_root": "src/facto/algorithm/prep",
+    "derivation_order": [
+      "Construct ProblemConfig from configuration above and explicit periods.",
+      "Compute multipliers with _precompute_multipliers.find_multipliers_for_conf.",
+      "Compute generators with _precompute_generators.precompute_generators.",
+      "Compute table1 with _precompute_table1.precompute_table1 using multipliers.values() in frozen-source insertion order.",
+      "Compute table3a, table3b, and table3c with _precompute_table3.precompute_table3.",
+      "Compute table4 with _precompute_table4.precompute_table4."
+    ],
+    "arrays": {
+      "periods_uint32": {"shape": [25341], "bytes": 101364},
+      "generators_uint32": {"shape": [25341], "bytes": 101364},
+      "table1_uint32": {"shape": [25342, 244, 128], "bytes": 3165925376},
+      "table3a_uint32": {"shape": [25341, 5, 5, 256], "bytes": 648729600},
+      "table3b_uint32": {"shape": [25341, 5, 5, 256], "bytes": 648729600},
+      "table3c_uint32": {"shape": [25341, 256], "bytes": 25949184},
+      "table4_uint64": {"shape": [25341, 4, 32], "bytes": 25949184}
+    },
+    "total_binary_array_bytes": 4515485672,
+    "publication_choice": "The 4.52 GB native-endian binary arrays are not public inputs. They are deterministically regenerated from the frozen source, configuration, and period order."
+  },
+  "stage_profiles": {
+    "A_precompute": {
+      "assignments": {"N128_w31": 4, "N256_w21": 4},
+      "rounds": 56220.924884961576
+    },
+    "B_accumulator": {
+      "assignments": {"N32_w31": 4, "N32_w32": 4},
+      "rounds": 1045.702134347855
+    },
+    "C_cleanup": {
+      "assignments": {"N256_w20": 4, "N256_w21": 4},
+      "rounds": 22618.549338408433
+    },
+    "terminal_reset": {
+      "assignments": {"N128_w31": 4},
+      "rounds": 49105.086796812764
+    }
+  },
+  "processor_allocation": {
+    "payload_logicals": 4402,
+    "available_scratch_logicals": 3814,
+    "required_simultaneous_scratch": 3810,
+    "processor_logicals_used": 8212,
+    "processor_slack": 4,
+    "ccz_width_used": 1142,
+    "ccz_width_slack": 18,
+    "warning": "These are static modeled capacities, not a physical placement or routing certificate."
+  },
+  "attempts": {
+    "accumulator_additions": 101364,
+    "deviation_failure": 0.024687647819519043,
+    "expected_attempt_multiplier_without_postprocessing": 4.101250221077691,
+    "postprocessing_success": 0.99,
+    "expected_attempt_multiplier": 4.1426769909875665
+  },
+  "schedule_acceptance": {
+    "jobs": 25341,
+    "lanes": 30,
+    "lane_job_counts": {"845_jobs": 21, "844_jobs": 9},
+    "initial_fanout_rounds": 183.0,
+    "makespan_rounds_excluding_fanout": 67572993.15175445,
+    "makespan_rounds_including_fanout": 67573176.15175445,
+    "expected_operation_model_days": 43.19966698330601,
+    "same_workload_phase_separated_days": 59.56234955289428,
+    "same_workload_closed_lane_reduction_percent": 27.471519663705358,
+    "required_invariants": [
+      "each job appears exactly once",
+      "every B starts after its A completes",
+      "every C starts when its B completes",
+      "a lane's next A starts only after its prior C completes",
+      "B intervals never overlap",
+      "every lane ends with one terminal reset",
+      "ties are ordered by lane index"
+    ]
+  },
+  "factory_sensitivity_not_acceptance": {
+    "expected_qcla_ccz_states": 13500332819.674168,
+    "central_240_cycle_average_throughput_headroom": 1.3362767550395833,
+    "central_240_cycle_fully_serialized_raw_days": 75.52805953685306,
+    "central_240_cycle_days_per_success_at_assumed_90_percent_survival": 83.92006615205896,
+    "conservative_360_cycle_fully_serialized_raw_days": 91.69225581362659,
+    "conservative_360_cycle_days_per_success_at_assumed_90_percent_survival": 101.88028423736287,
+    "warning": "Burst scheduling, correlated failures, and concrete factory interfaces are not verified."
+  },
+  "claim_boundary": {
+    "C1": "A 27.4715 percent same-valid-workload scheduling reduction inside the frozen operation model.",
+    "C2": "A complete valid-workload operation schedule evaluating to 43.1997 expected modeled days; internally verified and awaiting clean-room reproduction.",
+    "C3": "A 43.1997-day physical RSA-2048 factoring implementation at about 102,000 atoms is not established.",
+    "not_an_acceptance_condition": "Agreement with a physical runtime or atom count."
+  },
+  "reproducer_deliverables": [
+    "source and environment lock with actual URLs and hashes",
+    "independent explicit-RNS validation",
+    "regenerated modulus-specific table shapes or streaming equivalents",
+    "small exact blocked-lookup functional witnesses",
+    "independently regenerated stage profiles",
+    "full schedule and independently implemented verifier",
+    "same-workload phase-separated control",
+    "factory and reliability sensitivity with limitations",
+    "a discrepancy log including negative results"
+  ]
+}

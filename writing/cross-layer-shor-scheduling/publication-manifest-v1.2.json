@@ -1,0 +1,59 @@
+{
+  "clean_room_boundary": {
+    "excluded": "Author implementations, traces, verifiers, resource certificates, factory-composition code, and saved positive-result artifacts are neither published nor linked.",
+    "included": "Only the files named by reproduction-spec-v1.2.json and its cited external sources are permitted inputs."
+  },
+  "files": {
+    "../../assets/images/shor-scheduling/verification-map.png": {
+      "bytes": 254980,
+      "sha256": "104a872df5e9d460a656f45dfae5f65431caaa351277a5fd5e83444a52047689"
+    },
+    "../../assets/images/shor-scheduling/verification-map.svg": {
+      "bytes": 5909,
+      "sha256": "7af55a5e759f3d200ad722a5d2475473288bc84ee8f3970d0543cb19a7eb5810"
+    },
+    "../../index.html": {
+      "bytes": 14697,
+      "sha256": "527b0c5d9bd1460dca0053615d8ca7f9a60c1107fa0506d134c47980befdf0b9"
+    },
+    "index.html": {
+      "bytes": 40693,
+      "sha256": "41f767440c48434b44709b820b50a030157771e8700fdcd70048a8f966171d16"
+    },
+    "publication-manifest-v1.1.json": {
+      "bytes": 1630,
+      "sha256": "7cbe969a30fae80b46c9ab97c90176f4a2e1070bf199f9f6ae45dd7c33c26159"
+    },
+    "publication-manifest-v1.json": {
+      "bytes": 1068,
+      "sha256": "5a00615619c05297713819a49e5bdcda62a9dbed2c2b11c3c3f178b0fbbf01ac"
+    },
+    "reproduction-spec-v1.1.json": {
+      "bytes": 7875,
+      "sha256": "dd4f3cc4794a09cb04f1a11a0074df00c66385ebcda94b9d38563185e12f0094"
+    },
+    "reproduction-spec-v1.2.json": {
+      "bytes": 11761,
+      "sha256": "da9b4f1732ac412d43beecb6b0a234a9e0013711b78288d1ee9537a81e069710"
+    },
+    "reproduction-spec-v1.json": {
+      "bytes": 12015,
+      "sha256": "fa8d422d3eba69936d7eec4575319435374ddfd69b9cb8d2970a19f45715afda"
+    },
+    "rns-periods-v1.2.txt": {
+      "bytes": 180828,
+      "sha256": "deb506e83c8a80c3036de9ad4d2e80286a2fd043fa03bdbb2401c70dd90afa06"
+    },
+    "source.md": {
+      "bytes": 29879,
+      "sha256": "a1c7f9ce60219cd3c2b346811efeae7e310e7b04f2f25c0457c6e3a16115f12f"
+    }
+  },
+  "hash_algorithm": "sha256",
+  "historical_v1_1_commit": "b6092f4ef8097259647ea99fbe5f5d694cfdc628",
+  "historical_v1_commit": "ecc4e89f85a8b2ec04babcb94e556cc78c01c193",
+  "note": "This manifest intentionally does not hash itself. Version 1.2 retains the v1.0 and v1.1 audit trail and publishes a new explicit valid workload and positive operation-model reproduction target.",
+  "published_date": "2026-08-28",
+  "schema": "cross-layer-rsa2048-publication-manifest-v1",
+  "version": "1.2"
+}
