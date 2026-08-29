@@ -2,23 +2,25 @@
 layout: post
 title: "Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit"
 date: 2026-08-28
-description: "A reproducible operation-level scheduling candidate, its 42.760-day model result, and the physical assumptions that remain unverified."
-version: "1.0"
+description: "Erratum to a withdrawn 42.760-day operation-level RSA-2048 scheduling result, with the surviving scheduling hypothesis and unresolved physical assumptions."
+version: "1.1"
 ---
 
 # Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit
 
-**A methods note and open reproduction challenge**
+**A methods note, public erratum, and revised reproduction boundary**
+
+> **Erratum — August 28, 2026:** Version 1.0 selected 25,330 descending 20-bit primes using product capacity alone. That set fails the modulus-specific deviation condition required by the approximate-residue algorithm: it achieves only 1.726 bits of modular separation where 31 bits are required. The reported 42.760-day schedule is therefore a schedule for a size-matched synthetic workload, not a valid RSA-2048 factoring instance. Claim C2 is withdrawn, and the clean-room reproduction challenge is suspended until a valid modulus-specific residue system is constructed and published. The historical v1.0 specification and manifest remain available for audit; the [v1.1 machine-readable erratum](reproduction-spec-v1.1.json) records the exact failure.
 
 Resource estimates for cryptographically relevant quantum algorithms are long chains of conditional statements. A circuit construction determines logical operations. A compilation model turns them into primitive resources. A scheduler maps those resources onto a processor. A fault-tolerant architecture supplies timing, factories, movement, and failure rates. A striking number at the end is only as strong as every link before it.
 
 This note reports a candidate improvement at one link in that chain: operation-level scheduling. It combines the approximate-residue factoring construction published by Craig Gidney in 2025 with the time-efficient high-rate neutral-atom capacity model published by Cain *et al.* in 2026. The central idea is to keep independent residue lanes closed over their compute, shared-accumulator update, and cleanup stages, allowing local work to overlap the serial accumulator bottleneck.
 
-Under the model specified below, a full 25,330-job schedule evaluates to **42.7602176638 expected days**. A simpler same-allocation ablation falls from **94.1304296981 to 55.3889675300 days**, a **41.157% reduction**, when closed-lane pipelining replaces a phase-separated schedule.
+Version 1.0 reported a full 25,330-job schedule evaluating to **42.7602176638 expected days**. That numerical result is now withdrawn as an RSA-2048 factoring estimate because its prime set is invalid for the algorithm. A simpler same-allocation ablation falls from **94.1304296981 to 55.3889675300 days**, a **41.157% reduction**, when closed-lane pipelining replaces a phase-separated schedule. The latter remains a result about the abstract scheduler, not evidence of a factoring speedup.
 
 Those are operation-schedule results. They are not a demonstrated physical runtime, and they are not a verified improvement over a state-of-the-art routed implementation. The public high-rate architecture does not specify the concrete code blocks, logical operators, mixed parallel-measurement gadgets, placement, movement paths, decoder latency, or factory interfaces needed to route this circuit. Factory and reliability sensitivity can erase the apparent advantage.
 
-The purpose of publishing this note is therefore not to announce a 42.76-day factorization machine. It is to make the narrower result independently reproducible—and falsifiable—from a clean implementation.
+The purpose of this corrected note is to preserve the potentially useful scheduling idea while making the invalidated factoring claim and every remaining dependency explicit.
 
 ## Claim ladder
 
@@ -26,11 +28,11 @@ The work makes three deliberately separate claims.
 
 | Claim | Statement | Status |
 |---|---|---|
-| C1 | With the cycle-12 circuit and allocation fixed, closed-lane accumulator pipelining reduces the pre-fanout estimate from 94.130 to 55.389 days. | Verified within the operation model |
-| C2 | The corrected exact-CCZ residue candidate has a feasible 25,330-job operation schedule evaluating to 42.760 days. | Reproduced by a complete trace and separate verifier |
+| C1 | With the cycle-12 synthetic workload and allocation fixed, closed-lane accumulator pipelining reduces the pre-fanout estimate from 94.130 to 55.389 days. | Verified only within the abstract operation model |
+| C2 | The exact-CCZ residue candidate has a feasible 25,330-job operation schedule evaluating to 42.760 days for a valid RSA-2048 approximate-residue instance. | **Withdrawn: the published prime set fails the required modulus-deviation condition** |
 | C3 | The candidate factors RSA-2048 in about 42.760 physical days at a footprint comparable to 102,000 atoms. | Not established |
 
-The null hypothesis for C3 is that routing, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.
+C2 must be repaired before C3 can be tested. Even after that repair, the null hypothesis for C3 is that routing, block granularity, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.
 
 ## Published starting points
 
@@ -52,7 +54,9 @@ The architectural comparison point is the time-efficient model in [Cain *et al.*
 
 Lookup primitive counts are tied to [Qualtran commit `096a2d009059faee0cfae462c3d59cb055300eb9`](https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9). Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from [Draper *et al.*, arXiv:quant-ph/0406142v1](https://arxiv.org/abs/quant-ph/0406142v1).
 
-The complete source hashes are recorded in the accompanying [machine-readable reproduction specification](reproduction-spec-v1.json).
+Two assumptions from Gidney's construction are inherited rather than proved here: that a sufficiently low-deviation prime product can be found efficiently by random search, and that superposition masking can be costed by multiplying expected shots by `1 / (1 - S)`. This work has not independently validated either assumption at RSA-2048 scale. Gidney's expected-shot expression also includes a `/ 0.99` post-processing-success factor that version 1.0 omitted.
+
+The original frozen source hashes are recorded in [publication manifest v1.0](publication-manifest-v1.json). The corrected publication and exact withdrawal evidence are recorded in the [v1.1 machine-readable erratum](reproduction-spec-v1.1.json) and [publication manifest v1.1](publication-manifest-v1.1.json).
 
 ## From approximate residues to independent jobs
 
@@ -76,13 +80,31 @@ The required residue-product capacity is therefore
 target_bits = 2048 * 244 = 499712.
 ```
 
-The idealized estimate obtained by dividing this target by 20 understates the required number of residues because actual 20-bit primes are smaller than `2^20`. The corrected workload enumerates primes in `[2^19, 2^20)`, takes them in descending order, and chooses the smallest count `J` satisfying
+The idealized estimate obtained by dividing this target by 20 understates the required number of residues because actual 20-bit primes are smaller than `2^20`. Version 1.0 enumerated primes in `[2^19, 2^20)`, took them in descending order, and chose the smallest count `J` satisfying
 
 ```text
 sum(log2(p) for p in selected_primes) >= 499712.
 ```
 
-This produces 25,330 jobs with 499,714.6416576 bits of product capacity. The prime enumeration and capacity sum are outputs to be independently derived, not trusted constants.
+This produces 25,330 jobs with 499,714.6416576 bits of product capacity. That condition is necessary but not sufficient. For the actual RSA-2048 challenge modulus `N`, the product `L` of the selected primes must also satisfy
+
+```text
+Delta_N(L) = min(L mod N, N - (L mod N)) / N < 2^(-31).
+```
+
+Recomputing the exact descending-prime set gives
+
+```text
+Delta_N(L)          = 0.3022205464...
+achieved gap        = log2(N / min(...)) = 1.7263263496 bits
+required gap        = 31 bits
+shortfall           = 29.2736736504 bits
+factor over limit   = 649,013,681.5
+```
+
+The set therefore fails decisively. The mistake was to use Gidney's `vacuous_config` for cost extraction and then correct only the prime-product capacity. That estimator supplies a synthetic modulus and period count; it does not construct a modulus-specific residue system. The released `find_rns_for_conf` path checks product capacity, distinctness, multiplier divisibility, and modular deviation. Version 1.0 did not run that path for its candidate, despite the local capacity audit warning that capacity alone did not solve the product-mod-`N` constraint.
+
+A replacement workload must publish an explicit prime set and verify all of those conditions against the actual modulus before its schedule can be described as a factoring instance.
 
 ## Exact blocked lookup
 
@@ -281,10 +303,10 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 Choose `m` in `[0, L]` minimizing `failure(m)`, then compute
 
 ```text
-expected_attempt_multiplier = 4 / (1 - failure).
+expected_attempt_multiplier = 4 / (1 - failure) / 0.99.
 ```
 
-For this candidate, the derived values are 101,320 accumulator additions, `m = 25`, failure `0.0246837139`, and multiplier `4.1012336788`.
+The `/ 0.99` term is Gidney's allowance for post-processing failure. Version 1.0 omitted it. Before that correction, the historical candidate derived 101,320 accumulator additions, `m = 25`, failure `0.0246837139`, and multiplier `4.1012336788`. Including the factor would produce a multiplier of `4.1426602816`.
 
 At code distance 20 and a 1 ms measurement cycle, one surgery round corresponds to `(2d/3)` measurement cycles. Expected operation-level days are
 
@@ -294,10 +316,10 @@ days = (M + fanout)
      * (2 * 20 / 3)
      * 0.001
      / 86400
-     = 42.7602176638.
+     = 43.1921390543 if every other v1.0 input were valid.
 ```
 
-The full trace contains 25,330 job records, 30 terminal resets, and one header. A verifier recomputing the schedule from the intervals observed 1,142/1,160 CCZ width, 8,212/8,216 processor logical occupancy, and exact prime capacity above the target.
+This arithmetic correction does not rescue the result because the residue system itself is invalid. The historical full trace contains 25,330 job records, 30 terminal resets, and one header. Its verifier observed 1,142/1,160 CCZ width, 8,212/8,216 processor logical occupancy, and prime capacity above the target; it did not verify the missing modulus-deviation condition.
 
 ## The clean scheduling ablation
 
@@ -317,7 +339,7 @@ This is a comparison against our own same-allocation control, not against a publ
 
 ## Factory and reliability sensitivity
 
-The 42.760-day value assumes operation resources are available when scheduled. To bound magic-state demand, the exact in-place QCLA Toffoli count used here is
+The historical 42.760-day value assumes operation resources are available when scheduled. To bound magic-state demand within that invalidated workload, the exact in-place QCLA Toffoli count used here is
 
 ```text
 T(n) = 10n
@@ -352,13 +374,17 @@ The public time-efficient architecture supports a coarse capacity transfer: 1,14
 - a concrete `P = 1160` factory layout and refill interface;
 - decoder, feed-forward, and classical-bandwidth latency.
 
+The modeled fit is also only four logical qubits. Public `P = 1160` throughput does not establish that this circuit's particular 1,142-operation pattern is simultaneously routable, and even small code-block rounding, surgery workspace, or routing buffers can exceed that four-qubit margin.
+
 Consequently, the strongest defensible conclusion is:
 
-> A substantially shorter logical operation schedule exists under the stated model. Whether it becomes a physical speedup depends on unresolved architecture and reliability assumptions.
+> Closed-lane pipelining shortens the synthetic operation schedule under the stated model. Whether the effect survives a valid factoring instance and becomes a physical speedup depends on unresolved algorithmic, architectural, and reliability assumptions.
 
 ## Clean-room reproduction protocol
 
-The public clean-room package contains this methods article, its Markdown source, `reproduction-spec-v1.json`, the publication manifest, and the explanatory figure. It does **not** publish or link to the author's scheduler implementation, generated schedule trace, verifier implementation, resource-certificate implementation, or saved result artifacts. An independent reproducer is therefore expected to work only from the published methods, the specification, and the frozen external sources linked below.
+**The positive v1.0 reproduction challenge is suspended.** The historical package contains this methods article, its Markdown source, `reproduction-spec-v1.json`, the publication manifest, and the explanatory figure. It does **not** publish or link to the author's scheduler implementation, generated schedule trace, verifier implementation, resource-certificate implementation, or saved result artifacts.
+
+An independent audit may use those public materials to reproduce the v1.0 failure, but agreement with 25,330 jobs or 42.760 days is not acceptance of C2. The first required check is now construction and validation of the actual residue system against the RSA modulus.
 
 Before implementation, the reproducer should record:
 
@@ -370,7 +396,7 @@ Before implementation, the reproducer should record:
 
 It should then independently construct:
 
-- actual-prime residue capacity;
+- a modulus-specific prime set satisfying product capacity, modular deviation, distinctness, and multiplier non-divisibility;
 - small-instance exact blocked-lookup witnesses;
 - primitive lookup counts from the frozen Qualtran revision;
 - stage durations from the frozen source models;
@@ -378,15 +404,15 @@ It should then independently construct:
 - the same-allocation phase-separated control;
 - factory and reliability sensitivity.
 
-The reproduction passes C2 if discrete workload and resource counts agree exactly, both implementations produce feasible schedules, makespans agree within 1%, no operation category is omitted, and any disagreement is documented without changing the frozen specification.
+No current package can pass C2. A future replacement package may define a new acceptance test only after it publishes the explicit valid prime set, its hash, its generated tables or deterministic derivation, and every changed workload parameter.
 
-A different feasible schedule within tolerance is acceptable and may be stronger evidence than byte-for-byte agreement. Failure to reproduce is also a useful result if the discrepancy identifies an assumption hidden in this note.
+For a future replacement specification, a different feasible schedule under the same valid workload may be stronger evidence than byte-for-byte agreement. Negative results and discrepancies must remain publishable outcomes.
 
 ## Frozen sources and direct links
 
 | Source | Paper or record | Exact source material | Frozen digest |
 |---|---|---|---|
-| Gidney 2025 approximate residues | [arXiv:2505.15917v1](https://arxiv.org/abs/2505.15917v1); [Zenodo record 15347487](https://zenodo.org/records/15347487) | [download `code.zip`](https://zenodo.org/api/records/15347487/files/code.zip/content) | MD5 `80544b9dfbfe3612cb3727518160c588`; SHA-256 `e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d` |
+| Gidney 2025 approximate residues | [arXiv:2505.15917v1](https://arxiv.org/abs/2505.15917v1); [Zenodo record 15347487](https://zenodo.org/records/15347487) | [download paper source](https://arxiv.org/src/2505.15917v1); [download `code.zip`](https://zenodo.org/api/records/15347487/files/code.zip/content) | Code MD5 `80544b9dfbfe3612cb3727518160c588`; code SHA-256 `e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d` |
 | Ekerå–Håstad factoring reduction | [arXiv:1702.00249v1](https://arxiv.org/abs/1702.00249v1) | [download v1 source](https://arxiv.org/src/1702.00249v1) | Algorithmic reference; no local archive digest was used |
 | Qualtran | [repository](https://github.com/quantumlib/Qualtran); [exact commit](https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9) | [download commit archive](https://github.com/quantumlib/Qualtran/archive/096a2d009059faee0cfae462c3d59cb055300eb9.zip) | Archive SHA-256 `9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df` |
 | Cain *et al.* neutral-atom architecture | [arXiv:2603.28627v1](https://arxiv.org/abs/2603.28627v1) | [download v1 source](https://arxiv.org/src/2603.28627v1) | Source SHA-256 `24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953` |
@@ -394,8 +420,13 @@ A different feasible schedule within tolerance is acceptable and may be stronger
 
 ## Scope and status
 
-This is an open technical methods note, not a peer-reviewed result. The implementation that produced the reported numbers passed 121 tests and 32 subtests, including a separately implemented full-trace verifier. That evidence motivated publication, but it is not a substitute for clean-room reproduction.
+This is an open technical methods note, not a peer-reviewed result. The implementation that produced the historical numbers passed 121 tests and 32 subtests, including a separately implemented full-trace verifier. Those tests established internal schedule consistency but failed to test whether the selected residue system instantiated the algorithm.
 
-Version 1.0 freezes the method and claims as of August 28, 2026. Corrections should be published as new versions with an explicit change log rather than silently changing the reproduction target.
+Version 1.1 preserves the v1.0 artifacts and explicitly withdraws C2. It also records the two inherited algorithmic assumptions, adds the omitted post-processing factor, and strengthens the physical caveats. No corrected factoring runtime is claimed.
 
-The article, specification, and figure digests are recorded in `publication-manifest-v1.json` beside this source.
+### Change log
+
+- **v1.0 — August 28, 2026:** published the operation model and 42.760-day candidate.
+- **v1.1 — August 28, 2026:** withdrew C2 after the selected prime set failed the required 31-bit modulus-deviation bound; suspended positive clean-room reproduction; recorded the missing `/ 0.99` post-processing factor and inherited assumptions.
+
+The historical v1.0 article/specification/figure digests remain in `publication-manifest-v1.json`. The corrected article, v1.1 erratum, and retained historical files are recorded in `publication-manifest-v1.1.json`.

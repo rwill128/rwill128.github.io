@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">Verification map for the cross-layer RSA-2048 scheduling candidate</title>
-  <desc id="desc">The same-allocation scheduling ablation drops from 94.130 to 55.389 modeled days. The full operation schedule is 42.760 days and passes static capacity checks, while the physical runtime claim remains unverified.</desc>
+  <title id="title">Erratum map for the cross-layer RSA-2048 scheduling candidate</title>
+  <desc id="desc">The same-allocation scheduling ablation survives only as an abstract result. The 42.760-day factoring-instance claim is withdrawn because its prime set fails the required modulus-deviation condition, and the physical-runtime claim remains unestablished.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0d1626"/>
@@ -28,67 +28,67 @@
   </defs>
 
   <rect width="1600" height="900" rx="28" fill="url(#background)"/>
-  <text x="70" y="72" class="title">Cross-layer scheduling: a verified logical result, not yet a physical one</text>
-  <text x="70" y="108" class="subtitle">RSA-2048 approximate residues · frozen operation model · version 1.0</text>
+  <text x="70" y="72" class="title">Cross-layer scheduling: withdrawn factoring result, surviving hypothesis</text>
+  <text x="70" y="108" class="subtitle">RSA-2048 approximate residues · public erratum · version 1.1</text>
 
   <rect x="64" y="150" width="1472" height="292" rx="20" class="panel" filter="url(#shadow)"/>
   <text x="98" y="195" class="heading">C1 · Same circuit, same allocation, different schedule</text>
-  <rect x="1310" y="169" width="184" height="36" rx="18" fill="#70d39a"/>
-  <text x="1402" y="193" text-anchor="middle" class="badge">VERIFIED ABLATION</text>
+  <rect x="1280" y="169" width="214" height="36" rx="18" fill="#f5c76b"/>
+  <text x="1387" y="193" text-anchor="middle" class="badge">ABSTRACT MODEL ONLY</text>
 
   <text x="98" y="260" class="label">Phase-separated</text>
   <rect x="320" y="226" width="655" height="52" rx="9" fill="#278e91"/>
   <rect x="975" y="226" width="472" height="52" rx="9" fill="#ec8649"/>
   <text x="647" y="259" text-anchor="middle" class="label">all lane-local work</text>
   <text x="1211" y="259" text-anchor="middle" class="label">then accumulator work</text>
-  <text x="1468" y="262" class="number">94.130 d</text>
+  <text x="1495" y="262" text-anchor="end" class="number">94.130 d</text>
 
   <text x="98" y="350" class="label">Closed-lane pipeline</text>
   <rect x="320" y="316" width="838" height="52" rx="9" fill="url(#overlap)"/>
   <rect x="1158" y="316" width="289" height="52" rx="9" fill="#273650" stroke="#52627c" stroke-dasharray="7 6"/>
   <text x="739" y="349" text-anchor="middle" class="label">A/C lane work overlaps serial B service</text>
-  <text x="1468" y="352" class="number">55.389 d</text>
+  <text x="1495" y="352" text-anchor="end" class="number">55.389 d</text>
   <text x="320" y="403" class="small">A = precompute · B = shared accumulator · C = cleanup</text>
   <text x="1293" y="403" class="label" fill="#70d39a">41.157% shorter</text>
 
   <rect x="64" y="476" width="922" height="354" rx="20" class="panel" filter="url(#shadow)"/>
-  <text x="98" y="522" class="heading">C2 · Full corrected operation schedule</text>
+  <text x="98" y="522" class="heading">C2 · Factoring-instance claim withdrawn</text>
 
   <text x="98" y="590" class="metric">25,330</text>
-  <text x="98" y="617" class="small">actual-prime residue jobs</text>
-  <text x="345" y="590" class="metric">30</text>
-  <text x="345" y="617" class="small">closed residue lanes</text>
-  <text x="555" y="590" class="metric">42.760 d</text>
-  <text x="555" y="617" class="small">expected operation-level result</text>
+  <text x="98" y="617" class="small">size-only prime jobs</text>
+  <text x="345" y="590" class="metric">1.726 bits</text>
+  <text x="345" y="617" class="small">achieved modulus gap</text>
+  <text x="610" y="590" class="metric">31 bits</text>
+  <text x="610" y="617" class="small">required modulus gap</text>
 
-  <text x="98" y="681" class="small">CCZ width</text>
+  <text x="98" y="681" class="small">Product capacity</text>
   <rect x="250" y="660" width="450" height="24" rx="12" class="track"/>
-  <rect x="250" y="660" width="443" height="24" rx="12" fill="#63b3ed"/>
-  <text x="722" y="681" class="label">1,142 / 1,160</text>
+  <rect x="250" y="660" width="450" height="24" rx="12" fill="#70d39a"/>
+  <text x="722" y="681" class="label">499,714.64 / 499,712 · pass</text>
 
-  <text x="98" y="746" class="small">Processor logicals</text>
+  <text x="98" y="746" class="small">Modulus gap</text>
   <rect x="250" y="725" width="450" height="24" rx="12" class="track"/>
-  <rect x="250" y="725" width="450" height="24" rx="12" fill="#a689e8"/>
-  <text x="722" y="746" class="label">8,212 / 8,216</text>
+  <rect x="250" y="725" width="25" height="24" rx="12" fill="#fc8a8a"/>
+  <text x="722" y="746" class="label">1.726 / 31 bits · fail</text>
 
-  <rect x="98" y="778" width="846" height="30" rx="15" fill="#263750"/>
-  <text x="521" y="799" text-anchor="middle" class="small">Full trace and separate verifier pass · operation model only</text>
+  <rect x="98" y="778" width="846" height="30" rx="15" fill="#5d2d36"/>
+  <text x="521" y="799" text-anchor="middle" class="small">Schedule is internally consistent; its claimed factoring input is invalid</text>
 
   <rect x="1020" y="476" width="516" height="354" rx="20" class="panel" filter="url(#shadow)"/>
   <text x="1054" y="522" class="heading">Evidence ladder</text>
 
-  <circle cx="1080" cy="590" r="14" fill="#70d39a"/>
+  <circle cx="1080" cy="590" r="14" fill="#f5c76b"/>
   <line x1="1080" y1="604" x2="1080" y2="752" stroke="#586984" stroke-width="4"/>
   <text x="1116" y="586" class="label">C1 · Scheduling ablation</text>
-  <text x="1116" y="611" class="small">Same-allocation certificate passes</text>
+  <text x="1116" y="611" class="small">Survives for the synthetic workload</text>
 
-  <circle cx="1080" cy="672" r="14" fill="#70d39a"/>
+  <circle cx="1080" cy="672" r="14" fill="#fc8a8a"/>
   <text x="1116" y="668" class="label">C2 · Operation schedule</text>
-  <text x="1116" y="693" class="small">Complete job trace verifies 42.760 d</text>
+  <text x="1116" y="693" class="small">Withdrawn: invalid residue system</text>
 
-  <circle cx="1080" cy="754" r="14" fill="#fc8a8a"/>
+  <circle cx="1080" cy="754" r="14" fill="#8a95a8"/>
   <text x="1116" y="750" class="label">C3 · Physical runtime</text>
-  <text x="1116" y="775" class="small">Not established: route, factory, failure</text>
+  <text x="1116" y="775" class="small">Blocked until C2 is repaired</text>
 
-  <text x="70" y="872" class="small">The diagram explains the claims. Independent reconstruction from the published method is the next test.</text>
+  <text x="70" y="872" class="small">Positive clean-room reproduction is suspended until a valid modulus-specific prime set is published.</text>
 </svg>
