@@ -5,16 +5,16 @@
   "hash_algorithm": "sha256",
   "files": {
     "index.html": {
-      "bytes": 30778,
-      "sha256": "dcb866c248b86fad807bbf74a1c6c0f589b51d11ab38d7dec83d6c52cdff0fa6"
+      "bytes": 32081,
+      "sha256": "c26bd205e1f0e035b06a277fd782f98fac752653ea90fa55ea91cae306354e96"
     },
     "source.md": {
-      "bytes": 20989,
-      "sha256": "e290425d083e2f14f48ca26c450e40e3108f5dc761236ae736183f2501cd06d4"
+      "bytes": 22061,
+      "sha256": "f224400f93a9ce8ae1adcc006cf7ca1f61179c442ab34ab4e833fe1283aee033"
     },
     "reproduction-spec-v1.json": {
-      "bytes": 11178,
-      "sha256": "2526f60cfab335fd18370343fce2685a397ee80a4f25027b2ab80426c604108d"
+      "bytes": 11902,
+      "sha256": "35afcf5ed8d3e60b9051a255db57217d5fba47f3641bd1b06fef21167e1a33ab"
     },
     "../../assets/images/shor-scheduling/verification-map.svg": {
       "bytes": 5899,

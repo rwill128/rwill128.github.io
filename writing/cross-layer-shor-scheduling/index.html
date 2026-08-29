@@ -131,7 +131,7 @@
 </tbody></table>
 <p>The null hypothesis for C3 is that routing, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.</p>
 <h2 id="starting-points">Published starting points</h2>
-<p>The algorithmic starting point is <a href="https://arxiv.org/abs/2505.15917">Gidney&#39;s approximate-residue construction</a>, using the accompanying <a href="https://doi.org/10.5281/zenodo.15347487">Zenodo source snapshot</a>. The candidate uses the <a href="https://arxiv.org/abs/1702.00249">Ekerå–Håstad short-discrete-logarithm route to factoring</a>, a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters</p>
+<p>The algorithmic starting point is <a href="https://arxiv.org/abs/2505.15917v1">Gidney&#39;s approximate-residue construction, arXiv:2505.15917v1</a>, using the accompanying <a href="https://zenodo.org/records/15347487">Zenodo source snapshot</a>. The candidate uses the <a href="https://arxiv.org/abs/1702.00249v1">Ekerå–Håstad short-discrete-logarithm route to factoring, arXiv:1702.00249v1</a>, a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters</p>
 <pre><code class="language-text">n = 2048
 l = 20
 s = 3
@@ -142,8 +142,8 @@ w4 = 5
 len_acc = 31
 num_shots = 4
 </code></pre>
-<p>The architectural comparison point is the time-efficient model in <a href="https://arxiv.org/abs/2603.28627">Cain <em>et al.</em>, arXiv:2603.28627v1</a>: 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism <code>P = 1160</code>. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.</p>
-<p>Lookup primitive counts are tied to <a href="https://github.com/quantumlib/Qualtran">Qualtran</a> commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code>. Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from <a href="https://arxiv.org/abs/quant-ph/0406142">Draper <em>et al.</em></a>.</p>
+<p>The architectural comparison point is the time-efficient model in <a href="https://arxiv.org/abs/2603.28627v1">Cain <em>et al.</em>, arXiv:2603.28627v1</a>: 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism <code>P = 1160</code>. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.</p>
+<p>Lookup primitive counts are tied to <a href="https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9">Qualtran commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code></a>. Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from <a href="https://arxiv.org/abs/quant-ph/0406142v1">Draper <em>et al.</em>, arXiv:quant-ph/0406142v1</a>.</p>
 <p>The complete source hashes are recorded in the accompanying <a href="reproduction-spec-v1.json">machine-readable reproduction specification</a>.</p>
 <h2 id="residue-jobs">From approximate residues to independent jobs</h2>
 <p>The approximate-residue construction replaces a single wide modular-arithmetic state with many small modular periods. Each period contributes a residue job. A job performs three stages:</p>
@@ -419,29 +419,45 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 </ul>
 <p>The reproduction passes C2 if discrete workload and resource counts agree exactly, both implementations produce feasible schedules, makespans agree within 1%, no operation category is omitted, and any disagreement is documented without changing the frozen specification.</p>
 <p>A different feasible schedule within tolerance is acceptable and may be stronger evidence than byte-for-byte agreement. Failure to reproduce is also a useful result if the discrepancy identifies an assumption hidden in this note.</p>
-<h2 id="source-lock">Frozen source identifiers</h2>
+<h2 id="source-lock">Frozen sources and direct links</h2>
 <table>
 <thead>
 <tr>
 <th>Source</th>
-<th>Frozen identifier</th>
+<th>Paper or record</th>
+<th>Exact source material</th>
+<th>Frozen digest</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Gidney 2025 code archive</td>
-<td>Zenodo 15347487; MD5 <code>80544b9dfbfe3612cb3727518160c588</code>; SHA-256 <code>e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d</code></td>
+<td>Gidney 2025 approximate residues</td>
+<td><a href="https://arxiv.org/abs/2505.15917v1">arXiv:2505.15917v1</a>; <a href="https://zenodo.org/records/15347487">Zenodo record 15347487</a></td>
+<td><a href="https://zenodo.org/api/records/15347487/files/code.zip/content">download <code>code.zip</code></a></td>
+<td>MD5 <code>80544b9dfbfe3612cb3727518160c588</code>; SHA-256 <code>e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d</code></td>
+</tr>
+<tr>
+<td>Ekerå–Håstad factoring reduction</td>
+<td><a href="https://arxiv.org/abs/1702.00249v1">arXiv:1702.00249v1</a></td>
+<td><a href="https://arxiv.org/src/1702.00249v1">download v1 source</a></td>
+<td>Algorithmic reference; no local archive digest was used</td>
 </tr>
 <tr>
 <td>Qualtran</td>
-<td>commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code>; archive SHA-256 <code>9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df</code></td>
+<td><a href="https://github.com/quantumlib/Qualtran">repository</a>; <a href="https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9">exact commit</a></td>
+<td><a href="https://github.com/quantumlib/Qualtran/archive/096a2d009059faee0cfae462c3d59cb055300eb9.zip">download commit archive</a></td>
+<td>Archive SHA-256 <code>9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df</code></td>
 </tr>
 <tr>
-<td>Cain <em>et al.</em></td>
-<td>arXiv:2603.28627v1 source SHA-256 <code>24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953</code></td>
+<td>Cain <em>et al.</em> neutral-atom architecture</td>
+<td><a href="https://arxiv.org/abs/2603.28627v1">arXiv:2603.28627v1</a></td>
+<td><a href="https://arxiv.org/src/2603.28627v1">download v1 source</a></td>
+<td>Source SHA-256 <code>24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953</code></td>
 </tr>
 <tr>
 <td>Draper <em>et al.</em> QCLA</td>
-<td>arXiv source SHA-256 <code>4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549</code></td>
+<td><a href="https://arxiv.org/abs/quant-ph/0406142v1">arXiv:quant-ph/0406142v1</a></td>
+<td><a href="https://arxiv.org/src/quant-ph/0406142v1">download v1 source</a></td>
+<td>Source SHA-256 <code>4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549</code></td>
 </tr>
 </tbody></table>
 <h2 id="scope">Scope and status</h2>

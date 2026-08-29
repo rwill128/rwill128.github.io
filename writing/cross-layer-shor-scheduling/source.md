@@ -34,7 +34,7 @@ The null hypothesis for C3 is that routing, factory contention, communication, d
 
 ## Published starting points
 
-The algorithmic starting point is [Gidney's approximate-residue construction](https://arxiv.org/abs/2505.15917), using the accompanying [Zenodo source snapshot](https://doi.org/10.5281/zenodo.15347487). The candidate uses the [Ekerå–Håstad short-discrete-logarithm route to factoring](https://arxiv.org/abs/1702.00249), a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters
+The algorithmic starting point is [Gidney's approximate-residue construction, arXiv:2505.15917v1](https://arxiv.org/abs/2505.15917v1), using the accompanying [Zenodo source snapshot](https://zenodo.org/records/15347487). The candidate uses the [Ekerå–Håstad short-discrete-logarithm route to factoring, arXiv:1702.00249v1](https://arxiv.org/abs/1702.00249v1), a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters
 
 ```text
 n = 2048
@@ -48,9 +48,9 @@ len_acc = 31
 num_shots = 4
 ```
 
-The architectural comparison point is the time-efficient model in [Cain *et al.*, arXiv:2603.28627v1](https://arxiv.org/abs/2603.28627): 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism `P = 1160`. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.
+The architectural comparison point is the time-efficient model in [Cain *et al.*, arXiv:2603.28627v1](https://arxiv.org/abs/2603.28627v1): 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism `P = 1160`. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.
 
-Lookup primitive counts are tied to [Qualtran](https://github.com/quantumlib/Qualtran) commit `096a2d009059faee0cfae462c3d59cb055300eb9`. Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from [Draper *et al.*](https://arxiv.org/abs/quant-ph/0406142).
+Lookup primitive counts are tied to [Qualtran commit `096a2d009059faee0cfae462c3d59cb055300eb9`](https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9). Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from [Draper *et al.*, arXiv:quant-ph/0406142v1](https://arxiv.org/abs/quant-ph/0406142v1).
 
 The complete source hashes are recorded in the accompanying [machine-readable reproduction specification](reproduction-spec-v1.json).
 
@@ -382,14 +382,15 @@ The reproduction passes C2 if discrete workload and resource counts agree exactl
 
 A different feasible schedule within tolerance is acceptable and may be stronger evidence than byte-for-byte agreement. Failure to reproduce is also a useful result if the discrepancy identifies an assumption hidden in this note.
 
-## Frozen source identifiers
+## Frozen sources and direct links
 
-| Source | Frozen identifier |
-|---|---|
-| Gidney 2025 code archive | Zenodo 15347487; MD5 `80544b9dfbfe3612cb3727518160c588`; SHA-256 `e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d` |
-| Qualtran | commit `096a2d009059faee0cfae462c3d59cb055300eb9`; archive SHA-256 `9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df` |
-| Cain *et al.* | arXiv:2603.28627v1 source SHA-256 `24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953` |
-| Draper *et al.* QCLA | arXiv source SHA-256 `4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549` |
+| Source | Paper or record | Exact source material | Frozen digest |
+|---|---|---|---|
+| Gidney 2025 approximate residues | [arXiv:2505.15917v1](https://arxiv.org/abs/2505.15917v1); [Zenodo record 15347487](https://zenodo.org/records/15347487) | [download `code.zip`](https://zenodo.org/api/records/15347487/files/code.zip/content) | MD5 `80544b9dfbfe3612cb3727518160c588`; SHA-256 `e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d` |
+| Ekerå–Håstad factoring reduction | [arXiv:1702.00249v1](https://arxiv.org/abs/1702.00249v1) | [download v1 source](https://arxiv.org/src/1702.00249v1) | Algorithmic reference; no local archive digest was used |
+| Qualtran | [repository](https://github.com/quantumlib/Qualtran); [exact commit](https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9) | [download commit archive](https://github.com/quantumlib/Qualtran/archive/096a2d009059faee0cfae462c3d59cb055300eb9.zip) | Archive SHA-256 `9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df` |
+| Cain *et al.* neutral-atom architecture | [arXiv:2603.28627v1](https://arxiv.org/abs/2603.28627v1) | [download v1 source](https://arxiv.org/src/2603.28627v1) | Source SHA-256 `24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953` |
+| Draper *et al.* QCLA | [arXiv:quant-ph/0406142v1](https://arxiv.org/abs/quant-ph/0406142v1) | [download v1 source](https://arxiv.org/src/quant-ph/0406142v1) | Source SHA-256 `4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549` |
 
 ## Scope and status
 
