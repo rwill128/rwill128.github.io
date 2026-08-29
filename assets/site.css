@@ -233,11 +233,6 @@ a:hover {
   object-position: center;
 }
 
-.feature-story-media img.shor-schedule-preview {
-  object-fit: contain;
-  object-position: center;
-}
-
 .feature-story-copy {
   display: flex;
   flex-direction: column;
