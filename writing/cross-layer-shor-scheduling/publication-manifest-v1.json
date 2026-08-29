@@ -1,0 +1,29 @@
+{
+  "schema": "cross-layer-rsa2048-publication-manifest-v1",
+  "version": "1.0",
+  "frozen_date": "2026-08-28",
+  "hash_algorithm": "sha256",
+  "files": {
+    "index.html": {
+      "bytes": 30778,
+      "sha256": "dcb866c248b86fad807bbf74a1c6c0f589b51d11ab38d7dec83d6c52cdff0fa6"
+    },
+    "source.md": {
+      "bytes": 20989,
+      "sha256": "e290425d083e2f14f48ca26c450e40e3108f5dc761236ae736183f2501cd06d4"
+    },
+    "reproduction-spec-v1.json": {
+      "bytes": 11178,
+      "sha256": "2526f60cfab335fd18370343fce2685a397ee80a4f25027b2ab80426c604108d"
+    },
+    "../../assets/images/shor-scheduling/verification-map.svg": {
+      "bytes": 5899,
+      "sha256": "a113d78e9cd4823c78c62b22bcfaa5f8b77f250f5a76342a0a42be9542a127c9"
+    },
+    "../../assets/images/shor-scheduling/verification-map.png": {
+      "bytes": 250410,
+      "sha256": "37530359343b678a92b551f2682623bcf8d3c4464712d7b2fe40b764b9c39cb6"
+    }
+  },
+  "note": "The Git commit containing this manifest is the immutable publication revision. This manifest intentionally does not hash itself."
+}

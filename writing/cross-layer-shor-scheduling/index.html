@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-layer scheduling for RSA-2048 factoring | Richard Williams</title>
+  <meta name="description" content="A reproducible operation-level scheduling candidate for an approximate-residue RSA-2048 factoring circuit, its 42.760-day model result, and the physical assumptions that remain unverified.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit">
+  <meta property="og:description" content="A methods note, a 42.760-day operation-level result, and an open clean-room reproduction challenge.">
+  <meta property="og:url" content="https://rwill128.github.io/writing/cross-layer-shor-scheduling/">
+  <meta property="og:image" content="https://rwill128.github.io/assets/images/shor-scheduling/verification-map.png">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="900">
+  <meta property="article:author" content="Richard Williams">
+  <meta property="article:published_time" content="2026-08-28">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f6f3">
+  <link rel="canonical" href="https://rwill128.github.io/writing/cross-layer-shor-scheduling/">
+  <link rel="stylesheet" href="/assets/site.css?v=20260828-1">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit",
+    "author": {"@type": "Person", "name": "Richard Williams"},
+    "datePublished": "2026-08-28",
+    "version": "1.0",
+    "url": "https://rwill128.github.io/writing/cross-layer-shor-scheduling/",
+    "description": "A reproducible operation-level scheduling candidate, its 42.760-day model result, and the physical assumptions that remain unverified."
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to article</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="/">Richard Williams</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/#writing" aria-current="page">Writing</a>
+        <a class="optional-nav" href="/#work">Work</a>
+        <a href="https://github.com/rwill128" rel="me">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="article">
+    <header class="article-header">
+      <div class="shell article-heading">
+        <div class="article-kicker">
+          <span>Quantum algorithms</span>
+          <span>Resource estimation</span>
+          <span>Open reproduction</span>
+        </div>
+        <h1>Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit</h1>
+        <p class="article-deck">A reproducible operation-level candidate, its 42.760-day model result, and the physical assumptions that remain unverified.</p>
+        <div class="article-byline">
+          <span>By Richard Williams</span>
+          <span>August 28, 2026</span>
+          <span>Version 1.0</span>
+          <span>16 minute read</span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="article-hero">
+      <a href="/assets/images/shor-scheduling/verification-map.svg">
+        <img src="/assets/images/shor-scheduling/verification-map.svg" alt="Verification map separating the scheduling ablation, full operation schedule, and unverified physical-runtime claim" width="1600" height="900">
+      </a>
+    </figure>
+
+    <section class="metric-band" aria-label="Key results">
+      <div class="wide-shell metric-grid">
+        <div class="metric">
+          <strong>41.157%</strong>
+          <span>same-allocation scheduling reduction</span>
+        </div>
+        <div class="metric">
+          <strong>25,330</strong>
+          <span>actual-prime residue jobs</span>
+        </div>
+        <div class="metric">
+          <strong>42.760 d</strong>
+          <span>operation-level expected result</span>
+        </div>
+        <div class="metric">
+          <strong>Not physical</strong>
+          <span>routing and whole-run reliability remain open</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell article-layout">
+      <article class="article-body">
+        <div class="result-box">
+          <h3>Open reproduction challenge</h3>
+          <p>This version publishes the method and frozen assumptions, but not the author implementation or generated trace. Reproduce or falsify it independently from this article and the <a href="reproduction-spec-v1.json">machine-readable specification</a>.</p>
+        </div>
+<p>Resource estimates for cryptographically relevant quantum algorithms are long chains of conditional statements. A circuit construction determines logical operations. A compilation model turns them into primitive resources. A scheduler maps those resources onto a processor. A fault-tolerant architecture supplies timing, factories, movement, and failure rates. A striking number at the end is only as strong as every link before it.</p>
+<p>This note reports a candidate improvement at one link in that chain: operation-level scheduling. It combines the approximate-residue factoring construction published by Craig Gidney in 2025 with the time-efficient high-rate neutral-atom capacity model published by Cain <em>et al.</em> in 2026. The central idea is to keep independent residue lanes closed over their compute, shared-accumulator update, and cleanup stages, allowing local work to overlap the serial accumulator bottleneck.</p>
+<p>Under the model specified below, a full 25,330-job schedule evaluates to <strong>42.7602176638 expected days</strong>. A simpler same-allocation ablation falls from <strong>94.1304296981 to 55.3889675300 days</strong>, a <strong>41.157% reduction</strong>, when closed-lane pipelining replaces a phase-separated schedule.</p>
+<p>Those are operation-schedule results. They are not a demonstrated physical runtime, and they are not a verified improvement over a state-of-the-art routed implementation. The public high-rate architecture does not specify the concrete code blocks, logical operators, mixed parallel-measurement gadgets, placement, movement paths, decoder latency, or factory interfaces needed to route this circuit. Factory and reliability sensitivity can erase the apparent advantage.</p>
+<p>The purpose of publishing this note is therefore not to announce a 42.76-day factorization machine. It is to make the narrower result independently reproducible—and falsifiable—from a clean implementation.</p>
+<h2 id="claim-ladder">Claim ladder</h2>
+<p>The work makes three deliberately separate claims.</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Statement</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td>With the cycle-12 circuit and allocation fixed, closed-lane accumulator pipelining reduces the pre-fanout estimate from 94.130 to 55.389 days.</td>
+<td>Verified within the operation model</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>The corrected exact-CCZ residue candidate has a feasible 25,330-job operation schedule evaluating to 42.760 days.</td>
+<td>Reproduced by a complete trace and separate verifier</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>The candidate factors RSA-2048 in about 42.760 physical days at a footprint comparable to 102,000 atoms.</td>
+<td>Not established</td>
+</tr>
+</tbody></table>
+<p>The null hypothesis for C3 is that routing, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.</p>
+<h2 id="starting-points">Published starting points</h2>
+<p>The algorithmic starting point is <a href="https://arxiv.org/abs/2505.15917">Gidney&#39;s approximate-residue construction</a>, using the accompanying <a href="https://doi.org/10.5281/zenodo.15347487">Zenodo source snapshot</a>. The candidate uses the <a href="https://arxiv.org/abs/1702.00249">Ekerå–Håstad short-discrete-logarithm route to factoring</a>, a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters</p>
+<pre><code class="language-text">n = 2048
+l = 20
+s = 3
+w1 = 7
+w3a = 4
+w3b = 4
+w4 = 5
+len_acc = 31
+num_shots = 4
+</code></pre>
+<p>The architectural comparison point is the time-efficient model in <a href="https://arxiv.org/abs/2603.28627">Cain <em>et al.</em>, arXiv:2603.28627v1</a>: 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism <code>P = 1160</code>. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.</p>
+<p>Lookup primitive counts are tied to <a href="https://github.com/quantumlib/Qualtran">Qualtran</a> commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code>. Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from <a href="https://arxiv.org/abs/quant-ph/0406142">Draper <em>et al.</em></a>.</p>
+<p>The complete source hashes are recorded in the accompanying <a href="reproduction-spec-v1.json">machine-readable reproduction specification</a>.</p>
+<h2 id="residue-jobs">From approximate residues to independent jobs</h2>
+<p>The approximate-residue construction replaces a single wide modular-arithmetic state with many small modular periods. Each period contributes a residue job. A job performs three stages:</p>
+<ol>
+<li><strong>A — precompute:</strong> local lookup and arithmetic on one lane;</li>
+<li><strong>B — accumulator:</strong> update the single shared output accumulator;</li>
+<li><strong>C — cleanup:</strong> uncompute the lane-local state.</li>
+</ol>
+<p>The lane cannot start its next A stage until its previous C stage completes. B is globally serial because every job touches the shared accumulator. Different lanes may nevertheless perform A or C while another lane occupies B.</p>
+<p>For exponent window <code>w1 = 7</code>, the 1,708 exponent bits require</p>
+<pre><code class="language-text">num_windows1 = ceil(1708 / 7) = 244
+</code></pre>
+<p>The required residue-product capacity is therefore</p>
+<pre><code class="language-text">target_bits = 2048 * 244 = 499712.
+</code></pre>
+<p>The idealized estimate obtained by dividing this target by 20 understates the required number of residues because actual 20-bit primes are smaller than <code>2^20</code>. The corrected workload enumerates primes in <code>[2^19, 2^20)</code>, takes them in descending order, and chooses the smallest count <code>J</code> satisfying</p>
+<pre><code class="language-text">sum(log2(p) for p in selected_primes) &gt;= 499712.
+</code></pre>
+<p>This produces 25,330 jobs with 499,714.6416576 bits of product capacity. The prime enumeration and capacity sum are outputs to be independently derived, not trusted constants.</p>
+<h2 id="exact-lookup">Exact blocked lookup</h2>
+<p>The lookup model begins with a clean blocked QROM. For a block size <code>B</code>, the high address bits select one block and the low address bits route one of its words to position zero.</p>
+<p>The routing tree uses <code>B - 1</code> word Fredkins. For word width <code>w</code>, each word Fredkin is decomposed into <code>w</code> exact Fredkins, and each bit Fredkin uses one Toffoli or CCZ plus two CNOTs. The exact router therefore contributes</p>
+<pre><code class="language-text">router CCZ/Toffoli = w * (B - 1)
+router CNOT        = 2 * w * (B - 1).
+</code></pre>
+<p>At tree level <code>k</code>, the available gate count is</p>
+<pre><code class="language-text">gates(k) = w * (B &gt;&gt; (k + 1)).
+</code></pre>
+<p>With parallel capacity <code>P_stage</code>, exact router magic depth is</p>
+<pre><code class="language-text">sum(ceil(gates(k) / P_stage) for each tree level k).
+</code></pre>
+<p>This matters because multiplying the largest level by the number of levels overcounts magic depth. Re-extracting it level by level reduced the router component by 25% relative to the scheduler&#39;s frozen proxy. The reported 42.760-day schedule retains the larger proxy rather than claiming the uncompiled reduction.</p>
+<p>After adding the routed word into the target, all lookup words are measured in the X basis. For measurement masks <code>m_i</code> and routed words <code>v_i(a)</code>, the branch phase is</p>
+<pre><code class="language-text">phase(a, m) = XOR_i parity(m_i AND v_i(a)).
+</code></pre>
+<p>A deferred address-indexed phase lookup evaluates the same Boolean function and cancels it. The functional obligation is therefore:</p>
+<pre><code class="language-text">target&#39; = target + table[address] mod 2^w
+corrected_phase = phase XOR phase = 0.
+</code></pre>
+<p>An independent implementation should test this identity exhaustively on small instances, including every address, target, and measurement outcome, before using the resource formula at RSA-sized widths.</p>
+<h2 id="frontier-rebuild">Rebuilding the lookup and stage frontiers</h2>
+<p>The stage profiles should be regenerated rather than copied from the result table. Construct Gidney&#39;s released <code>CostConfig</code> from the frozen candidate parameters and inspect <code>estimated_subroutine_costs_per_call</code>. Within each stage, interpret source operations as follows:</p>
+<ul>
+<li><code>__iadd__</code> and <code>phase_flip_if_cmp</code> contribute carry-lookahead work at the operation width;</li>
+<li><code>init_lookup</code> with <code>N &gt; 2</code> contributes blocked-QROM selection and routing work;</li>
+<li><code>phaseflip_by_lookup</code> with <code>N &gt; 4</code> contributes the specialized square-root phase proxy;</li>
+<li><code>CX</code>, <code>CZ</code>, and smaller Clifford-only lookups contribute no non-Clifford clock depth here;</li>
+<li>any other source operation is an error rather than an implicitly free operation.</li>
+</ul>
+<p>Build a finite Qualtran lookup table for table sizes <code>8, 16, 32, 64, 128, 256</code>, word widths 18 through 40 inclusive, and every power-of-two block size from 1 through the table size. This is 897 rows. For every row, extract:</p>
+<pre><code class="language-text">table_size
+word_width
+block_size
+QROAMClean compute gate and qubit counts
+QROAMClean measurement-uncompute gate and qubit counts
+uncompute block size
+clean SelectSwapQROM gate and qubit counts
+dirty SelectSwapQROM gate and qubit counts
+incremental QROAM qubits relative to block size 1
+</code></pre>
+<p>For the frozen exact-CCZ router proxy, let</p>
+<pre><code class="language-text">levels        = log2(B)
+widest_gates  = w * B / 2
+batches       = ceil(widest_gates / P_stage)
+selection     = ceil(N / B)
+magic_layers  = levels * batches
+magic_gates   = w * (B - 1)
+cat_width     = min(P_stage, widest_gates)
+cat_ancillas  = max(0, cat_width - 1)
+cat_cycles    = 2 * levels * ceil(log2(cat_width)).
+</code></pre>
+<p>This is the conservative frozen scheduler proxy. The level-by-level formula in the previous section is the later audit, not a replacement input for the reported schedule.</p>
+<p>The carry-lookahead proxy for an operation of width <code>u</code> is</p>
+<pre><code class="language-text">carry_layers  = 4 * log2(u) * ceil(u / P_stage)
+carry_scratch = max(0, u - 2 * ceil(log2(u))).
+</code></pre>
+<p>For a phase-lookup table of size <code>N</code>, set <code>q = log2(N)</code> and <code>h = floor(q / 2)</code>. The specialized phase-layer proxy is</p>
+<pre><code class="language-text">uncorrected_ands = ((2 + (q mod 2)) * 2^h) - q - 2
+multi_target_czs = max(0, 2^h + q - 3)
+phase_layers     = uncorrected_ands + multi_target_czs.
+</code></pre>
+<p>For each lookup signature and each possible peak-scratch cap, select the fitting block size with minimum <code>selection + magic_layers</code>. A stage&#39;s extra lookup logicals are the maximum, not the sum, across sequential lookup signatures. Add the cat ancillas to Qualtran&#39;s incremental QROAM qubits. Stage scratch is the maximum of peak lookup scratch and carry scratch.</p>
+<p>Discard any profile dominated in both scratch and rounds. Construct lane profiles from every nondominated pre/post pair. Their shared scratch is the maximum of the two stages; choose the fastest terminal profile fitting that same scratch. This produces the finite stage frontiers used by the outer stream and residue-width search.</p>
+
+
+<h2 id="stage-model">Stage-duration model</h2>
+<p>For each stage profile, operation categories are converted into surgery rounds as follows:</p>
+<pre><code class="language-text">rounds = 3 * carry_lookahead_layers
+       + 4 * lookup_select_layers
+       + 3 * lookup_router_magic_layers
+       + 4 * specialized_phase_proxy_layers
+       + lookup_router_clifford_cycles / (40 / 3).
+</code></pre>
+<p>This conversion is part of the frozen architecture model. It is not a measurement of a routed qLDPC circuit.</p>
+<p>The selected candidate uses 30 residue lanes. It reserves 32 units of parallelism for the shared accumulator, leaving</p>
+<pre><code class="language-text">lane_parallelism = floor((1160 - 32) / 30) = 37.
+</code></pre>
+<p>The selected blocked-lookup assignments and resulting stage durations are:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Source loops</th>
+<th>Lookup assignments</th>
+<th align="right">Duration in surgery rounds</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A — precompute</td>
+<td><code>loop1 + loop2 + loop3</code></td>
+<td><code>N128_w31 = 4</code>, <code>N256_w21 = 4</code></td>
+<td align="right">56,220.92488496</td>
+</tr>
+<tr>
+<td>B — accumulator</td>
+<td><code>loop4</code></td>
+<td><code>N32_w31 = 4</code>, <code>N32_w32 = 4</code></td>
+<td align="right">1,045.70213435</td>
+</tr>
+<tr>
+<td>C — cleanup</td>
+<td><code>unloop3 + unloop2</code></td>
+<td><code>N256_w20 = 4</code>, <code>N256_w21 = 4</code></td>
+<td align="right">22,618.54933841</td>
+</tr>
+<tr>
+<td>Terminal reset</td>
+<td><code>loop1</code></td>
+<td><code>N128_w31 = 4</code></td>
+<td align="right">49,105.08679681</td>
+</tr>
+</tbody></table>
+<p>The durations are reported results. A clean reproduction should regenerate them from the frozen Gidney and Qualtran sources and report any disagreement before scheduling.</p>
+<h2 id="processor-allocation">Processor allocation</h2>
+<p>For a candidate with <code>S</code> streams, 20-bit residues use <code>2 * 20 + 42 = 82</code> private logicals per lane. Exponent-control fanout costs <code>w1 * (S - 1)</code> logicals. At <code>S = 30</code>, the fixed payload is</p>
+<pre><code class="language-text">payload = 1708 + 31 + 7 * (30 - 1) + 30 * 82
+        = 4402 logicals.
+</code></pre>
+<p>The source architecture&#39;s processor capacity is 8,216 logicals, leaving 3,814 for simultaneous stage scratch. The selected profiles require 3,810, leaving four logicals of modeled slack.</p>
+<p>The parallel CCZ reservation is</p>
+<pre><code class="language-text">30 * 37 + 32 = 1142 &lt;= 1160.
+</code></pre>
+<p>These are static capacity checks. They do not establish a physical placement or collision-free route.</p>
+<h2 id="scheduler">Closed-lane scheduling algorithm</h2>
+<p>Distribute the 25,330 jobs as evenly as possible across 30 lanes. Ten lanes receive 845 jobs and twenty receive 844. The scheduling policy is deterministic, closed-lane, and first-ready-first-served at the accumulator.</p>
+<pre><code class="language-text">fanout = 183 surgery rounds
+accumulator_available = fanout
+
+for each lane:
+    ready.push(fanout + A_duration, lane, lane_job=0)
+
+while ready is not empty:
+    pre_end, lane, lane_job = ready.pop_min()
+
+    B_start = max(pre_end, accumulator_available)
+    B_end   = B_start + B_duration
+    C_end   = B_end + C_duration
+
+    emit A, B, and C intervals for this job
+    accumulator_available = B_end
+
+    if lane has another job:
+        ready.push(C_end + A_duration, lane, lane_job + 1)
+    else:
+        emit terminal reset [C_end, C_end + terminal_duration]
+</code></pre>
+<p>Ties are ordered by lane index. Every job must appear exactly once; every B must begin after its A; every C must begin at B completion; a lane&#39;s next A must begin at its previous C completion; B intervals must never overlap; and every lane must end with one terminal reset.</p>
+<p>The maximum terminal-reset end time, excluding the one-time fanout, is</p>
+<pre><code class="language-text">M = 67,561,490.42827663 surgery rounds per attempt.
+</code></pre>
+<h2 id="runtime">Attempts and runtime conversion</h2>
+<p>The residue approximation introduces a retry multiplier. Let <code>A_add</code> be the number of accumulator additions and <code>L = 31</code> the accumulator length. For mask width <code>m</code>, use</p>
+<pre><code class="language-text">deviation       = A_add * 3 * 2^(-L)
+mask_proportion = 2^(m - L)
+failure(m)      = mask_proportion + deviation / mask_proportion.
+</code></pre>
+<p>Choose <code>m</code> in <code>[0, L]</code> minimizing <code>failure(m)</code>, then compute</p>
+<pre><code class="language-text">expected_attempt_multiplier = 4 / (1 - failure).
+</code></pre>
+<p>For this candidate, the derived values are 101,320 accumulator additions, <code>m = 25</code>, failure <code>0.0246837139</code>, and multiplier <code>4.1012336788</code>.</p>
+<p>At code distance 20 and a 1 ms measurement cycle, one surgery round corresponds to <code>(2d/3)</code> measurement cycles. Expected operation-level days are</p>
+<pre><code class="language-text">days = (M + fanout)
+     * expected_attempt_multiplier
+     * (2 * 20 / 3)
+     * 0.001
+     / 86400
+     = 42.7602176638.
+</code></pre>
+<p>The full trace contains 25,330 job records, 30 terminal resets, and one header. A verifier recomputing the schedule from the intervals observed 1,142/1,160 CCZ width, 8,212/8,216 processor logical occupancy, and exact prime capacity above the target.</p>
+<h2 id="ablation">The clean scheduling ablation</h2>
+<p>The 41.157% result is a separate, cleaner comparison. It holds the cycle-12 circuit, number of jobs, stage durations, retry multiplier, and processor allocation fixed.</p>
+<p>The phase-separated control completes all lane-local A/C batches, then all B services, then the terminal reset:</p>
+<pre><code class="language-text">ceil(jobs / lanes) * (A + C)
++ jobs * B
++ terminal.
+</code></pre>
+<p>The closed-lane schedule instead overlaps A and C work with B service while respecting the same lane and accumulator constraints. Under that frozen allocation, the phase-separated estimate is 94.1304296981 days and the closed-lane estimate is 55.3889675300 days before the later exact-CCZ and residue-capacity corrections.</p>
+<p>This is a comparison against our own same-allocation control, not against a published implementation. It establishes that scheduling, rather than a different circuit or a larger machine, accounts for that particular reduction.</p>
+<h2 id="sensitivity">Factory and reliability sensitivity</h2>
+<p>The 42.760-day value assumes operation resources are available when scheduled. To bound magic-state demand, the exact in-place QCLA Toffoli count used here is</p>
+<pre><code class="language-text">T(n) = 10n
+     - 3 popcount(n)
+     - 3 popcount(n - 1)
+     - 3 floor(log2(n))
+     - 3 floor(log2(n - 1))
+     - 7.
+</code></pre>
+<p>Applying that expression to every modeled add and comparison produces 13.359 billion expected CCZ states. For <code>P = 1160</code>, a central 240-cycle batch model has 1.337× average throughput headroom. Perfect overlap retains 42.760 raw days. Fully serializing factory production gives 74.751 raw days, or 83.057 days per success at an imposed 90% whole-run survival target.</p>
+<p>The conclusion is fragile:</p>
+<table>
+<thead>
+<tr>
+<th>Sensitivity</th>
+<th align="right">Raw days</th>
+<th align="right">Days per success or implication</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>240-cycle batches, perfect overlap</td>
+<td align="right">42.760</td>
+<td align="right">Operation-level lower envelope</td>
+</tr>
+<tr>
+<td>240-cycle batches, fully serialized</td>
+<td align="right">74.751</td>
+<td align="right">83.057 at 90% survival</td>
+</tr>
+<tr>
+<td>360-cycle batches, fully serialized</td>
+<td align="right">90.747</td>
+<td align="right">100.830 at 90% survival</td>
+</tr>
+<tr>
+<td>240-cycle serialized at nominal 0.1% physical error</td>
+<td align="right">74.751</td>
+<td align="right">303–324, depending on block-hazard proxy</td>
+</tr>
+</tbody></table>
+<p>Within the independent-error proxy, physical error must be approximately 0.0664% or lower to reach 90% survival. Correlated surgery, movement faults, burst contention, and decoder effects are not represented. The sensitivity analysis is a decision boundary, not a physical error proof.</p>
+<h2 id="physical-boundary">Why the physical claim remains open</h2>
+<p>The public time-efficient architecture supports a coarse capacity transfer: 1,142 is below <code>P = 1160</code>, and 8,212 is below the modeled 8,216 logical processor capacity. But an explicit route requires information the public v1 paper does not supply:</p>
+<ul>
+<li>parity-check matrices and logical-operator representatives for the proposed distance-20, 30%-rate code blocks;</li>
+<li>a mapping from the 8,212 live logicals to concrete blocks and physical supports;</li>
+<li>a high-rate surgery gadget for the mixed parallel-Pauli-measurement pattern;</li>
+<li>operation-zone coordinates, movement paths, collision constraints, and stabilizer timing;</li>
+<li>a concrete <code>P = 1160</code> factory layout and refill interface;</li>
+<li>decoder, feed-forward, and classical-bandwidth latency.</li>
+</ul>
+<p>Consequently, the strongest defensible conclusion is:</p>
+<blockquote>
+<p>A substantially shorter logical operation schedule exists under the stated model. Whether it becomes a physical speedup depends on unresolved architecture and reliability assumptions.</p>
+</blockquote>
+<h2 id="reproduction">Clean-room reproduction protocol</h2>
+<p>This article and <code>reproduction-spec-v1.json</code> are the intended inputs to an independent implementation. The reproducer should not use the author scheduler, generated trace, verifier, or saved output JSON.</p>
+<p>Before implementation, the reproducer should record:</p>
+<ol>
+<li>source hashes and environment;</li>
+<li>its interpretation of every timing rule;</li>
+<li>included and excluded costs;</li>
+<li>tests and pass thresholds;</li>
+<li>any ambiguity that could materially affect the result.</li>
+</ol>
+<p>It should then independently construct:</p>
+<ul>
+<li>actual-prime residue capacity;</li>
+<li>small-instance exact blocked-lookup witnesses;</li>
+<li>primitive lookup counts from the frozen Qualtran revision;</li>
+<li>stage durations from the frozen source models;</li>
+<li>a full schedule and a separately implemented verifier;</li>
+<li>the same-allocation phase-separated control;</li>
+<li>factory and reliability sensitivity.</li>
+</ul>
+<p>The reproduction passes C2 if discrete workload and resource counts agree exactly, both implementations produce feasible schedules, makespans agree within 1%, no operation category is omitted, and any disagreement is documented without changing the frozen specification.</p>
+<p>A different feasible schedule within tolerance is acceptable and may be stronger evidence than byte-for-byte agreement. Failure to reproduce is also a useful result if the discrepancy identifies an assumption hidden in this note.</p>
+<h2 id="source-lock">Frozen source identifiers</h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Frozen identifier</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gidney 2025 code archive</td>
+<td>Zenodo 15347487; MD5 <code>80544b9dfbfe3612cb3727518160c588</code>; SHA-256 <code>e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d</code></td>
+</tr>
+<tr>
+<td>Qualtran</td>
+<td>commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code>; archive SHA-256 <code>9acab01aa39cb50b6d000e7cb85f368a1e22607baf256f64a9788d78f3bc67df</code></td>
+</tr>
+<tr>
+<td>Cain <em>et al.</em></td>
+<td>arXiv:2603.28627v1 source SHA-256 <code>24728ea4b54e03407440a5c094d170708a3102dc0166006525c84c48645c1953</code></td>
+</tr>
+<tr>
+<td>Draper <em>et al.</em> QCLA</td>
+<td>arXiv source SHA-256 <code>4b09a9526eebea36140738d706ba9b90ce0db0d184cee6dc221b5961b7f75549</code></td>
+</tr>
+</tbody></table>
+<h2 id="scope">Scope and status</h2>
+<p>This is an open technical methods note, not a peer-reviewed result. The implementation that produced the reported numbers passed 121 tests and 32 subtests, including a separately implemented full-trace verifier. That evidence motivated publication, but it is not a substitute for clean-room reproduction.</p>
+<p>Version 1.0 freezes the method and claims as of August 28, 2026. Corrections should be published as new versions with an explicit change log rather than silently changing the reproduction target.</p>
+<p>The article, specification, and figure digests are recorded in <code>publication-manifest-v1.json</code> beside this source.</p>
+
+
+        <div class="article-end">
+          <h2>Reproduction materials</h2>
+          <p><a href="reproduction-spec-v1.json">Download the frozen v1.0 specification</a>, inspect the <a href="source.md">Markdown source for this article</a>, or verify the <a href="publication-manifest-v1.json">publication file hashes</a>. Please preserve your implementation, environment, assumptions, and results before comparing against any author code.</p>
+        </div>
+      </article>
+
+      <aside class="article-aside" aria-label="Article contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#claim-ladder">Claim ladder</a></li>
+          <li><a href="#starting-points">Starting points</a></li>
+          <li><a href="#residue-jobs">Residue jobs</a></li>
+          <li><a href="#exact-lookup">Exact lookup</a></li>
+          <li><a href="#frontier-rebuild">Rebuild frontiers</a></li>
+          <li><a href="#stage-model">Stage model</a></li>
+          <li><a href="#processor-allocation">Allocation</a></li>
+          <li><a href="#scheduler">Scheduler</a></li>
+          <li><a href="#runtime">Runtime</a></li>
+          <li><a href="#ablation">Ablation</a></li>
+          <li><a href="#sensitivity">Sensitivity</a></li>
+          <li><a href="#physical-boundary">Physical boundary</a></li>
+          <li><a href="#reproduction">Reproduction</a></li>
+          <li><a href="#source-lock">Source lock</a></li>
+          <li><a href="#scope">Scope</a></li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <span>&copy; 2026 Richard Williams</span>
+      <a href="/">Back to the homepage</a>
+    </div>
+  </footer>
+</body>
+</html>

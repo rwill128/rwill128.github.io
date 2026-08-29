@@ -233,6 +233,11 @@ a:hover {
   object-position: center;
 }
 
+.feature-story-media img.shor-schedule-preview {
+  object-fit: contain;
+  object-position: center;
+}
+
 .feature-story-copy {
   display: flex;
   flex-direction: column;
@@ -585,6 +590,13 @@ a:hover {
 
 .article-body > p:first-child {
   margin-top: 0;
+  color: #303532;
+  font-family: var(--display);
+  font-size: 25px;
+  line-height: 1.55;
+}
+
+.article-body > .result-box + p {
   color: #303532;
   font-family: var(--display);
   font-size: 25px;
@@ -1031,6 +1043,10 @@ a:hover {
   }
 
   .article-body > p:first-child {
+    font-size: 21px;
+  }
+
+  .article-body > .result-box + p {
     font-size: 21px;
   }
 
