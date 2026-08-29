@@ -358,7 +358,7 @@ Consequently, the strongest defensible conclusion is:
 
 ## Clean-room reproduction protocol
 
-This article and `reproduction-spec-v1.json` are the intended inputs to an independent implementation. The reproducer should not use the author scheduler, generated trace, verifier, or saved output JSON.
+The public clean-room package contains this methods article, its Markdown source, `reproduction-spec-v1.json`, the publication manifest, and the explanatory figure. It does **not** publish or link to the author's scheduler implementation, generated schedule trace, verifier implementation, resource-certificate implementation, or saved result artifacts. An independent reproducer is therefore expected to work only from the published methods, the specification, and the frozen external sources linked below.
 
 Before implementation, the reproducer should record:
 

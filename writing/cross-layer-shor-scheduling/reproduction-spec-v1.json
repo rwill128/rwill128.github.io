@@ -10,14 +10,14 @@
       "the frozen external sources listed here",
       "independently written code and tests"
     ],
-    "excluded_until_results_are_committed": [
+    "not_published_or_linked_in_clean_room_package": [
       "the author scheduler implementation",
       "the author-generated schedule trace",
       "the author verifier implementation",
       "the author resource-certificate implementation",
       "the author-generated JSON result artifacts"
     ],
-    "instruction": "Record source hashes, interpretations, assumptions, tests, and exclusions before implementing. Preserve discrepancies and negative results."
+    "instruction": "Implement only from the published methods article, this specification, and the frozen external sources. Record source hashes, interpretations, assumptions, tests, and exclusions before implementing. Preserve discrepancies and negative results."
   },
   "external_sources": {
     "gidney_2025": {
