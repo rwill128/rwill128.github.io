@@ -1,0 +1,515 @@
+{
+  "canonical_row_map": {
+    "bytes": 998064,
+    "encoding": "ASCII CSV with header, LF line endings, and trailing newline",
+    "file": "table1-lane-row-map-v1.3.csv",
+    "records_excluding_header": 25371,
+    "sha256": "3696c76c6d5dd4e2ddb2b3f3e024fd587806f0184d86b25fe9dd2afe5e84b9fc"
+  },
+  "corrected_table1": {
+    "bytes": 3169548288,
+    "bytes_per_row": 124928,
+    "dtype": "uint32",
+    "row_count_identity": "sum(period_count + 1 over lanes) = jobs + lanes",
+    "shape": [
+      25371,
+      244,
+      128
+    ]
+  },
+  "lane_entries": [
+    {
+      "absolute_start_row": 0,
+      "adjacent_difference_rows": {
+        "start": 1,
+        "stop_exclusive": 845
+      },
+      "lane": 0,
+      "period_count": 845,
+      "period_index_start": 0,
+      "period_index_stop_exclusive": 845,
+      "table_row_start": 0,
+      "table_row_stop_exclusive": 846,
+      "terminal_inverse_row": 845
+    },
+    {
+      "absolute_start_row": 846,
+      "adjacent_difference_rows": {
+        "start": 847,
+        "stop_exclusive": 1691
+      },
+      "lane": 1,
+      "period_count": 845,
+      "period_index_start": 845,
+      "period_index_stop_exclusive": 1690,
+      "table_row_start": 846,
+      "table_row_stop_exclusive": 1692,
+      "terminal_inverse_row": 1691
+    },
+    {
+      "absolute_start_row": 1692,
+      "adjacent_difference_rows": {
+        "start": 1693,
+        "stop_exclusive": 2537
+      },
+      "lane": 2,
+      "period_count": 845,
+      "period_index_start": 1690,
+      "period_index_stop_exclusive": 2535,
+      "table_row_start": 1692,
+      "table_row_stop_exclusive": 2538,
+      "terminal_inverse_row": 2537
+    },
+    {
+      "absolute_start_row": 2538,
+      "adjacent_difference_rows": {
+        "start": 2539,
+        "stop_exclusive": 3383
+      },
+      "lane": 3,
+      "period_count": 845,
+      "period_index_start": 2535,
+      "period_index_stop_exclusive": 3380,
+      "table_row_start": 2538,
+      "table_row_stop_exclusive": 3384,
+      "terminal_inverse_row": 3383
+    },
+    {
+      "absolute_start_row": 3384,
+      "adjacent_difference_rows": {
+        "start": 3385,
+        "stop_exclusive": 4229
+      },
+      "lane": 4,
+      "period_count": 845,
+      "period_index_start": 3380,
+      "period_index_stop_exclusive": 4225,
+      "table_row_start": 3384,
+      "table_row_stop_exclusive": 4230,
+      "terminal_inverse_row": 4229
+    },
+    {
+      "absolute_start_row": 4230,
+      "adjacent_difference_rows": {
+        "start": 4231,
+        "stop_exclusive": 5075
+      },
+      "lane": 5,
+      "period_count": 845,
+      "period_index_start": 4225,
+      "period_index_stop_exclusive": 5070,
+      "table_row_start": 4230,
+      "table_row_stop_exclusive": 5076,
+      "terminal_inverse_row": 5075
+    },
+    {
+      "absolute_start_row": 5076,
+      "adjacent_difference_rows": {
+        "start": 5077,
+        "stop_exclusive": 5921
+      },
+      "lane": 6,
+      "period_count": 845,
+      "period_index_start": 5070,
+      "period_index_stop_exclusive": 5915,
+      "table_row_start": 5076,
+      "table_row_stop_exclusive": 5922,
+      "terminal_inverse_row": 5921
+    },
+    {
+      "absolute_start_row": 5922,
+      "adjacent_difference_rows": {
+        "start": 5923,
+        "stop_exclusive": 6767
+      },
+      "lane": 7,
+      "period_count": 845,
+      "period_index_start": 5915,
+      "period_index_stop_exclusive": 6760,
+      "table_row_start": 5922,
+      "table_row_stop_exclusive": 6768,
+      "terminal_inverse_row": 6767
+    },
+    {
+      "absolute_start_row": 6768,
+      "adjacent_difference_rows": {
+        "start": 6769,
+        "stop_exclusive": 7613
+      },
+      "lane": 8,
+      "period_count": 845,
+      "period_index_start": 6760,
+      "period_index_stop_exclusive": 7605,
+      "table_row_start": 6768,
+      "table_row_stop_exclusive": 7614,
+      "terminal_inverse_row": 7613
+    },
+    {
+      "absolute_start_row": 7614,
+      "adjacent_difference_rows": {
+        "start": 7615,
+        "stop_exclusive": 8459
+      },
+      "lane": 9,
+      "period_count": 845,
+      "period_index_start": 7605,
+      "period_index_stop_exclusive": 8450,
+      "table_row_start": 7614,
+      "table_row_stop_exclusive": 8460,
+      "terminal_inverse_row": 8459
+    },
+    {
+      "absolute_start_row": 8460,
+      "adjacent_difference_rows": {
+        "start": 8461,
+        "stop_exclusive": 9305
+      },
+      "lane": 10,
+      "period_count": 845,
+      "period_index_start": 8450,
+      "period_index_stop_exclusive": 9295,
+      "table_row_start": 8460,
+      "table_row_stop_exclusive": 9306,
+      "terminal_inverse_row": 9305
+    },
+    {
+      "absolute_start_row": 9306,
+      "adjacent_difference_rows": {
+        "start": 9307,
+        "stop_exclusive": 10151
+      },
+      "lane": 11,
+      "period_count": 845,
+      "period_index_start": 9295,
+      "period_index_stop_exclusive": 10140,
+      "table_row_start": 9306,
+      "table_row_stop_exclusive": 10152,
+      "terminal_inverse_row": 10151
+    },
+    {
+      "absolute_start_row": 10152,
+      "adjacent_difference_rows": {
+        "start": 10153,
+        "stop_exclusive": 10997
+      },
+      "lane": 12,
+      "period_count": 845,
+      "period_index_start": 10140,
+      "period_index_stop_exclusive": 10985,
+      "table_row_start": 10152,
+      "table_row_stop_exclusive": 10998,
+      "terminal_inverse_row": 10997
+    },
+    {
+      "absolute_start_row": 10998,
+      "adjacent_difference_rows": {
+        "start": 10999,
+        "stop_exclusive": 11843
+      },
+      "lane": 13,
+      "period_count": 845,
+      "period_index_start": 10985,
+      "period_index_stop_exclusive": 11830,
+      "table_row_start": 10998,
+      "table_row_stop_exclusive": 11844,
+      "terminal_inverse_row": 11843
+    },
+    {
+      "absolute_start_row": 11844,
+      "adjacent_difference_rows": {
+        "start": 11845,
+        "stop_exclusive": 12689
+      },
+      "lane": 14,
+      "period_count": 845,
+      "period_index_start": 11830,
+      "period_index_stop_exclusive": 12675,
+      "table_row_start": 11844,
+      "table_row_stop_exclusive": 12690,
+      "terminal_inverse_row": 12689
+    },
+    {
+      "absolute_start_row": 12690,
+      "adjacent_difference_rows": {
+        "start": 12691,
+        "stop_exclusive": 13535
+      },
+      "lane": 15,
+      "period_count": 845,
+      "period_index_start": 12675,
+      "period_index_stop_exclusive": 13520,
+      "table_row_start": 12690,
+      "table_row_stop_exclusive": 13536,
+      "terminal_inverse_row": 13535
+    },
+    {
+      "absolute_start_row": 13536,
+      "adjacent_difference_rows": {
+        "start": 13537,
+        "stop_exclusive": 14381
+      },
+      "lane": 16,
+      "period_count": 845,
+      "period_index_start": 13520,
+      "period_index_stop_exclusive": 14365,
+      "table_row_start": 13536,
+      "table_row_stop_exclusive": 14382,
+      "terminal_inverse_row": 14381
+    },
+    {
+      "absolute_start_row": 14382,
+      "adjacent_difference_rows": {
+        "start": 14383,
+        "stop_exclusive": 15227
+      },
+      "lane": 17,
+      "period_count": 845,
+      "period_index_start": 14365,
+      "period_index_stop_exclusive": 15210,
+      "table_row_start": 14382,
+      "table_row_stop_exclusive": 15228,
+      "terminal_inverse_row": 15227
+    },
+    {
+      "absolute_start_row": 15228,
+      "adjacent_difference_rows": {
+        "start": 15229,
+        "stop_exclusive": 16073
+      },
+      "lane": 18,
+      "period_count": 845,
+      "period_index_start": 15210,
+      "period_index_stop_exclusive": 16055,
+      "table_row_start": 15228,
+      "table_row_stop_exclusive": 16074,
+      "terminal_inverse_row": 16073
+    },
+    {
+      "absolute_start_row": 16074,
+      "adjacent_difference_rows": {
+        "start": 16075,
+        "stop_exclusive": 16919
+      },
+      "lane": 19,
+      "period_count": 845,
+      "period_index_start": 16055,
+      "period_index_stop_exclusive": 16900,
+      "table_row_start": 16074,
+      "table_row_stop_exclusive": 16920,
+      "terminal_inverse_row": 16919
+    },
+    {
+      "absolute_start_row": 16920,
+      "adjacent_difference_rows": {
+        "start": 16921,
+        "stop_exclusive": 17765
+      },
+      "lane": 20,
+      "period_count": 845,
+      "period_index_start": 16900,
+      "period_index_stop_exclusive": 17745,
+      "table_row_start": 16920,
+      "table_row_stop_exclusive": 17766,
+      "terminal_inverse_row": 17765
+    },
+    {
+      "absolute_start_row": 17766,
+      "adjacent_difference_rows": {
+        "start": 17767,
+        "stop_exclusive": 18610
+      },
+      "lane": 21,
+      "period_count": 844,
+      "period_index_start": 17745,
+      "period_index_stop_exclusive": 18589,
+      "table_row_start": 17766,
+      "table_row_stop_exclusive": 18611,
+      "terminal_inverse_row": 18610
+    },
+    {
+      "absolute_start_row": 18611,
+      "adjacent_difference_rows": {
+        "start": 18612,
+        "stop_exclusive": 19455
+      },
+      "lane": 22,
+      "period_count": 844,
+      "period_index_start": 18589,
+      "period_index_stop_exclusive": 19433,
+      "table_row_start": 18611,
+      "table_row_stop_exclusive": 19456,
+      "terminal_inverse_row": 19455
+    },
+    {
+      "absolute_start_row": 19456,
+      "adjacent_difference_rows": {
+        "start": 19457,
+        "stop_exclusive": 20300
+      },
+      "lane": 23,
+      "period_count": 844,
+      "period_index_start": 19433,
+      "period_index_stop_exclusive": 20277,
+      "table_row_start": 19456,
+      "table_row_stop_exclusive": 20301,
+      "terminal_inverse_row": 20300
+    },
+    {
+      "absolute_start_row": 20301,
+      "adjacent_difference_rows": {
+        "start": 20302,
+        "stop_exclusive": 21145
+      },
+      "lane": 24,
+      "period_count": 844,
+      "period_index_start": 20277,
+      "period_index_stop_exclusive": 21121,
+      "table_row_start": 20301,
+      "table_row_stop_exclusive": 21146,
+      "terminal_inverse_row": 21145
+    },
+    {
+      "absolute_start_row": 21146,
+      "adjacent_difference_rows": {
+        "start": 21147,
+        "stop_exclusive": 21990
+      },
+      "lane": 25,
+      "period_count": 844,
+      "period_index_start": 21121,
+      "period_index_stop_exclusive": 21965,
+      "table_row_start": 21146,
+      "table_row_stop_exclusive": 21991,
+      "terminal_inverse_row": 21990
+    },
+    {
+      "absolute_start_row": 21991,
+      "adjacent_difference_rows": {
+        "start": 21992,
+        "stop_exclusive": 22835
+      },
+      "lane": 26,
+      "period_count": 844,
+      "period_index_start": 21965,
+      "period_index_stop_exclusive": 22809,
+      "table_row_start": 21991,
+      "table_row_stop_exclusive": 22836,
+      "terminal_inverse_row": 22835
+    },
+    {
+      "absolute_start_row": 22836,
+      "adjacent_difference_rows": {
+        "start": 22837,
+        "stop_exclusive": 23680
+      },
+      "lane": 27,
+      "period_count": 844,
+      "period_index_start": 22809,
+      "period_index_stop_exclusive": 23653,
+      "table_row_start": 22836,
+      "table_row_stop_exclusive": 23681,
+      "terminal_inverse_row": 23680
+    },
+    {
+      "absolute_start_row": 23681,
+      "adjacent_difference_rows": {
+        "start": 23682,
+        "stop_exclusive": 24525
+      },
+      "lane": 28,
+      "period_count": 844,
+      "period_index_start": 23653,
+      "period_index_stop_exclusive": 24497,
+      "table_row_start": 23681,
+      "table_row_stop_exclusive": 24526,
+      "terminal_inverse_row": 24525
+    },
+    {
+      "absolute_start_row": 24526,
+      "adjacent_difference_rows": {
+        "start": 24527,
+        "stop_exclusive": 25370
+      },
+      "lane": 29,
+      "period_count": 844,
+      "period_index_start": 24497,
+      "period_index_stop_exclusive": 25341,
+      "table_row_start": 24526,
+      "table_row_stop_exclusive": 25371,
+      "terminal_inverse_row": 25370
+    }
+  ],
+  "published_date": "2026-08-29",
+  "purpose": "Specify the contiguous 30-lane Table 1 difference chains required by the published closed-lane operation schedule.",
+  "schema": "cross-layer-rsa2048-table1-lane-layout-v1",
+  "source_semantics": {
+    "frozen_gidney_archive_sha256": "e627abdeb91e880ec8500a3015ab59eb09c3171e1c8f8d9c5eab96728064c94d",
+    "frozen_gidney_archive_url": "https://zenodo.org/api/records/15347487/files/code.zip/content",
+    "lane_formula": "For each contiguous lane slice [a,b), emit D[a], then D[i]-D[i-1] modulo uint32 for a<i<b, then -D[b-1] modulo uint32.",
+    "single_chain_formula": "np.diff(dlog_table, axis=0, prepend=[0], append=[0])",
+    "source_file": "src/facto/algorithm/prep/_precompute_table1.py"
+  },
+  "v1_2_erratum": {
+    "additional_bytes_if_materialized": 3622912,
+    "corrected_lane_chain_shape": [
+      25371,
+      244,
+      128
+    ],
+    "missing_rows": 29,
+    "published_single_chain_shape": [
+      25342,
+      244,
+      128
+    ],
+    "timing_effect": "None in the frozen C2 model: every lane start already includes loop1 in A, and all lane terminal inverses already have terminal-reset stages."
+  },
+  "verification": {
+    "checked_period_prefix_states": 25341,
+    "checked_terminal_zero_states": 30,
+    "note": "The algebraic witness validates lane-chain structure using deterministic synthetic uint32 D rows; it is not a content hash of the unmaterialized 3.17 GB modulus-specific array.",
+    "schedule_trace_job_mappings_checked": 25341,
+    "structural_rows_checked": 25371,
+    "synthetic_columns": 7
+  },
+  "version": "1.3",
+  "workload": {
+    "assignment": "Contiguous balanced chunks in canonical period-file order; lower lane indices receive the remainder jobs.",
+    "jobs": 25341,
+    "lane_job_counts": [
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      845,
+      844,
+      844,
+      844,
+      844,
+      844,
+      844,
+      844,
+      844,
+      844
+    ],
+    "lanes": 30,
+    "period_file": "rns-periods-v1.2.txt",
+    "period_file_sha256": "deb506e83c8a80c3036de9ad4d2e80286a2fd043fa03bdbb2401c70dd90afa06"
+  }
+}

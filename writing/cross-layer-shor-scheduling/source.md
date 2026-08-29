@@ -3,20 +3,21 @@ layout: post
 title: "Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit"
 date: 2026-08-28
 description: "A corrected 43.200-day operation-level RSA-2048 schedule using an explicit valid residue system, with a 27.47% same-workload scheduling ablation and unresolved physical assumptions."
-version: "1.2"
+updated: 2026-08-29
+version: "1.3"
 ---
 
 # Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit
 
-**A corrected methods note and clean-room reproduction target**
+**A corrected methods note with an independently reproduced operation-model result**
 
-> **Correction history — August 28, 2026:** Version 1.0's 25,330-prime set failed the required modulus-deviation condition, so its 42.760-day factoring-instance claim remains permanently withdrawn. Version 1.1 published that erratum. Version 1.2 is a new result built from an explicit 25,341-prime set that passes exact capacity, primality, distinctness, multiplier-coprimality, and 31-bit modular-deviation checks against the actual RSA-2048 challenge modulus. Its corrected operation-model estimate is **43.1996669833 expected days**. This does not establish a physical runtime. The [v1.1 erratum](reproduction-spec-v1.1.json), [v1.2 reproduction specification](reproduction-spec-v1.2.json), and [canonical period list](rns-periods-v1.2.txt) are all retained for audit.
+> **Methods erratum — August 29, 2026 (v1.3):** An isolated clean-room implementation exactly reproduced the **59.5623495529 → 43.1996669833 expected-day** C1/C2 operation-model result, but found that v1.2 specified one serial `J+1` Table 1 difference chain while the schedule uses 30 independent lanes. Version 1.3 corrects Table 1 from `[25,342, 244, 128]` to `[25,371, 244, 128]`, publishes the exact lane layout and row-map hash, and demotes an under-specified factory-state total. The Table 1 correction adds 29 classical rows and changes no modeled quantum stage or C2 timing. C3 was never implemented or claimed; a physical runtime remains unestablished and outside the reproduction target. See the [v1.3 specification](reproduction-spec-v1.3.json), [lane layout](table1-lane-layout-v1.3.json), [row map](table1-lane-row-map-v1.3.csv), and [v1.3 manifest](publication-manifest-v1.3.json). Earlier versions and the unchanged [canonical period list](rns-periods-v1.2.txt) remain public for audit.
 
 Resource estimates for cryptographically relevant quantum algorithms are long chains of conditional statements. A circuit construction determines logical operations. A compilation model turns them into primitive resources. A scheduler maps those resources onto a processor. A fault-tolerant architecture supplies timing, factories, movement, and failure rates. A striking number at the end is only as strong as every link before it.
 
 This note reports a candidate improvement at one link in that chain: operation-level scheduling. It combines the approximate-residue factoring construction published by Craig Gidney in 2025 with the time-efficient high-rate neutral-atom capacity model published by Cain *et al.* in 2026. The central idea is to keep independent residue lanes closed over their compute, shared-accumulator update, and cleanup stages, allowing local work to overlap the serial accumulator bottleneck.
 
-The replacement workload contains 25,341 explicit residue jobs. Under the same frozen operation model, a phase-separated schedule evaluates to **59.5623495529 expected days** and the closed-lane schedule to **43.1996669833 days**, a **27.4715% reduction**. That is the cleanest result here: same valid workload, same stage durations, same allocation, same retry factor, and only the scheduling policy changes.
+The replacement workload contains 25,341 explicit residue jobs. Under the same frozen operation model, a phase-separated schedule evaluates to **59.5623495529 expected days** and the closed-lane schedule to **43.1996669833 days**, a **27.4715% reduction**. An isolated clean-room implementation reproduced those values exactly. That is the cleanest result here: same valid workload, same stage durations, same allocation, same retry factor, and only the scheduling policy changes.
 
 Those are operation-schedule results. They are not a demonstrated physical runtime, and they are not a verified improvement over a state-of-the-art routed implementation. The public high-rate architecture does not specify the concrete code blocks, logical operators, mixed parallel-measurement gadgets, placement, movement paths, decoder latency, or factory interfaces needed to route this circuit. Factory and reliability sensitivity can erase the apparent advantage.
 
@@ -28,11 +29,11 @@ The work makes three deliberately separate claims.
 
 | Claim | Statement | Status |
 |---|---|---|
-| C1 | With the valid 25,341-job workload and allocation fixed, closed-lane pipelining reduces the estimate from 59.562 to 43.200 days. | Verified within the frozen operation model; clean-room reproduction requested |
-| C2 | The exact-CCZ candidate has a complete 25,341-job operation schedule evaluating to 43.200 expected days for a valid modulus-specific RSA-2048 approximate-residue instance. | Verified internally at the operation-model level; not independently reproduced |
-| C3 | The candidate factors RSA-2048 in about 43.200 physical days at a footprint comparable to 102,000 atoms. | Not established |
+| C1 | With the valid 25,341-job workload and allocation fixed, closed-lane pipelining reduces the estimate from 59.562 to 43.200 days. | Independently reproduced within the frozen operation model |
+| C2 | The exact-CCZ candidate has a complete 25,341-job stage-atomic operation schedule evaluating to 43.200 expected days for a valid modulus-specific RSA-2048 approximate-residue instance. | Independently reproduced; v1.3 corrects the classical Table 1 lane layout |
+| C3 | A routed implementation factors RSA-2048 in about 43.200 physical days at a footprint comparable to 102,000 atoms. | **Not claimed**; no physical implementation exists |
 
-C2 now has a valid explicit workload, but C3 remains a separate and much harder claim. The null hypothesis for C3 is that routing, block granularity, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.
+C2 has a valid explicit workload and a reproduced stage-atomic schedule. It still is not a primitive-gate or routed execution proof. C3 is not a failed reproduction: it was deliberately outside the claim boundary because no circuit-specific placement, route, factory interface, decoder schedule, or composed physical failure model was supplied.
 
 ## Published starting points
 
@@ -56,7 +57,7 @@ Lookup primitive counts are tied to [Qualtran commit `096a2d009059faee0cfae462c3
 
 Two assumptions from Gidney's construction remain broader than this result: that suitable low-deviation products can generally be found in the stated expected time, and that superposition masking can be costed by multiplying expected shots by `1 / (1 - S)`. Finding one RSA-2048 set is evidence for the first assumption on this instance, not a complexity proof. The second remains inherited. Version 1.2 includes Gidney's `/ 0.99` post-processing-success factor, which v1.0 omitted.
 
-The original frozen source hashes are recorded in [publication manifest v1.0](publication-manifest-v1.json). The exact withdrawal evidence remains in the [v1.1 machine-readable erratum](reproduction-spec-v1.1.json). The replacement workload and acceptance values are in the [v1.2 specification](reproduction-spec-v1.2.json), and the publication is frozen by [manifest v1.2](publication-manifest-v1.2.json).
+The original frozen source hashes are recorded in [publication manifest v1.0](publication-manifest-v1.json). The exact withdrawal evidence remains in the [v1.1 machine-readable erratum](reproduction-spec-v1.1.json). The replacement workload first appeared in the retained [v1.2 specification](reproduction-spec-v1.2.json). The current corrected acceptance boundary is [v1.3](reproduction-spec-v1.3.json), frozen by [manifest v1.3](publication-manifest-v1.3.json).
 
 ## From approximate residues to independent jobs
 
@@ -134,7 +135,37 @@ required multipliers checked        31,232
 
 Two implementations checked the set. A standalone C++/GMP verifier performs exact integer product, primality, deviation, and multiplier-GCD tests. Separately, the set passes the frozen author's `_verify_rns_solution` assertions in `src/facto/algorithm/prep/_precompute_rns.py`. The author's final verifier does not repeat multiplier filtering, which is why the independent GCD test remains a separate required gate.
 
-The modulus-specific lookup arrays are deterministically derived rather than published as a 4.52 GB binary bundle. Using the frozen Zenodo source, construct the stated `ProblemConfig`, use the published periods in their listed order, and call `precompute_generators`, `find_multipliers_for_conf`, `precompute_table1`, `precompute_table3`, and `precompute_table4`. The expected native-array shapes are recorded in the v1.2 specification. Implementations may stream or regenerate these arrays; they must not substitute a size-only `vacuous_config` for functional execution.
+The modulus-specific lookup arrays are deterministically derived rather than published as a 4.52 GB binary bundle. Using the frozen Zenodo source, construct the stated `ProblemConfig`, use the published periods in their listed order, and call `precompute_generators`, `find_multipliers_for_conf`, `precompute_table3`, and `precompute_table4`. Table 1 requires the lane-aware derivation below. The expected native-array shapes are recorded in the v1.3 specification. Implementations may stream or regenerate these arrays; they must not substitute a size-only `vacuous_config` for functional execution.
+
+### Table 1 lane-layout erratum
+
+The frozen [`precompute_table1`](https://zenodo.org/api/records/15347487/files/code.zip/content) source allocates `J+1` rows, writes one raw discrete-log row `D_i` per period, leaves one zero row, and differences adjacent rows. That is exactly one chain:
+
+```text
+D_0, D_1 - D_0, ..., D_(J-1) - D_(J-2), -D_(J-1).
+```
+
+The closed-lane schedule instead maintains 30 independent residue-lane states. For each contiguous lane slice `[a,b)` in canonical period order, its Table 1 chain must be
+
+```text
+D_a, D_(a+1) - D_a, ..., D_(b-1) - D_(b-2), -D_(b-1)    (mod 2^32).
+```
+
+Each lane therefore needs `period_count + 1` rows. Across `J = 25,341` jobs and `S = 30` lanes, this is `J+S = 25,371` rows:
+
+| Quantity | v1.2 | v1.3 corrected |
+|---|---:|---:|
+| Table 1 shape | `[25,342, 244, 128]` | `[25,371, 244, 128]` |
+| Table 1 bytes if materialized | 3,165,925,376 | 3,169,548,288 |
+| Total deterministic-array bytes | 4,515,485,672 | 4,519,108,584 |
+
+The difference is 29 rows, or 3,622,912 classical bytes. The canonical [lane-layout JSON](table1-lane-layout-v1.3.json) gives every lane's period and table-row interval. The complete [25,371-row CSV map](table1-lane-row-map-v1.3.csv) has SHA-256
+
+```text
+3696c76c6d5dd4e2ddb2b3f3e024fd587806f0184d86b25fe9dd2afe5e84b9fc
+```
+
+The correction does not add a quantum call in the frozen C2 model. The first job on every lane already executes `loop1` inside A, and all 30 lanes already end with a separately scheduled terminal `loop1`. Only the classical values selected by those calls and their layout change. The v1.3 structural verifier checked all 25,371 row roles against the 25,341 schedule-to-period assignments, all 25,341 prefix states on deterministic synthetic `uint32` rows, and all 30 terminal zeros. This is a structural proof of the segmentation rule, not a content hash of the unmaterialized 3.17 GB modulus-specific array.
 
 ## Exact blocked lookup
 
@@ -287,7 +318,7 @@ These are static capacity checks. They do not establish a physical placement or 
 
 ## Closed-lane scheduling algorithm
 
-Distribute the 25,341 jobs as evenly as possible across 30 lanes. Twenty-one lanes receive 845 jobs and nine receive 844. The scheduling policy is deterministic, closed-lane, and first-ready-first-served at the accumulator.
+Distribute the 25,341 jobs as contiguous balanced chunks in canonical period-file order. Twenty-one lanes receive 845 jobs and nine receive 844; lower lane indices receive the extra jobs. This exact period-to-lane assignment is part of v1.3 because Table 1 differences depend on it. The scheduling policy is deterministic, closed-lane, and first-ready-first-served at the accumulator.
 
 ```text
 fanout = 183 surgery rounds
@@ -381,20 +412,22 @@ T(n) = 10n
      - 7.
 ```
 
-Applying that expression to every modeled add and comparison produces 13.500 billion expected CCZ states. For `P = 1160`, a central 240-cycle batch model has 1.336× average throughput headroom. Perfect overlap retains 43.200 raw days. Fully serializing factory production gives 75.528 raw days, or 83.920 days per success at an imposed 90% whole-run survival target.
+Version 1.2 reported 13,500,332,819.674 expected CCZ states. The isolated reproducer's natural reading of the disclosed lookup composition gives 13,502,987,695.651, 0.019665% higher. The prose does not expose a category ledger capable of deciding between them. Version 1.3 therefore withdraws the exact factory-state total as under-specified instead of tuning a reconstruction to match it. This sensitivity is not an input to C1 or C2 timing.
+
+For `P = 1160`, the prior central 240-cycle batch model has about 1.336× average throughput headroom. Perfect overlap retains the 43.200-day operation-model lower envelope. Fully serializing the two factory-count reconstructions gives approximately 75.528–75.534 raw days before any imposed whole-run survival target.
 
 The conclusion is fragile:
 
 | Sensitivity | Raw days | Days per success or implication |
 |---|---:|---:|
 | 240-cycle batches, perfect overlap | 43.200 | Operation-level lower envelope |
-| 240-cycle batches, fully serialized | 75.528 | 83.920 at 90% survival |
-| 360-cycle batches, fully serialized | 91.692 | 101.880 at 90% survival |
-| 240-cycle serialized at nominal 0.1% physical error | 75.528 | 311–332, depending on block-hazard proxy |
+| 240-cycle batches, fully serialized | 75.528–75.534 | About 83.920–83.927 at 90% survival |
+| 360-cycle batches, fully serialized | ≈91.692 | ≈101.880 at 90% survival |
+| 240-cycle serialized at nominal 0.1% physical error | 75.528–75.534 | 311–332, depending on block-hazard proxy |
 
 Within the independent-error proxy, physical error must be approximately 0.0664% or lower to reach 90% survival. Correlated surgery, movement faults, burst contention, and decoder effects are not represented. The sensitivity analysis is a decision boundary, not a physical error proof.
 
-## Why the physical claim remains open
+## Why no physical claim is made
 
 The public time-efficient architecture supports a coarse capacity transfer: 1,142 is below `P = 1160`, and 8,212 is below the modeled 8,216 logical processor capacity. But an explicit route requires information the public v1 paper does not supply:
 
@@ -413,7 +446,7 @@ Consequently, the strongest defensible conclusion is:
 
 ## Clean-room reproduction protocol
 
-**Version 1.2 defines a new positive clean-room target; it does not reactivate v1.0.** The permitted input envelope is exactly this article, `reproduction-spec-v1.2.json`, `rns-periods-v1.2.txt`, the publication manifest and figure, plus the externally cited papers and frozen source archives. The public package does **not** contain or link to our scheduler implementation, search implementation, generated schedule trace, verifier implementation, resource certificate, factory-composition implementation, or saved result artifacts.
+**Version 1.3 defines the corrected clean-room target; it does not reactivate v1.0 or silently overwrite v1.2.** The permitted input envelope is exactly this article, `reproduction-spec-v1.3.json`, `rns-periods-v1.2.txt`, `table1-lane-layout-v1.3.json`, `table1-lane-row-map-v1.3.csv`, the v1.3 publication manifest and figure, plus the externally cited papers and frozen source archives. The public package does **not** contain or link to our scheduler implementation, RNS search implementation, generated schedule trace, verifier implementation, resource certificate, factory-composition implementation, or saved positive-result artifacts.
 
 The explicit period list is a workload input, analogous to publishing a benchmark instance. The reproducer must validate it before using it. It is not expected to rediscover the same random walk, but independently finding a different valid set and rebuilding the downstream schedule would be stronger evidence.
 
@@ -428,7 +461,7 @@ Before implementation, the reproducer should record:
 It should then independently construct or regenerate:
 
 - validation that every published period is a distinct 20-bit prime, the exact product exceeds `N^244`, the centered residue is below `N >> 31`, and no period divides a required multiplier;
-- the modulus-specific generators and lookup arrays from the frozen author source and published period order;
+- the modulus-specific generators and lookup arrays from the frozen source, published period order, and all 30 v1.3 Table 1 lane chains;
 - small-instance exact blocked-lookup witnesses;
 - primitive lookup counts from the frozen Qualtran revision;
 - stage durations from the frozen source models;
@@ -438,7 +471,7 @@ It should then independently construct or regenerate:
 
 Acceptance requires agreement on the validity gates and schedule constraints, not byte-for-byte agreement with an unpublished implementation. A different feasible schedule under the same valid workload may be stronger evidence. Failure to reproduce, ambiguity, or a result that is slower than the reported value is a publishable outcome, not a failed assignment.
 
-The reproducer must keep C2 and C3 separate. Reproducing 43.200 operation-model days does not establish atom count, routing, factory feasibility, decoder performance, logical survival, or wall-clock runtime.
+The reproducer must keep C2 and C3 separate. Reproducing 43.200 operation-model days does not establish atom count, routing, factory feasibility, decoder performance, logical survival, or wall-clock runtime. C3 is not an attempted physical implementation that failed reproduction; no such implementation is claimed in the first place.
 
 ## Frozen sources and direct links
 
@@ -452,14 +485,15 @@ The reproducer must keep C2 and C3 separate. Reproducing 43.200 operation-model 
 
 ## Scope and status
 
-This is an open technical methods note, not a peer-reviewed result. The current implementation passes 121 tests and 32 subtests. The explicit RNS additionally passes a standalone GMP verifier, the frozen author's exact RNS assertions, and the separately implemented full-trace verifier. These checks establish internal consistency at the algorithmic-workload and operation-schedule layers; they do not establish a physical implementation.
+This is an open technical methods note, not a peer-reviewed result. A fresh v1.3 run passes 110 discoverable author-workspace tests, including the two focused lane-layout tests, and the isolated reproduction separately reports 11 passing tests. The lane-layout audit checks 25,371 structural rows, 25,341 schedule-to-period mappings, 25,341 deterministic synthetic prefix states, and 30 terminal zeros. The explicit RNS additionally passes a standalone GMP verifier, the frozen source's exact RNS assertions, and the separately implemented full-trace verifier. These checks establish internal consistency at the algorithmic-workload and stage-atomic operation-schedule layers; they do not establish a physical implementation or hash the full Table 1 contents.
 
-Version 1.1 preserves the v1.0 artifacts and explicitly withdraws its C2. Version 1.2 supplies a new explicit valid workload and corrected operation schedule. No physical factoring runtime is claimed.
+Version 1.1 preserves the v1.0 artifacts and explicitly withdraws its C2. Version 1.2 supplied a new explicit valid workload and operation schedule. Version 1.3 corrects that schedule's classical Table 1 lane layout and records the exact clean-room qualification. No physical factoring runtime is claimed.
 
 ### Change log
 
 - **v1.0 — August 28, 2026:** published the operation model and 42.760-day candidate.
 - **v1.1 — August 28, 2026:** withdrew C2 after the selected prime set failed the required 31-bit modulus-deviation bound; suspended positive clean-room reproduction; recorded the missing `/ 0.99` post-processing factor and inherited assumptions.
 - **v1.2 — August 28, 2026:** published a separately validated 25,341-prime modulus-specific workload; reported a corrected 43.200-day operation-model schedule and 27.47% same-workload scheduling ablation; reopened clean-room reproduction while retaining the physical-runtime caveats.
+- **v1.3 — August 29, 2026:** recorded exact clean-room reproduction of C1 and stage-atomic C2; corrected Table 1 from one 25,342-row chain to thirty chains totaling 25,371 rows; published the canonical lane layout and row-map hash; demoted the exact factory-state total as under-specified; clarified that C3 was never claimed.
 
-The historical v1.0 article/specification/figure digests remain in `publication-manifest-v1.json`; the withdrawal is frozen by `publication-manifest-v1.1.json`; the replacement article, specification, period list, and retained history are recorded in `publication-manifest-v1.2.json`.
+The historical v1.0 article/specification/figure digests remain in `publication-manifest-v1.json`; the withdrawal is frozen by `publication-manifest-v1.1.json`; the replacement result is retained by `publication-manifest-v1.2.json`; and the current article, corrected specification, lane-layout artifacts, unchanged period list, and full history are recorded in `publication-manifest-v1.3.json`.

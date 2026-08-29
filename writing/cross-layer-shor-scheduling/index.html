@@ -15,6 +15,7 @@
   <meta property="og:image:height" content="900">
   <meta property="article:author" content="Richard Williams">
   <meta property="article:published_time" content="2026-08-28">
+  <meta property="article:modified_time" content="2026-08-29">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f6f6f3">
   <link rel="canonical" href="https://rwill128.github.io/writing/cross-layer-shor-scheduling/">
@@ -26,7 +27,8 @@
     "headline": "Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit",
     "author": {"@type": "Person", "name": "Richard Williams"},
     "datePublished": "2026-08-28",
-    "version": "1.2",
+    "dateModified": "2026-08-29",
+    "version": "1.3",
     "url": "https://rwill128.github.io/writing/cross-layer-shor-scheduling/",
     "description": "A corrected 43.200-day operation-level RSA-2048 schedule using an explicit valid residue system."
   }
@@ -55,19 +57,19 @@
           <span>Open reproduction</span>
         </div>
         <h1>Cross-layer scheduling for an approximate-residue RSA-2048 factoring circuit</h1>
-        <p class="article-deck">A valid modulus-specific workload makes the scheduling result reproducible; the physical-runtime claim remains open.</p>
+        <p class="article-deck">The operation-model result reproduces; v1.3 corrects its 30-lane Table 1 layout while leaving physical implementation unclaimed.</p>
         <div class="article-byline">
           <span>By Richard Williams</span>
-          <span>August 28, 2026</span>
-          <span>Version 1.2 — replacement result</span>
-          <span>18 minute read</span>
+          <span>Published August 28; updated August 29, 2026</span>
+          <span>Version 1.3 — Table 1 methods erratum</span>
+          <span>20 minute read</span>
         </div>
       </div>
     </header>
 
     <figure class="article-hero">
       <a href="/assets/images/shor-scheduling/verification-map.svg">
-        <img src="/assets/images/shor-scheduling/verification-map.svg" alt="Verification map showing a valid explicit RSA-2048 residue workload, a 27.47 percent operation-scheduling reduction, and an unresolved physical-runtime claim" width="1600" height="900">
+        <img src="/assets/images/shor-scheduling/verification-map.svg" alt="Verification map showing an independently reproduced 27.47 percent operation-model scheduling reduction, the version 1.3 Table 1 lane-layout correction, and an unclaimed physical implementation" width="1600" height="900">
       </a>
     </figure>
 
@@ -86,20 +88,20 @@
           <span>corrected operation-model estimate</span>
         </div>
         <div class="metric">
-          <strong>C2 open</strong>
-          <span>clean-room reproduction requested</span>
+          <strong>C2 reproduced</strong>
+          <span>stage-atomic operation model</span>
         </div>
       </div>
     </section>
 
     <div class="shell article-layout">
       <article class="article-body">
-                <div class="result-box">
-          <p><strong>Correction history — August 28, 2026:</strong> Version 1.0's 25,330-prime set failed the required modulus-deviation condition, so its 42.760-day factoring-instance claim remains permanently withdrawn. Version 1.1 published that erratum. Version 1.2 is a new result built from an explicit 25,341-prime set that passes exact capacity, primality, distinctness, multiplier-coprimality, and 31-bit modular-deviation checks against the actual RSA-2048 challenge modulus. Its corrected operation-model estimate is <strong>43.1996669833 expected days</strong>. This does not establish a physical runtime. The <a href="reproduction-spec-v1.1.json">v1.1 erratum</a>, <a href="reproduction-spec-v1.2.json">v1.2 reproduction specification</a>, and <a href="rns-periods-v1.2.txt">canonical period list</a> are all retained for audit.</p>
+                        <div class="result-box">
+          <p><strong>Methods erratum — August 29, 2026 (v1.3):</strong> An isolated clean-room implementation exactly reproduced the <strong>59.5623495529 → 43.1996669833 expected-day</strong> C1/C2 operation-model result, but found that v1.2 specified one serial <code>J+1</code> Table 1 difference chain while the schedule uses 30 independent lanes. Version 1.3 corrects Table 1 from <code>[25,342, 244, 128]</code> to <code>[25,371, 244, 128]</code>, publishes the exact lane layout and row-map hash, and demotes an under-specified factory-state total. The Table 1 correction adds 29 classical rows and changes no modeled quantum stage or C2 timing. C3 was never implemented or claimed; a physical runtime remains unestablished and outside the reproduction target. See the <a href="reproduction-spec-v1.3.json">v1.3 specification</a>, <a href="table1-lane-layout-v1.3.json">lane layout</a>, <a href="table1-lane-row-map-v1.3.csv">row map</a>, and <a href="publication-manifest-v1.3.json">v1.3 manifest</a>. Earlier versions and the unchanged <a href="rns-periods-v1.2.txt">canonical period list</a> remain public for audit.</p>
         </div>
 <p>Resource estimates for cryptographically relevant quantum algorithms are long chains of conditional statements. A circuit construction determines logical operations. A compilation model turns them into primitive resources. A scheduler maps those resources onto a processor. A fault-tolerant architecture supplies timing, factories, movement, and failure rates. A striking number at the end is only as strong as every link before it.</p>
 <p>This note reports a candidate improvement at one link in that chain: operation-level scheduling. It combines the approximate-residue factoring construction published by Craig Gidney in 2025 with the time-efficient high-rate neutral-atom capacity model published by Cain <em>et al.</em> in 2026. The central idea is to keep independent residue lanes closed over their compute, shared-accumulator update, and cleanup stages, allowing local work to overlap the serial accumulator bottleneck.</p>
-<p>The replacement workload contains 25,341 explicit residue jobs. Under the same frozen operation model, a phase-separated schedule evaluates to <strong>59.5623495529 expected days</strong> and the closed-lane schedule to <strong>43.1996669833 days</strong>, a <strong>27.4715% reduction</strong>. That is the cleanest result here: same valid workload, same stage durations, same allocation, same retry factor, and only the scheduling policy changes.</p>
+<p>The replacement workload contains 25,341 explicit residue jobs. Under the same frozen operation model, a phase-separated schedule evaluates to <strong>59.5623495529 expected days</strong> and the closed-lane schedule to <strong>43.1996669833 days</strong>, a <strong>27.4715% reduction</strong>. An isolated clean-room implementation reproduced those values exactly. That is the cleanest result here: same valid workload, same stage durations, same allocation, same retry factor, and only the scheduling policy changes.</p>
 <p>Those are operation-schedule results. They are not a demonstrated physical runtime, and they are not a verified improvement over a state-of-the-art routed implementation. The public high-rate architecture does not specify the concrete code blocks, logical operators, mixed parallel-measurement gadgets, placement, movement paths, decoder latency, or factory interfaces needed to route this circuit. Factory and reliability sensitivity can erase the apparent advantage.</p>
 <p>The purpose of this corrected note is to expose a valid algorithmic workload and a falsifiable scheduling result while keeping the boundary between operation-model evidence and physical implementation explicit.</p>
 <h2 id="claim-ladder">Claim ladder</h2>
@@ -116,21 +118,21 @@
 <tr>
 <td>C1</td>
 <td>With the valid 25,341-job workload and allocation fixed, closed-lane pipelining reduces the estimate from 59.562 to 43.200 days.</td>
-<td>Verified within the frozen operation model; clean-room reproduction requested</td>
+<td>Independently reproduced within the frozen operation model</td>
 </tr>
 <tr>
 <td>C2</td>
-<td>The exact-CCZ candidate has a complete 25,341-job operation schedule evaluating to 43.200 expected days for a valid modulus-specific RSA-2048 approximate-residue instance.</td>
-<td>Verified internally at the operation-model level; not independently reproduced</td>
+<td>The exact-CCZ candidate has a complete 25,341-job stage-atomic operation schedule evaluating to 43.200 expected days for a valid modulus-specific RSA-2048 approximate-residue instance.</td>
+<td>Independently reproduced; v1.3 corrects the classical Table 1 lane layout</td>
 </tr>
 <tr>
 <td>C3</td>
-<td>The candidate factors RSA-2048 in about 43.200 physical days at a footprint comparable to 102,000 atoms.</td>
-<td>Not established</td>
+<td>A routed implementation factors RSA-2048 in about 43.200 physical days at a footprint comparable to 102,000 atoms.</td>
+<td><strong>Not claimed</strong>; no physical implementation exists</td>
 </tr>
 </tbody>
 </table>
-<p>C2 now has a valid explicit workload, but C3 remains a separate and much harder claim. The null hypothesis for C3 is that routing, block granularity, factory contention, communication, decoding, and whole-run failure costs consume the apparent advantage.</p>
+<p>C2 has a valid explicit workload and a reproduced stage-atomic schedule. It still is not a primitive-gate or routed execution proof. C3 is not a failed reproduction: it was deliberately outside the claim boundary because no circuit-specific placement, route, factory interface, decoder schedule, or composed physical failure model was supplied.</p>
 <h2 id="published-starting-points">Published starting points</h2>
 <p>The algorithmic starting point is <a href="https://arxiv.org/abs/2505.15917v1">Gidney's approximate-residue construction, arXiv:2505.15917v1</a>, using the accompanying <a href="https://zenodo.org/records/15347487">Zenodo source snapshot</a>. The candidate uses the <a href="https://arxiv.org/abs/1702.00249v1">Ekerå–Håstad short-discrete-logarithm route to factoring, arXiv:1702.00249v1</a>, a 1,708-qubit shared exponent register, residue period width 20, a 31-bit shared accumulator, and window parameters</p>
 <pre><code class="language-text">n = 2048
@@ -146,7 +148,7 @@ num_shots = 4
 <p>The architectural comparison point is the time-efficient model in <a href="https://arxiv.org/abs/2603.28627v1">Cain <em>et al.</em>, arXiv:2603.28627v1</a>: 97 days at approximately 102,000 physical qubits, a 1 ms stabilizer-measurement cycle, distance 20, and logical parallelism <code>P = 1160</code>. That paper applies carry-lookahead depth as a full-circuit proxy to a different wide-arithmetic construction. Its 97-day point is a preliminary estimate, not a concrete routed reference circuit.</p>
 <p>Lookup primitive counts are tied to <a href="https://github.com/quantumlib/Qualtran/commit/096a2d009059faee0cfae462c3d59cb055300eb9">Qualtran commit <code>096a2d009059faee0cfae462c3d59cb055300eb9</code></a>. Factory sensitivity uses the exact in-place quantum carry-lookahead-adder Toffoli expression from <a href="https://arxiv.org/abs/quant-ph/0406142v1">Draper <em>et al.</em>, arXiv:quant-ph/0406142v1</a>.</p>
 <p>Two assumptions from Gidney's construction remain broader than this result: that suitable low-deviation products can generally be found in the stated expected time, and that superposition masking can be costed by multiplying expected shots by <code>1 / (1 - S)</code>. Finding one RSA-2048 set is evidence for the first assumption on this instance, not a complexity proof. The second remains inherited. Version 1.2 includes Gidney's <code>/ 0.99</code> post-processing-success factor, which v1.0 omitted.</p>
-<p>The original frozen source hashes are recorded in <a href="publication-manifest-v1.json">publication manifest v1.0</a>. The exact withdrawal evidence remains in the <a href="reproduction-spec-v1.1.json">v1.1 machine-readable erratum</a>. The replacement workload and acceptance values are in the <a href="reproduction-spec-v1.2.json">v1.2 specification</a>, and the publication is frozen by <a href="publication-manifest-v1.2.json">manifest v1.2</a>.</p>
+<p>The original frozen source hashes are recorded in <a href="publication-manifest-v1.json">publication manifest v1.0</a>. The exact withdrawal evidence remains in the <a href="reproduction-spec-v1.1.json">v1.1 machine-readable erratum</a>. The replacement workload first appeared in the retained <a href="reproduction-spec-v1.2.json">v1.2 specification</a>. The current corrected acceptance boundary is <a href="reproduction-spec-v1.3.json">v1.3</a>, frozen by <a href="publication-manifest-v1.3.json">manifest v1.3</a>.</p>
 <h2 id="from-approximate-residues-to-independent-jobs">From approximate residues to independent jobs</h2>
 <p>The approximate-residue construction replaces a single wide modular-arithmetic state with many small modular periods. Each period contributes a residue job. A job performs three stages:</p>
 <ol>
@@ -195,7 +197,45 @@ centered residue / limit            1 / 20.8165146132
 required multipliers checked        31,232
 </code></pre>
 <p>Two implementations checked the set. A standalone C++/GMP verifier performs exact integer product, primality, deviation, and multiplier-GCD tests. Separately, the set passes the frozen author's <code>_verify_rns_solution</code> assertions in <code>src/facto/algorithm/prep/_precompute_rns.py</code>. The author's final verifier does not repeat multiplier filtering, which is why the independent GCD test remains a separate required gate.</p>
-<p>The modulus-specific lookup arrays are deterministically derived rather than published as a 4.52 GB binary bundle. Using the frozen Zenodo source, construct the stated <code>ProblemConfig</code>, use the published periods in their listed order, and call <code>precompute_generators</code>, <code>find_multipliers_for_conf</code>, <code>precompute_table1</code>, <code>precompute_table3</code>, and <code>precompute_table4</code>. The expected native-array shapes are recorded in the v1.2 specification. Implementations may stream or regenerate these arrays; they must not substitute a size-only <code>vacuous_config</code> for functional execution.</p>
+<p>The modulus-specific lookup arrays are deterministically derived rather than published as a 4.52 GB binary bundle. Using the frozen Zenodo source, construct the stated <code>ProblemConfig</code>, use the published periods in their listed order, and call <code>precompute_generators</code>, <code>find_multipliers_for_conf</code>, <code>precompute_table3</code>, and <code>precompute_table4</code>. Table 1 requires the lane-aware derivation below. The expected native-array shapes are recorded in the v1.3 specification. Implementations may stream or regenerate these arrays; they must not substitute a size-only <code>vacuous_config</code> for functional execution.</p>
+<h3 id="table-1-lane-layout-erratum">Table 1 lane-layout erratum</h3>
+<p>The frozen <a href="https://zenodo.org/api/records/15347487/files/code.zip/content"><code>precompute_table1</code></a> source allocates <code>J+1</code> rows, writes one raw discrete-log row <code>D_i</code> per period, leaves one zero row, and differences adjacent rows. That is exactly one chain:</p>
+<pre><code class="language-text">D_0, D_1 - D_0, ..., D_(J-1) - D_(J-2), -D_(J-1).
+</code></pre>
+<p>The closed-lane schedule instead maintains 30 independent residue-lane states. For each contiguous lane slice <code>[a,b)</code> in canonical period order, its Table 1 chain must be</p>
+<pre><code class="language-text">D_a, D_(a+1) - D_a, ..., D_(b-1) - D_(b-2), -D_(b-1)    (mod 2^32).
+</code></pre>
+<p>Each lane therefore needs <code>period_count + 1</code> rows. Across <code>J = 25,341</code> jobs and <code>S = 30</code> lanes, this is <code>J+S = 25,371</code> rows:</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th style="text-align: right;">v1.2</th>
+<th style="text-align: right;">v1.3 corrected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table 1 shape</td>
+<td style="text-align: right;"><code>[25,342, 244, 128]</code></td>
+<td style="text-align: right;"><code>[25,371, 244, 128]</code></td>
+</tr>
+<tr>
+<td>Table 1 bytes if materialized</td>
+<td style="text-align: right;">3,165,925,376</td>
+<td style="text-align: right;">3,169,548,288</td>
+</tr>
+<tr>
+<td>Total deterministic-array bytes</td>
+<td style="text-align: right;">4,515,485,672</td>
+<td style="text-align: right;">4,519,108,584</td>
+</tr>
+</tbody>
+</table>
+<p>The difference is 29 rows, or 3,622,912 classical bytes. The canonical <a href="table1-lane-layout-v1.3.json">lane-layout JSON</a> gives every lane's period and table-row interval. The complete <a href="table1-lane-row-map-v1.3.csv">25,371-row CSV map</a> has SHA-256</p>
+<pre><code class="language-text">3696c76c6d5dd4e2ddb2b3f3e024fd587806f0184d86b25fe9dd2afe5e84b9fc
+</code></pre>
+<p>The correction does not add a quantum call in the frozen C2 model. The first job on every lane already executes <code>loop1</code> inside A, and all 30 lanes already end with a separately scheduled terminal <code>loop1</code>. Only the classical values selected by those calls and their layout change. The v1.3 structural verifier checked all 25,371 row roles against the 25,341 schedule-to-period assignments, all 25,341 prefix states on deterministic synthetic <code>uint32</code> rows, and all 30 terminal zeros. This is a structural proof of the segmentation rule, not a content hash of the unmaterialized 3.17 GB modulus-specific array.</p>
 <h2 id="exact-blocked-lookup">Exact blocked lookup</h2>
 <p>The lookup model begins with a clean blocked QROM. For a block size <code>B</code>, the high address bits select one block and the low address bits route one of its words to position zero.</p>
 <p>The routing tree uses <code>B - 1</code> word Fredkins. For word width <code>w</code>, each word Fredkin is decomposed into <code>w</code> exact Fredkins, and each bit Fredkin uses one Toffoli or CCZ plus two CNOTs. The exact router therefore contributes</p>
@@ -321,7 +361,7 @@ phase_layers     = uncorrected_ands + multi_target_czs.
 </code></pre>
 <p>These are static capacity checks. They do not establish a physical placement or collision-free route.</p>
 <h2 id="closed-lane-scheduling-algorithm">Closed-lane scheduling algorithm</h2>
-<p>Distribute the 25,341 jobs as evenly as possible across 30 lanes. Twenty-one lanes receive 845 jobs and nine receive 844. The scheduling policy is deterministic, closed-lane, and first-ready-first-served at the accumulator.</p>
+<p>Distribute the 25,341 jobs as contiguous balanced chunks in canonical period-file order. Twenty-one lanes receive 845 jobs and nine receive 844; lower lane indices receive the extra jobs. This exact period-to-lane assignment is part of v1.3 because Table 1 differences depend on it. The scheduling policy is deterministic, closed-lane, and first-ready-first-served at the accumulator.</p>
 <pre><code class="language-text">fanout = 183 surgery rounds
 accumulator_available = fanout
 
@@ -385,7 +425,8 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
      - 3 floor(log2(n - 1))
      - 7.
 </code></pre>
-<p>Applying that expression to every modeled add and comparison produces 13.500 billion expected CCZ states. For <code>P = 1160</code>, a central 240-cycle batch model has 1.336× average throughput headroom. Perfect overlap retains 43.200 raw days. Fully serializing factory production gives 75.528 raw days, or 83.920 days per success at an imposed 90% whole-run survival target.</p>
+<p>Version 1.2 reported 13,500,332,819.674 expected CCZ states. The isolated reproducer's natural reading of the disclosed lookup composition gives 13,502,987,695.651, 0.019665% higher. The prose does not expose a category ledger capable of deciding between them. Version 1.3 therefore withdraws the exact factory-state total as under-specified instead of tuning a reconstruction to match it. This sensitivity is not an input to C1 or C2 timing.</p>
+<p>For <code>P = 1160</code>, the prior central 240-cycle batch model has about 1.336× average throughput headroom. Perfect overlap retains the 43.200-day operation-model lower envelope. Fully serializing the two factory-count reconstructions gives approximately 75.528–75.534 raw days before any imposed whole-run survival target.</p>
 <p>The conclusion is fragile:</p>
 <table>
 <thead>
@@ -403,23 +444,23 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 </tr>
 <tr>
 <td>240-cycle batches, fully serialized</td>
-<td style="text-align: right;">75.528</td>
-<td style="text-align: right;">83.920 at 90% survival</td>
+<td style="text-align: right;">75.528–75.534</td>
+<td style="text-align: right;">About 83.920–83.927 at 90% survival</td>
 </tr>
 <tr>
 <td>360-cycle batches, fully serialized</td>
-<td style="text-align: right;">91.692</td>
-<td style="text-align: right;">101.880 at 90% survival</td>
+<td style="text-align: right;">≈91.692</td>
+<td style="text-align: right;">≈101.880 at 90% survival</td>
 </tr>
 <tr>
 <td>240-cycle serialized at nominal 0.1% physical error</td>
-<td style="text-align: right;">75.528</td>
+<td style="text-align: right;">75.528–75.534</td>
 <td style="text-align: right;">311–332, depending on block-hazard proxy</td>
 </tr>
 </tbody>
 </table>
 <p>Within the independent-error proxy, physical error must be approximately 0.0664% or lower to reach 90% survival. Correlated surgery, movement faults, burst contention, and decoder effects are not represented. The sensitivity analysis is a decision boundary, not a physical error proof.</p>
-<h2 id="why-the-physical-claim-remains-open">Why the physical claim remains open</h2>
+<h2 id="why-no-physical-claim-is-made">Why no physical claim is made</h2>
 <p>The public time-efficient architecture supports a coarse capacity transfer: 1,142 is below <code>P = 1160</code>, and 8,212 is below the modeled 8,216 logical processor capacity. But an explicit route requires information the public v1 paper does not supply:</p>
 <ul>
 <li>parity-check matrices and logical-operator representatives for the proposed distance-20, 30%-rate code blocks;</li>
@@ -435,7 +476,7 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 <p>Closed-lane pipelining shortens the valid modulus-specific operation schedule under the stated model. Whether that operation-model effect becomes a physical speedup depends on unresolved architectural and reliability assumptions.</p>
 </blockquote>
 <h2 id="clean-room-reproduction-protocol">Clean-room reproduction protocol</h2>
-<p><strong>Version 1.2 defines a new positive clean-room target; it does not reactivate v1.0.</strong> The permitted input envelope is exactly this article, <code>reproduction-spec-v1.2.json</code>, <code>rns-periods-v1.2.txt</code>, the publication manifest and figure, plus the externally cited papers and frozen source archives. The public package does <strong>not</strong> contain or link to our scheduler implementation, search implementation, generated schedule trace, verifier implementation, resource certificate, factory-composition implementation, or saved result artifacts.</p>
+<p><strong>Version 1.3 defines the corrected clean-room target; it does not reactivate v1.0 or silently overwrite v1.2.</strong> The permitted input envelope is exactly this article, <code>reproduction-spec-v1.3.json</code>, <code>rns-periods-v1.2.txt</code>, <code>table1-lane-layout-v1.3.json</code>, <code>table1-lane-row-map-v1.3.csv</code>, the v1.3 publication manifest and figure, plus the externally cited papers and frozen source archives. The public package does <strong>not</strong> contain or link to our scheduler implementation, RNS search implementation, generated schedule trace, verifier implementation, resource certificate, factory-composition implementation, or saved positive-result artifacts.</p>
 <p>The explicit period list is a workload input, analogous to publishing a benchmark instance. The reproducer must validate it before using it. It is not expected to rediscover the same random walk, but independently finding a different valid set and rebuilding the downstream schedule would be stronger evidence.</p>
 <p>Before implementation, the reproducer should record:</p>
 <ol>
@@ -448,7 +489,7 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 <p>It should then independently construct or regenerate:</p>
 <ul>
 <li>validation that every published period is a distinct 20-bit prime, the exact product exceeds <code>N^244</code>, the centered residue is below <code>N &gt;&gt; 31</code>, and no period divides a required multiplier;</li>
-<li>the modulus-specific generators and lookup arrays from the frozen author source and published period order;</li>
+<li>the modulus-specific generators and lookup arrays from the frozen source, published period order, and all 30 v1.3 Table 1 lane chains;</li>
 <li>small-instance exact blocked-lookup witnesses;</li>
 <li>primitive lookup counts from the frozen Qualtran revision;</li>
 <li>stage durations from the frozen source models;</li>
@@ -457,7 +498,7 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 <li>factory and reliability sensitivity.</li>
 </ul>
 <p>Acceptance requires agreement on the validity gates and schedule constraints, not byte-for-byte agreement with an unpublished implementation. A different feasible schedule under the same valid workload may be stronger evidence. Failure to reproduce, ambiguity, or a result that is slower than the reported value is a publishable outcome, not a failed assignment.</p>
-<p>The reproducer must keep C2 and C3 separate. Reproducing 43.200 operation-model days does not establish atom count, routing, factory feasibility, decoder performance, logical survival, or wall-clock runtime.</p>
+<p>The reproducer must keep C2 and C3 separate. Reproducing 43.200 operation-model days does not establish atom count, routing, factory feasibility, decoder performance, logical survival, or wall-clock runtime. C3 is not an attempted physical implementation that failed reproduction; no such implementation is claimed in the first place.</p>
 <h2 id="frozen-sources-and-direct-links">Frozen sources and direct links</h2>
 <table>
 <thead>
@@ -502,15 +543,16 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
 </tbody>
 </table>
 <h2 id="scope-and-status">Scope and status</h2>
-<p>This is an open technical methods note, not a peer-reviewed result. The current implementation passes 121 tests and 32 subtests. The explicit RNS additionally passes a standalone GMP verifier, the frozen author's exact RNS assertions, and the separately implemented full-trace verifier. These checks establish internal consistency at the algorithmic-workload and operation-schedule layers; they do not establish a physical implementation.</p>
-<p>Version 1.1 preserves the v1.0 artifacts and explicitly withdraws its C2. Version 1.2 supplies a new explicit valid workload and corrected operation schedule. No physical factoring runtime is claimed.</p>
+<p>This is an open technical methods note, not a peer-reviewed result. A fresh v1.3 run passes 110 discoverable author-workspace tests, including the two focused lane-layout tests, and the isolated reproduction separately reports 11 passing tests. The lane-layout audit checks 25,371 structural rows, 25,341 schedule-to-period mappings, 25,341 deterministic synthetic prefix states, and 30 terminal zeros. The explicit RNS additionally passes a standalone GMP verifier, the frozen source's exact RNS assertions, and the separately implemented full-trace verifier. These checks establish internal consistency at the algorithmic-workload and stage-atomic operation-schedule layers; they do not establish a physical implementation or hash the full Table 1 contents.</p>
+<p>Version 1.1 preserves the v1.0 artifacts and explicitly withdraws its C2. Version 1.2 supplied a new explicit valid workload and operation schedule. Version 1.3 corrects that schedule's classical Table 1 lane layout and records the exact clean-room qualification. No physical factoring runtime is claimed.</p>
 <h3 id="change-log">Change log</h3>
 <ul>
 <li><strong>v1.0 — August 28, 2026:</strong> published the operation model and 42.760-day candidate.</li>
 <li><strong>v1.1 — August 28, 2026:</strong> withdrew C2 after the selected prime set failed the required 31-bit modulus-deviation bound; suspended positive clean-room reproduction; recorded the missing <code>/ 0.99</code> post-processing factor and inherited assumptions.</li>
 <li><strong>v1.2 — August 28, 2026:</strong> published a separately validated 25,341-prime modulus-specific workload; reported a corrected 43.200-day operation-model schedule and 27.47% same-workload scheduling ablation; reopened clean-room reproduction while retaining the physical-runtime caveats.</li>
+<li><strong>v1.3 — August 29, 2026:</strong> recorded exact clean-room reproduction of C1 and stage-atomic C2; corrected Table 1 from one 25,342-row chain to thirty chains totaling 25,371 rows; published the canonical lane layout and row-map hash; demoted the exact factory-state total as under-specified; clarified that C3 was never claimed.</li>
 </ul>
-<p>The historical v1.0 article/specification/figure digests remain in <code>publication-manifest-v1.json</code>; the withdrawal is frozen by <code>publication-manifest-v1.1.json</code>; the replacement article, specification, period list, and retained history are recorded in <code>publication-manifest-v1.2.json</code>.</p>
+<p>The historical v1.0 article/specification/figure digests remain in <code>publication-manifest-v1.json</code>; the withdrawal is frozen by <code>publication-manifest-v1.1.json</code>; the replacement result is retained by <code>publication-manifest-v1.2.json</code>; and the current article, corrected specification, lane-layout artifacts, unchanged period list, and full history are recorded in <code>publication-manifest-v1.3.json</code>.</p>
       </article>
 
       <aside class="article-aside" aria-label="Article contents">
@@ -519,6 +561,7 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
           <li><a href="#claim-ladder">Claim ladder</a></li>
           <li><a href="#published-starting-points">Starting points</a></li>
           <li><a href="#from-approximate-residues-to-independent-jobs">Residue jobs</a></li>
+          <li><a href="#table-1-lane-layout-erratum">Table 1 erratum</a></li>
           <li><a href="#exact-blocked-lookup">Exact lookup</a></li>
           <li><a href="#rebuilding-the-lookup-and-stage-frontiers">Rebuild frontiers</a></li>
           <li><a href="#stage-duration-model">Stage model</a></li>
@@ -527,7 +570,7 @@ failure(m)      = mask_proportion + deviation / mask_proportion.
           <li><a href="#attempts-and-runtime-conversion">Runtime</a></li>
           <li><a href="#the-same-workload-scheduling-ablation">Ablation</a></li>
           <li><a href="#factory-and-reliability-sensitivity">Sensitivity</a></li>
-          <li><a href="#why-the-physical-claim-remains-open">Physical boundary</a></li>
+          <li><a href="#why-no-physical-claim-is-made">Physical boundary</a></li>
           <li><a href="#clean-room-reproduction-protocol">Reproduction</a></li>
           <li><a href="#frozen-sources-and-direct-links">Source lock</a></li>
           <li><a href="#scope-and-status">Scope</a></li>

@@ -1,0 +1,80 @@
+{
+  "clean_room_boundary": {
+    "excluded": "Author implementations, traces, verifiers, resource certificates, factory-composition code, and saved positive-result artifacts are neither published nor linked.",
+    "included": "Only the files named by reproduction-spec-v1.3.json and its cited external sources are permitted inputs."
+  },
+  "files": {
+    "../../assets/images/shor-scheduling/verification-map.png": {
+      "bytes": 258717,
+      "sha256": "6a6e237ac9c2783f35dff68faf85991463388b9cc3e201c72c55317f288e5d97"
+    },
+    "../../assets/images/shor-scheduling/verification-map.svg": {
+      "bytes": 6017,
+      "sha256": "a0d9e6393e2c1c9bc16a63da8ac92701cc0299cd04cc5e4413397ceffd071d41"
+    },
+    "../../index.html": {
+      "bytes": 14782,
+      "sha256": "4bfccdf5bba6b00874172d54bca4e46ed26bccf8ff1cc8c0e3e2faaf9e45ba9e"
+    },
+    "../../sitemap.xml": {
+      "bytes": 1164,
+      "sha256": "593639a98841c316f6e4eece3d166f5278a21b47d7eaab1f357473c56ef1d4a3"
+    },
+    "index.html": {
+      "bytes": 45940,
+      "sha256": "21fc96dd67bc02487df0a5991c4c4233d99714c60174efe72ef8552c60cc8989"
+    },
+    "publication-manifest-v1.1.json": {
+      "bytes": 1630,
+      "sha256": "7cbe969a30fae80b46c9ab97c90176f4a2e1070bf199f9f6ae45dd7c33c26159"
+    },
+    "publication-manifest-v1.2.json": {
+      "bytes": 2492,
+      "sha256": "75596c5f27f0247f758e21cae4e14109068823af52a15f4c0a20bd6fc702eb56"
+    },
+    "publication-manifest-v1.json": {
+      "bytes": 1068,
+      "sha256": "5a00615619c05297713819a49e5bdcda62a9dbed2c2b11c3c3f178b0fbbf01ac"
+    },
+    "reproduction-spec-v1.1.json": {
+      "bytes": 7875,
+      "sha256": "dd4f3cc4794a09cb04f1a11a0074df00c66385ebcda94b9d38563185e12f0094"
+    },
+    "reproduction-spec-v1.2.json": {
+      "bytes": 11761,
+      "sha256": "da9b4f1732ac412d43beecb6b0a234a9e0013711b78288d1ee9537a81e069710"
+    },
+    "reproduction-spec-v1.3.json": {
+      "bytes": 15391,
+      "sha256": "e4baf27e8b9fbbaa4fc24b71ad979e21e1b9be122c1804783420978ac56ae0ed"
+    },
+    "reproduction-spec-v1.json": {
+      "bytes": 12015,
+      "sha256": "fa8d422d3eba69936d7eec4575319435374ddfd69b9cb8d2970a19f45715afda"
+    },
+    "rns-periods-v1.2.txt": {
+      "bytes": 180828,
+      "sha256": "deb506e83c8a80c3036de9ad4d2e80286a2fd043fa03bdbb2401c70dd90afa06"
+    },
+    "source.md": {
+      "bytes": 34071,
+      "sha256": "2d93194cffba70af415b0faa6e01b112f70e979179d6f638dd3ae2f3785b2041"
+    },
+    "table1-lane-layout-v1.3.json": {
+      "bytes": 14181,
+      "sha256": "70b1c59822903a549363038cadcd6ea7873f247e7d3f05aad509d3e1635a2f4c"
+    },
+    "table1-lane-row-map-v1.3.csv": {
+      "bytes": 998064,
+      "sha256": "3696c76c6d5dd4e2ddb2b3f3e024fd587806f0184d86b25fe9dd2afe5e84b9fc"
+    }
+  },
+  "hash_algorithm": "sha256",
+  "historical_v1_1_commit": "b6092f4ef8097259647ea99fbe5f5d694cfdc628",
+  "historical_v1_2_commit": "d28faf0b303ef1513b24f5c4773e7adbe09914db",
+  "historical_v1_commit": "ecc4e89f85a8b2ec04babcb94e556cc78c01c193",
+  "note": "This manifest intentionally does not hash itself. Version 1.3 retains the v1.0-v1.2 audit trail, records the Table 1 lane-layout erratum and independently reproduced stage-atomic operation-model result, and does not claim a physical C3 implementation.",
+  "published_date": "2026-08-29",
+  "schema": "cross-layer-rsa2048-publication-manifest-v1",
+  "version": "1.3"
+}
