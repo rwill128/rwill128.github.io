@@ -1,0 +1,100 @@
+{
+  "encoding": "UTF-8",
+  "hash_rule": "SHA-256 of exact QASM text after stated normalization",
+  "generator_source": "CircLS experiments/benchsuite.py at 3523afeb0034bf047651a7e98a7e45d3da5df72d",
+  "benchmarks": [
+    {
+      "case": "teleport_8",
+      "construction": "teleport_chain(8)",
+      "qasm_bytes": 447,
+      "qasm_sha256": "de601e5fc8e640aa2cdcfff128cabbf0f447f1953529d0a70b40aa611859ba2c"
+    },
+    {
+      "case": "bv_n14",
+      "construction": "QASMBench medium/bv_n14/bv_n14.qasm; CircLS normalize_qasm",
+      "normalization": "renamed-register:qr->q+full-terminal-measurement",
+      "qasm_bytes": 506,
+      "qasm_sha256": "1825cc1424d0618447078f7171a51ed55d58a00543130488646ff30ce2a4e91b"
+    },
+    {
+      "case": "twistedghz_8",
+      "construction": "twisted_ghz(8)",
+      "qasm_bytes": 244,
+      "qasm_sha256": "4876e9c3689221d11f830f17d34b9dbb118630bc1b921845732ada3655413bb7"
+    },
+    {
+      "case": "bv_n19",
+      "construction": "QASMBench medium/bv_n19/bv_n19.qasm; CircLS normalize_qasm",
+      "normalization": "renamed-register:qr->q+full-terminal-measurement",
+      "qasm_bytes": 676,
+      "qasm_sha256": "bd0cb60b40b0d4f2e7b8540513a66f25a1f15ea6542065048ef040c2a9944c13"
+    },
+    {
+      "case": "dj_16",
+      "construction": "dj(16)",
+      "qasm_bytes": 574,
+      "qasm_sha256": "504710752c73fdd3186a481318b5d1b8cbdaa487f34b491be4a49112c817e48d"
+    },
+    {
+      "case": "bv_n30",
+      "construction": "QASMBench large/bv_n30/bv_n30.qasm; CircLS normalize_qasm",
+      "normalization": "renamed-register:q0->q+full-terminal-measurement",
+      "qasm_bytes": 879,
+      "qasm_sha256": "22c148da900073de77d71be41aa5ef72d18786a004efe1aac863f0c2ea7f5cd9"
+    },
+    {
+      "case": "bv_holdout_12",
+      "construction": "bv(12)",
+      "qasm_bytes": 363,
+      "qasm_sha256": "45442b979e8b517494c8007c261025c000970a649e87310accb8752f3e466bab"
+    },
+    {
+      "case": "dj_holdout_12",
+      "construction": "dj(12)",
+      "qasm_bytes": 438,
+      "qasm_sha256": "b0770400e89a31cc353a7599f8c9a441255b3626b7aba7d96df988b61541658b"
+    },
+    {
+      "case": "teleport_holdout_6",
+      "construction": "teleport_chain(6)",
+      "qasm_bytes": 347,
+      "qasm_sha256": "91b70c4ea5fdb2512e084c043d711b6120ced1d0ffc48d3095fbf83531a25295"
+    },
+    {
+      "case": "twistedghz_holdout_6",
+      "construction": "twisted_ghz(6)",
+      "qasm_bytes": 200,
+      "qasm_sha256": "a518852da583490ce4fc44f6e8e04bda0c7a51c0d8413320bcb15001feaee1a7"
+    },
+    {
+      "case": "random_holdout_12_60_303",
+      "construction": "random_clifford(12, 60, 303)",
+      "qasm_bytes": 761,
+      "qasm_sha256": "fdcb9c67b0d2b73dee4db351012b358045862ad0a75216121374223a31f9dfe3"
+    },
+    {
+      "case": "parallel_holdout_n8_d30_s11",
+      "construction": "random_clifford(8, 30, 11)",
+      "qasm_bytes": 405,
+      "qasm_sha256": "9982d9d6cfada7f20c8948a01ba7555f6f6750cfdf38356788e91f6ce70d01d1"
+    },
+    {
+      "case": "parallel_holdout_n8_d30_s15",
+      "construction": "random_clifford(8, 30, 15)",
+      "qasm_bytes": 435,
+      "qasm_sha256": "2c6108815e97a7b2c0aba2029645adfac1003fa38cb6bcfdedf2f4d5f0ad6883"
+    },
+    {
+      "case": "parallel_holdout_n8_d40_s49",
+      "construction": "random_clifford(8, 40, 49)",
+      "qasm_bytes": 527,
+      "qasm_sha256": "7854b42133e0e89e9eae86a325b5180b9c2c4d0b7798539a7b667b8a2f77e1a9"
+    },
+    {
+      "case": "parallel_holdout_n8_d30_s392",
+      "construction": "random_clifford(8, 30, 392)",
+      "qasm_bytes": 409,
+      "qasm_sha256": "6025b1aa5b7fc9ceda14246f0726e4a8a183755c829d51e2a1aa4e932f123c5f"
+    }
+  ]
+}
