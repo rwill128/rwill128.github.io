@@ -1,6 +1,6 @@
 {
   "created_date": "2026-08-31",
-  "package_version": "v1.4",
+  "package_version": "v2.0",
   "python": "3.12.12",
   "sources": {
     "CircLS": {
@@ -15,5 +15,9 @@
       "paper": "https://arxiv.org/abs/2005.13018",
       "repository": "https://github.com/pnnl/QASMBench.git"
     }
+  },
+  "related_work": {
+    "O3LS": "https://arxiv.org/abs/2604.15099",
+    "Harvest": "https://arxiv.org/abs/2608.03315"
   }
 }

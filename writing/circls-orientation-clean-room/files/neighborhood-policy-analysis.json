@@ -1,0 +1,468 @@
+{
+  "cases": [
+    {
+      "assignments": 256,
+      "case": "bv_8",
+      "global_V1": 72.33333333333333,
+      "n_qubits": 8,
+      "radius_1": {
+        "final_T1": 27,
+        "final_V1": 73.66666666666667,
+        "final_bitstring": "00000000",
+        "gap_pct_of_global_V1": 1.8433179723502446,
+        "moves": 0,
+        "path": [
+          "00000000"
+        ],
+        "reaches_global_V1": false,
+        "states_evaluated": 9
+      },
+      "radius_2": {
+        "final_T1": 27,
+        "final_V1": 72.33333333333333,
+        "final_bitstring": "00001010",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 1,
+        "path": [
+          "00000000",
+          "00001010"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 58
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 16,
+      "case": "cat_state_n4",
+      "global_V1": 2.6666666666666665,
+      "n_qubits": 4,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 2.6666666666666665,
+        "final_bitstring": "0000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "0000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 5
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 2.6666666666666665,
+        "final_bitstring": "0000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "0000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 11
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 4,
+      "case": "deutsch_n2",
+      "global_V1": 12.0,
+      "n_qubits": 2,
+      "radius_1": {
+        "final_T1": 10,
+        "final_V1": 12.0,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 3
+      },
+      "radius_2": {
+        "final_T1": 10,
+        "final_V1": 12.0,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 4
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 256,
+      "case": "dj_8",
+      "global_V1": 92.0,
+      "n_qubits": 8,
+      "radius_1": {
+        "final_T1": 43,
+        "final_V1": 93.33333333333333,
+        "final_bitstring": "00000000",
+        "gap_pct_of_global_V1": 1.4492753623188248,
+        "moves": 0,
+        "path": [
+          "00000000"
+        ],
+        "reaches_global_V1": false,
+        "states_evaluated": 9
+      },
+      "radius_2": {
+        "final_T1": 43,
+        "final_V1": 92.0,
+        "final_bitstring": "00010100",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 1,
+        "path": [
+          "00000000",
+          "00010100"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 58
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 256,
+      "case": "ghz_8",
+      "global_V1": 5.333333333333333,
+      "n_qubits": 8,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 5.333333333333333,
+        "final_bitstring": "00000000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00000000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 9
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 5.333333333333333,
+        "final_bitstring": "00000000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00000000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 37
+      },
+      "status": "completed"
+    },
+    {
+      "case": "graphstate_8",
+      "status": "baseline_not_fully_verified"
+    },
+    {
+      "assignments": 4,
+      "case": "grover_n2",
+      "global_V1": 1.3333333333333333,
+      "n_qubits": 2,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 1.3333333333333333,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 3
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 1.3333333333333333,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 4
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 16,
+      "case": "hs4_n4",
+      "global_V1": 2.6666666666666665,
+      "n_qubits": 4,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 2.6666666666666665,
+        "final_bitstring": "0000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "0000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 5
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 2.6666666666666665,
+        "final_bitstring": "0000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "0000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 11
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 4,
+      "case": "iswap_n2",
+      "global_V1": 1.3333333333333333,
+      "n_qubits": 2,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 1.3333333333333333,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 3
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 1.3333333333333333,
+        "final_bitstring": "00",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 4
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 32,
+      "case": "lpn_n5",
+      "global_V1": 3.3333333333333335,
+      "n_qubits": 5,
+      "radius_1": {
+        "final_T1": 2,
+        "final_V1": 3.3333333333333335,
+        "final_bitstring": "00000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 6
+      },
+      "radius_2": {
+        "final_T1": 2,
+        "final_V1": 3.3333333333333335,
+        "final_bitstring": "00000",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 0,
+        "path": [
+          "00000"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 16
+      },
+      "status": "completed"
+    },
+    {
+      "case": "qrng_n4",
+      "status": "baseline_not_fully_verified"
+    },
+    {
+      "case": "steane_encode",
+      "status": "baseline_not_fully_verified"
+    },
+    {
+      "assignments": 16,
+      "case": "twistedghz_4",
+      "global_V1": 30.333333333333332,
+      "n_qubits": 4,
+      "radius_1": {
+        "final_T1": 18,
+        "final_V1": 30.333333333333332,
+        "final_bitstring": "0101",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 2,
+        "path": [
+          "0000",
+          "0001",
+          "0101"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 10
+      },
+      "radius_2": {
+        "final_T1": 18,
+        "final_V1": 30.333333333333332,
+        "final_bitstring": "0101",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 1,
+        "path": [
+          "0000",
+          "0101"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 14
+      },
+      "status": "completed"
+    },
+    {
+      "assignments": 256,
+      "case": "twistedghz_8",
+      "global_V1": 93.0,
+      "n_qubits": 8,
+      "radius_1": {
+        "final_T1": 34,
+        "final_V1": 93.0,
+        "final_bitstring": "01010101",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 4,
+        "path": [
+          "00000000",
+          "00000001",
+          "00000101",
+          "00010101",
+          "01010101"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 34
+      },
+      "radius_2": {
+        "final_T1": 34,
+        "final_V1": 93.0,
+        "final_bitstring": "01010101",
+        "gap_pct_of_global_V1": 0.0,
+        "moves": 2,
+        "path": [
+          "00000000",
+          "00000101",
+          "01010101"
+        ],
+        "reaches_global_V1": true,
+        "states_evaluated": 78
+      },
+      "status": "completed"
+    }
+  ],
+  "eligible_cases": 11,
+  "input_manifest": {
+    "cases": [
+      {
+        "n_qubits": 2,
+        "name": "deutsch_n2",
+        "qasm_sha256": "56a7b3389495fb497df1a331abb7d4f64ac57d397aaa1c1169d0ac33a10889cd"
+      },
+      {
+        "n_qubits": 2,
+        "name": "grover_n2",
+        "qasm_sha256": "afd134759fa0eefb9f84a88d3e9f156cd54e83b10177d02c33bb6f519c08b813"
+      },
+      {
+        "n_qubits": 2,
+        "name": "iswap_n2",
+        "qasm_sha256": "0c6d4dffaeb32c5758511cb51d5f89bcb6c97f3f60c1f5e3cbbeabb53c53ed50"
+      },
+      {
+        "n_qubits": 4,
+        "name": "cat_state_n4",
+        "qasm_sha256": "abcd48ab157d96d1c2a7dc36fd2e4e181e7dc0b28edfb4fa8317b06037c01516"
+      },
+      {
+        "n_qubits": 4,
+        "name": "hs4_n4",
+        "qasm_sha256": "f362ca9ffd7f045f517dfe4d67350794ac998f4eb427586a804eed9379340f63"
+      },
+      {
+        "n_qubits": 4,
+        "name": "qrng_n4",
+        "qasm_sha256": "627d604f685cebe71f4d079cea6a9266a8d6a136279b6199b32cbc010079a184"
+      },
+      {
+        "n_qubits": 4,
+        "name": "twistedghz_4",
+        "qasm_sha256": "57b28360ee4473a1732da3bae7bbb0a9e6be9195516607dd24b62957c0bbc6a0"
+      },
+      {
+        "n_qubits": 5,
+        "name": "lpn_n5",
+        "qasm_sha256": "4216e9b4fdf9f22e6ae4f92a67aac8c634209093db4e3f0290f5413165b4de87"
+      },
+      {
+        "n_qubits": 7,
+        "name": "steane_encode",
+        "qasm_sha256": "dc45a705480e9299b67993d13b3c2aca530bb58056bf5d05a1b020ff690344bd"
+      },
+      {
+        "n_qubits": 8,
+        "name": "bv_8",
+        "qasm_sha256": "923702e42ce4aba72e46b26c8d5d9c168304dabc1a8ef6e812d055cd17409ec9"
+      },
+      {
+        "n_qubits": 8,
+        "name": "dj_8",
+        "qasm_sha256": "be889337f94940c3dfd2296c2fcd746acd1b5ddd7a696204551936b74b5309a8"
+      },
+      {
+        "n_qubits": 8,
+        "name": "ghz_8",
+        "qasm_sha256": "b8f243b93193da3853d655f9b57e9d971b55776d99f739b12257a73277ea30ce"
+      },
+      {
+        "n_qubits": 8,
+        "name": "graphstate_8",
+        "qasm_sha256": "6395daf1c13ec21a92e3c284692dbcb9128fa601006d32fa5e7e1964937a8933"
+      },
+      {
+        "n_qubits": 8,
+        "name": "twistedghz_8",
+        "qasm_sha256": "4876e9c3689221d11f830f17d34b9dbb118630bc1b921845732ada3655413bb7"
+      }
+    ],
+    "census_manifest_sha256": "56f02dc76c4c36dd9d207b5dda6509a8aad528ed9ee8c6b7cff576651ac91a5f",
+    "circls_sha": "3523afeb0034bf047651a7e98a7e45d3da5df72d",
+    "configuration": {
+      "census_algorithm_version": "circls-orientation-census-v1",
+      "force_distance": true,
+      "max_qubits": 8,
+      "verify_shots": 256,
+      "workers": 4
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "probe_sha256": "9c73d4cee8e623abfb789912d9f7a784e437c5076ae06c6e9eb794330d3fcbda",
+    "protocol_sha256": "2581164b8cf8caf63eeeba5a9941cdb2a58eb39d2d02f6c223fe6acc4a4c1917",
+    "python": "3.12.12 (main, Jan 27 2026, 23:41:44) [Clang 21.1.4 ]",
+    "qasmbench_sha": "357b942396d5c2b7cbc1c229c585a6ef5ccaebac",
+    "record": "exhaustive_manifest",
+    "runner_sha256": "71dbc7787094a67a575ebd2d93b5086049e2f4aa158819e03a22f2630b40e26b",
+    "search_sha256": "150c974892f4b1eaa6fe2f78b7838cc7fc8ece4dffbaf31137f6030d36dbad63",
+    "version": "circls-orientation-exhaustive-small-v1"
+  },
+  "note": "offline policy simulation over frozen compiled assignments",
+  "radius_1_global_cases": 9,
+  "radius_1_total_states_evaluated": 96,
+  "radius_2_global_cases": 11,
+  "radius_2_total_states_evaluated": 295,
+  "record": "neighborhood_policy_analysis",
+  "total_exhaustive_assignments": 1116
+}

@@ -1,0 +1,356 @@
+{
+  "algorithm_version": "circls-orientation-census-v1",
+  "cases": [
+    {
+      "n_qubits": 2,
+      "name": "deutsch_n2",
+      "normalization": "",
+      "qasm_sha256": "56a7b3389495fb497df1a331abb7d4f64ac57d397aaa1c1169d0ac33a10889cd",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 2,
+      "name": "grover_n2",
+      "normalization": "",
+      "qasm_sha256": "afd134759fa0eefb9f84a88d3e9f156cd54e83b10177d02c33bb6f519c08b813",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 2,
+      "name": "iswap_n2",
+      "normalization": "",
+      "qasm_sha256": "0c6d4dffaeb32c5758511cb51d5f89bcb6c97f3f60c1f5e3cbbeabb53c53ed50",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 4,
+      "name": "cat_state_n4",
+      "normalization": "renamed-register:bits->q+full-terminal-measurement",
+      "qasm_sha256": "abcd48ab157d96d1c2a7dc36fd2e4e181e7dc0b28edfb4fa8317b06037c01516",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 4,
+      "name": "hs4_n4",
+      "normalization": "",
+      "qasm_sha256": "f362ca9ffd7f045f517dfe4d67350794ac998f4eb427586a804eed9379340f63",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 4,
+      "name": "qrng_n4",
+      "normalization": "",
+      "qasm_sha256": "627d604f685cebe71f4d079cea6a9266a8d6a136279b6199b32cbc010079a184",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 4,
+      "name": "twistedghz_4",
+      "normalization": "",
+      "qasm_sha256": "57b28360ee4473a1732da3bae7bbb0a9e6be9195516607dd24b62957c0bbc6a0",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 5,
+      "name": "lpn_n5",
+      "normalization": "",
+      "qasm_sha256": "4216e9b4fdf9f22e6ae4f92a67aac8c634209093db4e3f0290f5413165b4de87",
+      "source": "QASMBench",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 7,
+      "name": "steane_encode",
+      "normalization": "",
+      "qasm_sha256": "dc45a705480e9299b67993d13b3c2aca530bb58056bf5d05a1b020ff690344bd",
+      "source": "custom",
+      "tags": [
+        "named"
+      ]
+    },
+    {
+      "n_qubits": 8,
+      "name": "bv_8",
+      "normalization": "",
+      "qasm_sha256": "923702e42ce4aba72e46b26c8d5d9c168304dabc1a8ef6e812d055cd17409ec9",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 8,
+      "name": "dj_8",
+      "normalization": "",
+      "qasm_sha256": "be889337f94940c3dfd2296c2fcd746acd1b5ddd7a696204551936b74b5309a8",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 8,
+      "name": "ghz_8",
+      "normalization": "",
+      "qasm_sha256": "b8f243b93193da3853d655f9b57e9d971b55776d99f739b12257a73277ea30ce",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 8,
+      "name": "graphstate_8",
+      "normalization": "",
+      "qasm_sha256": "6395daf1c13ec21a92e3c284692dbcb9128fa601006d32fa5e7e1964937a8933",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 8,
+      "name": "twistedghz_8",
+      "normalization": "",
+      "qasm_sha256": "4876e9c3689221d11f830f17d34b9dbb118630bc1b921845732ada3655413bb7",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 9,
+      "name": "teleport_4",
+      "normalization": "",
+      "qasm_sha256": "cb36182e2903f345aa599f9a54623e24b6d76ef7255965781c5a4411ff077847",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 10,
+      "name": "bbpssw_4",
+      "normalization": "",
+      "qasm_sha256": "b21019f1aede8bd4cd59e89820e7fbc88a5a45e9b4be2e5bba1c0e014168ce31",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 14,
+      "name": "bv_n14",
+      "normalization": "renamed-register:qr->q+full-terminal-measurement",
+      "qasm_sha256": "1825cc1424d0618447078f7171a51ed55d58a00543130488646ff30ce2a4e91b",
+      "source": "QASMBench",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 16,
+      "name": "bv_16",
+      "normalization": "",
+      "qasm_sha256": "8bac2af6db9459f89f6bceaf9aa31d2571d6073f0621987a6a25ea176ce1b481",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 16,
+      "name": "dj_16",
+      "normalization": "",
+      "qasm_sha256": "504710752c73fdd3186a481318b5d1b8cbdaa487f34b491be4a49112c817e48d",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 16,
+      "name": "ghz_16",
+      "normalization": "",
+      "qasm_sha256": "a5fdffbbe945ed981176b91b189afb988c4f3432020559e65092034542609cc3",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 16,
+      "name": "graphstate_16",
+      "normalization": "",
+      "qasm_sha256": "fd15e4c94e59699684cf60170852884c8b9a5c7dda5374e2ac55cf90bfcdee3a",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 17,
+      "name": "teleport_8",
+      "normalization": "",
+      "qasm_sha256": "de601e5fc8e640aa2cdcfff128cabbf0f447f1953529d0a70b40aa611859ba2c",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 18,
+      "name": "bbpssw_8",
+      "normalization": "",
+      "qasm_sha256": "da9da5036ccf85251d0671ebb35f2da4ed4c88e5f76173bab50318800abae3f5",
+      "source": "custom",
+      "tags": [
+        "consumable"
+      ]
+    },
+    {
+      "n_qubits": 19,
+      "name": "bv_n19",
+      "normalization": "renamed-register:qr->q+full-terminal-measurement",
+      "qasm_sha256": "bd0cb60b40b0d4f2e7b8540513a66f25a1f15ea6542065048ef040c2a9944c13",
+      "source": "QASMBench",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 22,
+      "name": "cat_state_n22",
+      "normalization": "",
+      "qasm_sha256": "a7b6a6a5c83397281250f255ce303f34e90c65d3990ef5b3ecc96fc685083c1e",
+      "source": "QASMBench",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 23,
+      "name": "ghz_state_n23",
+      "normalization": "",
+      "qasm_sha256": "27e77c753e2993b3b4785872ec83d434dfac62cc526f4ee574347e6f5c8986ff",
+      "source": "QASMBench",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 30,
+      "name": "bv_n30",
+      "normalization": "renamed-register:q0->q+full-terminal-measurement",
+      "qasm_sha256": "22c148da900073de77d71be41aa5ef72d18786a004efe1aac863f0c2ea7f5cd9",
+      "source": "QASMBench",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 32,
+      "name": "bv_32",
+      "normalization": "",
+      "qasm_sha256": "b4b81704fb80feec1cc1aea31d2e0d769a732ae34bfa453c9356050632f9e2c3",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 32,
+      "name": "dj_32",
+      "normalization": "",
+      "qasm_sha256": "3e80c6997047e62451a98a7cb73bcb93e3fcc437af2b47ae48ebe5924ecc72f5",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 32,
+      "name": "ghz_32",
+      "normalization": "",
+      "qasm_sha256": "64684a9043af5ab033b21d34fd171caad7880b0e5a91d3d4e1abdff0f068491a",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    },
+    {
+      "n_qubits": 32,
+      "name": "graphstate_32",
+      "normalization": "",
+      "qasm_sha256": "1e06b97d08d807c58159b041a0983d30c16228a8b6339e1d6cc55e9ea0829df5",
+      "source": "family",
+      "tags": [
+        "named",
+        "scale"
+      ]
+    }
+  ],
+  "circls_clean": true,
+  "circls_sha": "3523afeb0034bf047651a7e98a7e45d3da5df72d",
+  "configuration": {
+    "explicit_cases": null,
+    "force_distance": true,
+    "include_oversize": false,
+    "max_passes": 64,
+    "max_qubits": 32,
+    "min_qubits": 2,
+    "objective": "minimize exact V1 with T1 non-increasing",
+    "tie_break": "V1, T1, coordinate name",
+    "verify_shots": 256,
+    "workers": 4
+  },
+  "frozen_at_utc": "2026-08-31T16:05:19.744296+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "probe_sha256": "9c73d4cee8e623abfb789912d9f7a784e437c5076ae06c6e9eb794330d3fcbda",
+  "protocol_sha256": "3304233deac6dc2d71e94d504e3d3761d2caf3098187f38648a25b318caa31aa",
+  "python": "3.12.12 (main, Jan 27 2026, 23:41:44) [Clang 21.1.4 ]",
+  "qasmbench_sha": "357b942396d5c2b7cbc1c229c585a6ef5ccaebac",
+  "record": "census_manifest",
+  "runner_sha256": "a611cad3ba5d6b0c13fbba9f7dccd015f6dd73dd00624e63a4be143915d6ec5b",
+  "search_sha256": "150c974892f4b1eaa6fe2f78b7838cc7fc8ece4dffbaf31137f6030d36dbad63",
+  "suite_note": "optional external TopoLS case omitted: [Errno 2] No such file or directory: '/Users/richardwilliams/Initio-Interview-Workspace/ft_compiler_study/vendor/TopoLS/docs/benchmark/ghz_16.qasm'"
+}

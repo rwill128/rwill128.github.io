@@ -3,283 +3,236 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Orientation-Aware Layout Search in CircLS: Methods and Reproduction Protocol | Richard Williams</title>
-  <meta name="description" content="A self-contained method for independently reproducing orientation-aware layout search in the CircLS fault-tolerant quantum compiler.">
+  <title>Birth-Orientation Optimization in CircLS: Complete Benchmark Census and Exact Small-Instance Analysis | Richard Williams</title>
+  <meta name="description" content="A frozen 31-case study of birth-orientation search in CircLS, including every verified improvement, zero-gain case, exclusion, exhaustive small-instance optimum, and limitation.">
   <meta name="author" content="Richard Williams">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Orientation-Aware Layout Search in CircLS: Methods and Reproduction Protocol">
-  <meta property="og:description" content="The result, inputs, complete search method, verification gates, and platform-dependent placement behavior in one public article.">
+  <meta property="og:title" content="Birth-Orientation Optimization in CircLS: Complete Benchmark Census and Exact Small-Instance Analysis">
+  <meta property="og:description" content="A complete CircLS compiler study with verified improvements, zero-gain cases, exact small-instance optima, and a documented failure mode of strict coordinate descent.">
   <meta property="og:url" content="https://rwill128.github.io/writing/circls-orientation-clean-room/">
-  <meta property="article:author" content="Richard Williams">
-  <meta property="article:published_time" content="2026-08-31">
-  <meta property="article:modified_time" content="2026-08-31">
   <meta name="twitter:card" content="summary">
   <meta name="theme-color" content="#f6f6f3">
   <link rel="canonical" href="https://rwill128.github.io/writing/circls-orientation-clean-room/">
-  <link rel="stylesheet" href="/assets/site.css?v=20260831-2">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/site.css?v=20260824-1">
 </head>
 <body>
-  <a class="skip-link" href="#article">Skip to article</a>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <div class="nav-shell">
       <a class="brand" href="/">Richard Williams</a>
       <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/#writing" aria-current="page">Writing</a>
-        <a class="optional-nav" href="/#work">Work</a>
+        <a href="/#writing">Writing</a>
+        <a href="/#work">Work</a>
+        <a class="optional-nav" href="/#about">About</a>
         <a href="https://github.com/rwill128" rel="me">GitHub</a>
       </nav>
     </div>
   </header>
 
-  <main id="article">
+  <main id="main">
     <header class="article-header">
       <div class="shell article-heading">
         <div class="article-kicker">
           <span>Fault-tolerant quantum compilation</span>
-          <span>Complete method</span>
-          <span>Open reproduction</span>
+          <span>31-case census</span>
+          <span>Exact small-instance analysis</span>
         </div>
-        <h1>Orientation-Aware Layout Search in CircLS: Methods and Reproduction Protocol</h1>
-        <p class="article-deck">The result, public inputs, complete search procedure, acceptance tests, and known platform instability—without requiring a downloadable specification to understand the experiment.</p>
+        <h1>Birth-Orientation Optimization in CircLS</h1>
+        <p class="article-deck">A complete benchmark census of a verifier-gated orientation search, followed by exhaustive analysis of every eligible case with at most eight data qubits.</p>
         <div class="article-byline">
-          <span>By Richard Williams</span>
-          <span>August 31, 2026</span>
-          <span>16 minute read</span>
+          <span>Richard Williams</span>
+          <time datetime="2026-08-31">August 31, 2026</time>
+          <span>Research report</span>
         </div>
       </div>
     </header>
 
-    <section class="metric-band" aria-label="Current evidence">
+    <section class="metric-band" aria-label="Primary results">
       <div class="wide-shell metric-grid">
         <div class="metric">
-          <strong>2</strong>
-          <span>fully specified greedy search profiles</span>
+          <strong>31</strong>
+          <span>cases frozen before the census</span>
         </div>
         <div class="metric">
-          <strong>13</strong>
-          <span>identical macOS/Linux physical endpoints</span>
+          <strong>10 / 26</strong>
+          <span>eligible cases with lower V1</span>
         </div>
         <div class="metric">
-          <strong>2</strong>
-          <span>platform-sensitive placement histories</span>
+          <strong>1.62%</strong>
+          <span>aggregate V1-weighted reduction</span>
         </div>
         <div class="metric">
-          <strong>0</strong>
-          <span>algorithmic or hardware-speedup claims</span>
+          <strong>9 / 11</strong>
+          <span>small cases where strict descent reached the global orientation optimum</span>
         </div>
       </div>
     </section>
 
     <div class="shell article-layout">
       <article class="article-body">
-        <h2 id="result-first">Result Summary</h2>
-        <p><a href="https://arxiv.org/abs/2608.23819">CircLS</a> compiles logical Clifford circuits into lattice-surgery layouts for a modeled fault-tolerant quantum computer. Each logical data qubit is represented by a surface-code patch whose X and Z boundaries can be arranged in either of two orientations. This choice does not change the logical computation. It changes which patch boundaries face each direction, which can change the routes needed for later lattice-surgery operations.</p>
-        <p>This study adds a search over that existing orientation input. It begins with CircLS's released <code>full</code> configuration, changes one data-patch orientation, reruns optimized placement and the complete physical compilation, and measures the resulting layout. A change is accepted only when occupied spacetime, V1, decreases; the number of measurement layers, T1, does not increase; an independent recompilation produces the same circuit and metrics; and every public CircLS verification check passes. The process continues until no single orientation change is acceptable.</p>
-        <p>In the original macOS environment, the search produced lower-V1 endpoints for fifteen tested circuits, with reductions ranging from 0.87% to 12.18% and unchanged T1 in every case. Thirteen baseline-and-endpoint pairs reproduced exactly on Linux. Two cases followed different placement histories because CircLS's numerical placement routine is not fully platform-deterministic. These are compiler-model results from differently selected Clifford benchmarks, not an estimate of general performance; no independent clean-room reproduction has yet been completed.</p>
+        <p><a href="https://arxiv.org/abs/2608.23819">CircLS</a> maps logical Clifford circuits to modeled lattice-surgery operations. Each data patch can be born in either of two orientations. That choice leaves the logical computation unchanged, but it changes which X and Z boundaries face each direction and can therefore change placement, routing, and the occupied spacetime of the compiled circuit.</p>
 
-        <h2 id="what-compiler">Compiler Target and Execution Boundary</h2>
-        <p>The target is a fault-tolerant quantum computer using surface-code patches and lattice surgery. The layers are:</p>
-        <pre><code>logical Clifford QASM or Pauli-product program
-        ↓
-classical CircLS compilation and layout search
-        ↓
-modeled lattice-surgery schedule and physical Stim circuit
-        ↓
-classical verification/simulation of that quantum circuit</code></pre>
-        <p>The classical host—macOS or Linux—runs the compiler. The thing being optimized is the compiler's modeled quantum-circuit output, not the compiler's running time.</p>
+        <p>This study adds an outer search over that existing compiler input. It does not improve a quantum algorithm, execute a quantum computer, or estimate an advantage for Shor's algorithm. The result is narrower: for this pinned CircLS backend and benchmark roster, changing patch birth orientations sometimes produces a smaller verified physical compilation than CircLS's released <code>full</code> configuration.</p>
 
-        <h2 id="claim">Reproduction Claim</h2>
-        <p>For each benchmark, compare CircLS's released <code>full</code> configuration with the endpoint of the coordinate search below. A positive result requires:</p>
-        <ul>
-          <li>strictly lower <strong>V1</strong>, CircLS's occupied tile-round sum divided by code distance;</li>
-          <li>non-increasing <strong>T1</strong>, the number of physical measurement layers;</li>
-          <li>byte-identical screen and verification recompilations; and</li>
-          <li>every public verification field run and pass, with no skipped field.</li>
-        </ul>
-        <p>At the original code distance <code>d = 3</code>, V1 is <code>Σ occupied_tiles(round) / 3</code>. It is a compiler-model resource metric—not elapsed hardware time. The source definition is in <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/metrics/experiment_stats.py">CircLS's metric implementation</a>.</p>
-
-        <h2 id="sources">Sources and Environment</h2>
-        <ul>
-          <li><a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d">CircLS commit <code>3523afeb0034bf047651a7e98a7e45d3da5df72d</code></a> and its <a href="https://arxiv.org/abs/2608.23819">paper</a>.</li>
-          <li><a href="https://github.com/pnnl/QASMBench/tree/357b942396d5c2b7cbc1c229c585a6ef5ccaebac">QASMBench commit <code>357b942396d5c2b7cbc1c229c585a6ef5ccaebac</code></a> and its <a href="https://arxiv.org/abs/2005.13018">paper</a>.</li>
-          <li>Python 3.12.12, NumPy 2.5.2, SciPy 1.18.1, NetworkX 3.6.1, Stim 1.16.0, Sinter 1.16.0, PyMatching 2.4.0, and NWQEC 0.1.2. The <a href="/writing/circls-orientation-clean-room/files/requirements-lock.txt">complete frozen dependency list</a> is public.</li>
-        </ul>
-        <p>Install CircLS from the pinned checkout without modifying it. Set <code>QASMBENCH_ROOT</code> to the pinned QASMBench checkout. Record <code>numpy.show_config()</code> because the BLAS/LAPACK backend is now known to matter.</p>
-
-        <h2 id="baseline">Baseline Configuration</h2>
-        <p>Use <code>experiments.ablation.compile_kwargs("full", case)</code> from the pinned CircLS source. Its defaults are:</p>
-        <pre><code>assignment="optimized"
-measure_reduction=True
-first_use_init=True
-step_scheduling=True
-parallel_steps=True
-liveness=True
-keep_patches=the released per-case policy, otherwise empty</code></pre>
-        <p>The released configuration disables step scheduling for case names beginning with <code>teleport_</code>; preserve that exception. Do not replace optimized assignment with row-major placement, freeze an author placement, or disable compiler passes. The relevant public definition is <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/experiments/ablation.py#L53-L104">CircLS's <code>full</code> configuration</a>.</p>
-
-        <h2 id="benchmarks">Benchmark Construction</h2>
-        <p>The public generator definitions are in <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/experiments/benchsuite.py">CircLS's benchmark registry</a>. Hash the UTF-8 QASM text after any stated normalization and require the following SHA-256 value before compiling.</p>
-        <table>
-          <thead>
-            <tr><th>Case</th><th>Exact construction</th><th>QASM SHA-256</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>teleport_8</code></td><td><code>teleport_chain(8)</code></td><td><code>de601e5f…59ba2c</code></td></tr>
-            <tr><td><code>bv_n14</code></td><td>QASMBench <code>medium/bv_n14/bv_n14.qasm</code>, CircLS normalization</td><td><code>1825cc14…4e91b</code></td></tr>
-            <tr><td><code>twistedghz_8</code></td><td><code>twisted_ghz(8)</code></td><td><code>4876e9c3…413bb7</code></td></tr>
-            <tr><td><code>bv_n19</code></td><td>QASMBench <code>medium/bv_n19/bv_n19.qasm</code>, CircLS normalization</td><td><code>bd0cb60b…944c13</code></td></tr>
-            <tr><td><code>dj_16</code></td><td><code>dj(16)</code></td><td><code>50471075…7e48d</code></td></tr>
-            <tr><td><code>bv_n30</code></td><td>QASMBench <code>large/bv_n30/bv_n30.qasm</code>, CircLS normalization</td><td><code>22c148da…f5cd9</code></td></tr>
-            <tr><td><code>bv_holdout_12</code></td><td><code>bv(12)</code></td><td><code>45442b97…66bab</code></td></tr>
-            <tr><td><code>dj_holdout_12</code></td><td><code>dj(12)</code></td><td><code>b0770400…1658b</code></td></tr>
-            <tr><td><code>teleport_holdout_6</code></td><td><code>teleport_chain(6)</code></td><td><code>91b70c4e…25295</code></td></tr>
-            <tr><td><code>twistedghz_holdout_6</code></td><td><code>twisted_ghz(6)</code></td><td><code>a518852d…ee1a7</code></td></tr>
-            <tr><td><code>random_holdout_12_60_303</code></td><td><code>random_clifford(12, 60, 303)</code></td><td><code>fdcb9c67…dfe3</code></td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s11</code></td><td><code>random_clifford(8, 30, 11)</code></td><td><code>9982d9d6…d01d1</code></td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s15</code></td><td><code>random_clifford(8, 30, 15)</code></td><td><code>2c610881…6883</code></td></tr>
-            <tr><td><code>parallel_holdout_n8_d40_s49</code></td><td><code>random_clifford(8, 40, 49)</code></td><td><code>7854b421…7e1a9</code></td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s392</code></td><td><code>random_clifford(8, 30, 392)</code></td><td><code>6025b1aa…23c5f</code></td></tr>
-          </tbody>
-        </table>
-        <p>The full, unabbreviated hashes are in the <a href="/writing/circls-orientation-clean-room/files/benchmarks.json">machine-readable benchmark ledger</a>. For <code>random_clifford(n, depth, seed)</code>, use Python's <code>random.Random(seed)</code>. At each of <code>depth</code> iterations, draw <code>rng.random()</code>; below 0.5 append a CX between two qubits drawn by <code>rng.sample(range(n), 2)</code>, otherwise choose one gate from <code>[h, s, sdg, sx, x, z]</code> using <code>rng.choice</code> and one target using <code>rng.randrange(n)</code>. Add the registry's standard OpenQASM header and terminal measurement.</p>
-
-        <h2 id="method">Search Method</h2>
-        <p>The reported rows used two explicitly different greedy search profiles. Because candidate order can change a greedy path, a clean-room reproduction must use the profile assigned below rather than silently substituting one for the other.</p>
-
-        <h3>Profile A: exhaustive physical ranking</h3>
-        <p>Use Profile A for <code>teleport_8</code>, <code>bv_n14</code>, <code>twistedghz_8</code>, <code>bv_n19</code>, <code>dj_16</code>, and <code>bv_n30</code>.</p>
-        <p>The original Profile A runs used 256 noiseless verification shots. For clean reproduction, set <code>force_distance=True</code> on every baseline and candidate verification even where CircLS would run the distance check without forcing it.</p>
-        <ol>
-          <li>Compile the exact QASM with the released <code>full</code> configuration at distance three. Do not provide a placement or orientation override. Record the realized data-patch orientations, placement, V1, T1, Stim text SHA-256, and verifier report. This is the baseline.</li>
-          <li>Set the current orientation map to the complete realized orientation of every non-<code>y*</code> data patch. CircLS's <code>y*</code> ancillas remain pinned by the compiler.</li>
-          <li>Construct the complete one-coordinate neighborhood: for each data patch, copy the current full map and change only <code>X_horizontal ↔ X_vertical</code> for that patch.</li>
-          <li>For each candidate, rerun CircLS optimized assignment and the complete physical compilation. Do not reuse the current or author placement. A compile failure is a rejected candidate.</li>
-          <li>A screened candidate is eligible only when its V1 is strictly lower than the current V1 and its T1 is no greater than the current T1.</li>
-          <li>Sort eligible candidates by V1, then T1, then ordinary Python string order of the patch name. Thus <code>q10</code> sorts before <code>q2</code>. Recompile them independently in that order.</li>
-          <li>Require the second compilation to match the first candidate's Stim SHA-256, V1, and T1 exactly.</li>
-          <li>Run CircLS verification with <code>force_distance=True</code>. Require silence, deterministic observables, graphlike distance equal to <code>d = 3</code>, and logical affine structure all to run and pass. Reject any skipped field.</li>
-          <li>Accept the first eligible fully verified candidate. Its full orientation map becomes current.</li>
-          <li>Repeat from step 3. Stop only after physically compiling the entire final one-flip neighborhood and finding no acceptable move.</li>
-        </ol>
-        <p>This is deterministic coordinate descent once the compiler's placement routine is fixed. The endpoint is a verified one-flip local optimum, not a global optimum.</p>
-
-        <h3>Profile B: route-ranked continuation</h3>
-        <p>Use Profile B for <code>bv_holdout_12</code>, <code>dj_holdout_12</code>, <code>teleport_holdout_6</code>, <code>twistedghz_holdout_6</code>, <code>random_holdout_12_60_303</code>, and the four <code>parallel_holdout_*</code> cases.</p>
-        <p>The original Profile B verification gates used 1,024 noiseless shots and <code>force_distance=True</code>.</p>
-        <p>Compile and verify the baseline exactly as in Profile A. For the baseline's complete one-flip neighborhood, physically compile every coordinate, apply the same V1/T1 eligibility rule, rank by V1, T1, and ordinary Python patch-name order, then independently recompile and fully verify the first acceptable candidate. If none is acceptable, the baseline is the endpoint.</p>
-        <p>After that exact first move, continue as follows:</p>
-        <ol>
-          <li>Build the current mapping and every one-flip mapping using released optimized assignment.</li>
-          <li>Run the pure parallel-window route probe on the current mapping and every candidate. Reconstruct liveness and step batching, probe every planned merge window, demote an unroutable parallel batch to its serial windows, and return <code>OK</code> only if every resulting window can be routed.</li>
-          <li>Rank <code>OK</code> candidates by parallel-window cost—the sum, over predicted windows, of active patch slots plus unique corridor cells—then route-cell count, then ordinary Python patch-name order. Retain only candidates whose cost is below the current mapping's cost.</li>
-          <li>In that order, physically compile each retained candidate. If it is V1/T1 eligible, independently recompile it, require an exact hash and metric match, and run the complete verifier. Accept the first fully verified candidate.</li>
-          <li>If no proxy-ranked candidate is accepted, physically compile every coordinate not already screened. Combine them with the screened candidates, rank exact eligible results by V1, T1, and patch name, and independently recompile and verify them in order. Accept the first fully verified candidate.</li>
-          <li>Repeat. Stop only when the fallback in step 5 has physically covered the complete current neighborhood and no candidate is acceptable.</li>
-        </ol>
-        <p>In the narrower regime where current and candidate preserve liveness, absence, batch structure, merge-window count, T1 latency, and zero rotations, the observed distance-three identity was:</p>
-        <pre><code>delta V1 = ((rounds + 1) / d) × delta route cells
-         = (4 / 3) × delta route cells</code></pre>
-        <p>Outside that narrow regime the score is only a heuristic ranker, not an exact V1 prediction. Profile B still used it for ordering whenever the probe returned <code>OK</code>. That is safe against a false accepted metric because every accepted move is physically compiled twice and fully verified, but it can change the greedy path. The proxy also cannot certify termination; only the exhaustive physical fallback can do that.</p>
-
-        <h2 id="verification">Verification Criteria</h2>
-        <p>Use the pinned public <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/tools/evaluate.py#L97-L199">CircLS verifier</a>. Every accepted baseline and endpoint must have:</p>
-        <ul>
-          <li><strong>silent:</strong> no detector fires in noiseless sampling;</li>
-          <li><strong>deterministic:</strong> program observables are constant where expected;</li>
-          <li><strong>distance:</strong> the shortest graphlike error has length three, forced even above the normal detector cap;</li>
-          <li><strong>logical:</strong> the compiled output's affine structure matches the logical source program; and</li>
-          <li><strong>skipped:</strong> empty.</li>
-        </ul>
-        <p>This is compiler and simulator verification. It is not execution on quantum hardware.</p>
-
-        <h2 id="results">Original-Environment Results</h2>
-        <p>These cases have different selection histories. They are not fifteen fresh held-out trials and must not be pooled into a general performance estimate.</p>
-        <table>
-          <thead>
-            <tr><th>Case</th><th>Selection</th><th>macOS V1 baseline → endpoint</th><th>Reduction</th><th>T1</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>teleport_8</code></td><td>Original held-out</td><td>220.333 → 208.333</td><td>5.45%</td><td>92 → 92</td></tr>
-            <tr><td><code>bv_n14</code></td><td>Original held-out, QASMBench</td><td>232.333 → 229.667</td><td>1.15%</td><td>76 → 76</td></tr>
-            <tr><td><code>twistedghz_8</code></td><td>Frozen panel 2</td><td>103.667 → 93.000</td><td>10.29%</td><td>34 → 34</td></tr>
-            <tr><td><code>bv_n19</code></td><td>Frozen panel 2, QASMBench</td><td>388.667 → 378.000</td><td>2.74%</td><td>104 → 104</td></tr>
-            <tr><td><code>dj_16</code></td><td>Exploratory cross-family</td><td>292.667 → 287.333</td><td>1.82%</td><td>87 → 87</td></tr>
-            <tr><td><code>bv_n30</code></td><td>Survey-selected, QASMBench</td><td>767.333 → 760.667</td><td>0.87%</td><td>104 → 104</td></tr>
-            <tr><td><code>bv_holdout_12</code></td><td>Frozen route-proxy panel</td><td>141.667 → 140.333</td><td>0.94%</td><td>38 → 38</td></tr>
-            <tr><td><code>dj_holdout_12</code></td><td>Frozen route-proxy panel</td><td>184.333 → 177.667</td><td>3.62%</td><td>65 → 65</td></tr>
-            <tr><td><code>teleport_holdout_6</code></td><td>Frozen route-proxy panel</td><td>169.000 → 159.667</td><td>5.52%</td><td>70 → 70</td></tr>
-            <tr><td><code>twistedghz_holdout_6</code></td><td>Frozen route-proxy panel</td><td>65.667 → 57.667</td><td>12.18%</td><td>26 → 26</td></tr>
-            <tr><td><code>random_holdout_12_60_303</code></td><td>Frozen route-proxy panel</td><td>246.667 → 244.000</td><td>1.08%</td><td>74 → 74</td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s11</code></td><td>Frozen shared-window panel</td><td>94.667 → 92.000</td><td>2.82%</td><td>35 → 35</td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s15</code></td><td>Frozen shared-window panel</td><td>149.000 → 141.000</td><td>5.37%</td><td>56 → 56</td></tr>
-            <tr><td><code>parallel_holdout_n8_d40_s49</code></td><td>Frozen two-window panel</td><td>152.333 → 139.000</td><td>8.75%</td><td>47 → 47</td></tr>
-            <tr><td><code>parallel_holdout_n8_d30_s392</code></td><td>Frozen transition panel</td><td>58.333 → 57.000</td><td>2.29%</td><td>17 → 17</td></tr>
-          </tbody>
-        </table>
-
-        <h2 id="platform">Cross-Platform Behavior</h2>
-        <p>Thirteen baseline/endpoint pairs reproduced with identical hashes and metrics. Two placement histories exposed a portability defect in CircLS's spectral starting layout.</p>
-        <ul>
-          <li><code>bv_n19</code>: Linux chose a different baseline circuit, but V1 remained 388.667 and the endpoint remained the exact same V1 378.000, T1 104 circuit. The improvement survived; the complete experiment was not byte-identical.</li>
-          <li><code>random_holdout_12_60_303</code>: transplanting the macOS endpoint onto Linux's newly selected placement was not an improvement. A fresh exhaustive-physical Linux search—not a transplant or a replay of the original proxy-ranked path—then found a different fully verified local optimum: V1 248.000 → 242.667, a 2.15% reduction, at unchanged T1 74.</li>
-        </ul>
-        <p>Both hosts used NumPy 2.5.2 and SciPy 1.18.1. macOS used Apple Accelerate for BLAS/LAPACK; Linux used OpenBLAS 0.3.34. CircLS's <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/compiler/assignment.py#L157-L181">spectral start</a> takes the second and third Laplacian eigenvectors and fixes only their signs. That does not define a unique basis when eigenvalues repeat.</p>
-        <p>Instrumentation found a many-fold repeated eigenvalue of approximately 2.055555 in <code>bv_n19</code> and approximately five zero eigenvalues in the random case. The two LAPACK implementations returned different valid bases, which led the greedy discrete placement search to different local layouts. Fixed placement plus orientation lowered identically; the divergence begins in placement selection.</p>
-        <p>This is not the quantum computation changing between operating systems. It is the classical quantum compiler choosing different layouts. Exact cross-platform rediscovery requires canonicalizing or removing the degenerate spectral start and adding a canonical placement tie-break, then rerunning the complete search.</p>
-
-        <h2 id="clean-room">Clean-Room Reproduction Protocol</h2>
-        <ol>
-          <li>Use this article and the two pinned public repositories as the implementation inputs.</li>
-          <li>Implement the assigned search profile from the prose above. Do not obtain or translate author search code.</li>
-          <li>Before comparing detailed results, freeze the implementation, dependency lock, platform and BLAS/LAPACK identity, generated QASM hashes, commands, source archive, output, and commit hashes.</li>
-          <li>Publish exact endpoint agreements, metric-only agreements, different positive endpoints, compile failures, verification failures, and skipped checks separately.</li>
-          <li>Do not count frozen placement replay as optimizer reproduction. A valid search reproduction must begin with released optimized assignment and rediscover its own endpoint.</li>
-        </ol>
-        <p>No author implementation, generated trace, frozen placement, final orientation map, custom verifier, or saved reproduction output is published with this article. If such material is later opened for review, freeze the independent work before viewing it.</p>
+        <h2 id="findings">Complete census</h2>
+        <p>The primary roster was frozen before the run and contained every available CircLS case from 2 through 32 logical qubits, except one TopoLS-derived case whose separate source checkout was unavailable. No case was selected because an earlier search had found a gain.</p>
 
         <div class="result-box">
-          <h3>Machine-Readable Companion</h3>
-          <p>This article is the specification. The optional archive merely duplicates the source pins, dependency lock, benchmark hashes, method text, reported metrics, and content manifest for automated checking. It contains none of the excluded author artifacts.</p>
-          <p class="artifact-actions">
-            <a class="artifact-link" href="/downloads/circls-orientation-reproduction-companion-v1.4.zip" download>Download companion v1.4</a>
-            <a href="/writing/circls-orientation-clean-room/files/method-spec.md">Plain-text method</a>
-          </p>
-          <p>Individual files: <a href="/writing/circls-orientation-clean-room/files/source-pins.json">source pins</a>, <a href="/writing/circls-orientation-clean-room/files/benchmarks.json">benchmark ledger</a>, <a href="/writing/circls-orientation-clean-room/files/requirements-lock.txt">dependency lock</a>, <a href="/writing/circls-orientation-clean-room/files/reported-results.json">reported results</a>, and <a href="/writing/circls-orientation-clean-room/files/manifest.sha256">content manifest</a>.</p>
-          <p class="artifact-hash"><strong>SHA-256</strong><br><code id="companion-sha">25da5e44628ec8c75608379727f3c447092c9e27f5e3c7cd6423773a89da3443</code></p>
+          <h3>Primary result</h3>
+          <ul>
+            <li>31 cases were attempted; 26 had released baselines that passed every required public verification check.</li>
+            <li>10 of 26 eligible cases improved and 16 had zero gain under strict one-flip coordinate descent.</li>
+            <li>Mean V1 reduction, including zeros, was 1.67%; median reduction was 0%; aggregate V1-weighted reduction was 1.62%.</li>
+            <li>Every accepted endpoint retained the baseline T1 latency.</li>
+            <li>Three V1 winners enlarged the rectangular bounding box, so the result is not an unqualified area reduction.</li>
+          </ul>
         </div>
 
-        <h2 id="not-claimed">Scope and Limitations</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Case</th>
+              <th align="right">V1</th>
+              <th align="right">Reduction</th>
+              <th align="right">T1</th>
+              <th align="right">V2</th>
+              <th align="right">Peak tiles</th>
+              <th align="right">Bounding box</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>twistedghz_4</code></td><td align="right">35.667 → 30.333</td><td align="right">14.95%</td><td align="right">18 → 18</td><td align="right">1,781 → 1,466</td><td align="right">8 → 6</td><td align="right">108 → 90</td></tr>
+            <tr><td><code>twistedghz_8</code></td><td align="right">103.667 → 93.000</td><td align="right">10.29%</td><td align="right">34 → 34</td><td align="right">5,023 → 4,372</td><td align="right">12 → 10</td><td align="right">453.333 → 555.333</td></tr>
+            <tr><td><code>teleport_4</code></td><td align="right">113.667 → 108.333</td><td align="right">4.69%</td><td align="right">48 → 48</td><td align="right">6,280 → 5,965</td><td align="right">12 → 11</td><td align="right">672 → 672</td></tr>
+            <tr><td><code>bv_n14</code></td><td align="right">232.333 → 229.667</td><td align="right">1.15%</td><td align="right">76 → 76</td><td align="right">11,898 → 11,737</td><td align="right">31 → 29</td><td align="right">1,241.333 → 1,241.333</td></tr>
+            <tr><td><code>dj_16</code></td><td align="right">292.667 → 287.333</td><td align="right">1.82%</td><td align="right">87 → 87</td><td align="right">14,914 → 14,592</td><td align="right">37 → 33</td><td align="right">1,421 → 1,421</td></tr>
+            <tr><td><code>teleport_8</code></td><td align="right">220.333 → 208.333</td><td align="right">5.45%</td><td align="right">92 → 92</td><td align="right">12,105 → 11,377</td><td align="right">12 → 11</td><td align="right">2,453.333 → 3,373.333</td></tr>
+            <tr><td><code>bv_n19</code></td><td align="right">388.667 → 378.000</td><td align="right">2.74%</td><td align="right">104 → 104</td><td align="right">19,523 → 18,907</td><td align="right">48 → 42</td><td align="right">2,808 → 2,808</td></tr>
+            <tr><td><code>bv_n30</code></td><td align="right">767.333 → 760.667</td><td align="right">0.87%</td><td align="right">104 → 104</td><td align="right">35,561 → 35,162</td><td align="right">57 → 54</td><td align="right">3,432 → 3,432</td></tr>
+            <tr><td><code>bv_32</code></td><td align="right">785.333 → 781.333</td><td align="right">0.51%</td><td align="right">93 → 93</td><td align="right">35,952 → 35,707</td><td align="right">54 → 53</td><td align="right">3,751 → 3,751</td></tr>
+            <tr><td><code>dj_32</code></td><td align="right">927.333 → 919.333</td><td align="right">0.86%</td><td align="right">175 → 175</td><td align="right">44,913 → 44,437</td><td align="right">78 → 74</td><td align="right">7,058.333 → 7,700</td></tr>
+          </tbody>
+        </table>
+
+        <p>The three bounding-box regressions—<code>twistedghz_8</code>, <code>teleport_8</code>, and <code>dj_32</code>—matter. Those endpoints use less occupied spacetime and fewer physical qubit-rounds, but could require a larger rectangular chip reservation. V1, V2, peak allocation, and bounding-box volume answer different engineering questions.</p>
+
+        <h3>Zero-gain and ineligible cases</h3>
+        <p>The 16 fully verified zero-gain cases were <code>deutsch_n2</code>, <code>grover_n2</code>, <code>iswap_n2</code>, <code>cat_state_n4</code>, <code>hs4_n4</code>, <code>lpn_n5</code>, <code>bv_8</code>, <code>dj_8</code>, <code>ghz_8</code>, <code>bbpssw_4</code>, <code>bv_16</code>, <code>ghz_16</code>, <code>bbpssw_8</code>, <code>cat_state_n22</code>, <code>ghz_state_n23</code>, and <code>ghz_32</code>. “Zero” means that the declared one-flip search accepted no improvement; it does not prove that no better multi-flip orientation exists.</p>
+
+        <p>The five ineligible baselines were <code>qrng_n4</code>, <code>steane_encode</code>, <code>graphstate_8</code>, <code>graphstate_16</code>, and <code>graphstate_32</code>. They remain in the denominator of attempted cases but not in the verified performance comparison because their released baselines did not complete every forced public verifier check.</p>
+
+        <p>A post-census look at the 14 eligible cases with T1 greater than two found 10 improvements, a 3.10% mean reduction, a 1.01% median, and a 1.65% aggregate V1-weighted reduction. This subgroup is exploratory; it was not a separately predeclared primary endpoint.</p>
+
+        <h2 id="metrics">What was measured</h2>
+        <p>At the pinned code distance <code>d = 3</code>, CircLS defines V1 as the sum of occupied tiles in each round divided by three. T1 is the number of measurement layers. V2 is the physical qubit-round count. Peak allocated tiles and rectangular bounding-box volume provide two additional views of spatial cost. The implementation is public in <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/metrics/experiment_stats.py">CircLS's metric code</a>.</p>
+
+        <p>These are resource measures of a compiler-generated, modeled fault-tolerant circuit. V1 is not wall-clock runtime. A lower V1 does not by itself demonstrate lower hardware error, less reserved chip area, or a faster quantum computer.</p>
+
+        <h2 id="method">Frozen method</h2>
+        <p>Each case began with CircLS commit <a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d"><code>3523afeb0034bf047651a7e98a7e45d3da5df72d</code></a> and its released <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/experiments/ablation.py#L53-L104"><code>full</code> configuration</a>. That baseline includes optimized assignment, measurement reduction, liveness-based allocation, scheduling, routing, physical Stim lowering, and the public verifier. It was not a deliberately weakened control.</p>
+
+        <ol>
+          <li>Compile the unmodified released baseline and require every public verification check to run and pass, forcing the graphlike-distance check above its default detector cap.</li>
+          <li>Use the realized orientation of every data patch as the current state.</li>
+          <li>Flip each data-patch orientation once, independently. For every candidate, rerun optimized placement and the complete physical CircLS compilation.</li>
+          <li>Keep a candidate only if exact V1 is lower and exact T1 is no larger than the current state.</li>
+          <li>Rank eligible candidates by V1, then T1, then coordinate name.</li>
+          <li>Independently recompile candidates in that order. Accept the first only when its circuit hash and metrics reproduce exactly and every public verification check passes.</li>
+          <li>Repeat until a complete one-flip neighborhood contains no accepted improvement.</li>
+        </ol>
+
+        <p>This is deterministic steepest coordinate descent from the released baseline. It establishes a one-flip local optimum, not a global optimum. No route proxy was used in the census.</p>
+
+        <h3>Verification and run accounting</h3>
+        <p>Every accepted move and final endpoint passed CircLS's <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/tools/evaluate.py#L97-L199">public verifier</a>: silence, deterministic observables, forced graphlike distance, and logical affine equivalence. The census performed 854 complete candidate compilations and 58 full verification calls over 3,862 aggregate case-seconds. Nine candidate compilations failed, all while screening <code>teleport_8</code>; they were recorded as rejected candidates rather than removed from the run.</p>
+
+        <h2 id="exhaustive">Exact small-instance comparison</h2>
+        <p>Coordinate descent can stop at a local optimum. To measure that failure directly, the follow-up experiment took all 14 census cases with at most eight data qubits. Eleven had fully verified baselines; three were reported as ineligible. Every one of the <code>2^n</code> birth-orientation assignments was compiled through CircLS's modeled physical-circuit pipeline for each eligible case.</p>
+
+        <p>The comparator compiled 1,116 assignments with zero compilation failures. Every improving global endpoint was independently recompiled and fully verified. “Global” here means global only over birth orientation while retaining CircLS's placement optimizer and every other pinned compiler choice—not global over all layouts, schedules, routes, or circuits.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Case</th>
+              <th align="right">Released V1</th>
+              <th align="right">Strict-descent V1</th>
+              <th align="right">Global V1</th>
+              <th align="right">Global reduction</th>
+              <th>Why strict descent missed it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>bv_8</code></td><td align="right">73.667</td><td align="right">73.667</td><td align="right">72.333</td><td align="right">1.81%</td><td>Two individually neutral flips</td></tr>
+            <tr><td><code>dj_8</code></td><td align="right">93.333</td><td align="right">93.333</td><td align="right">92.000</td><td align="right">1.43%</td><td>Two individually neutral flips</td></tr>
+          </tbody>
+        </table>
+
+        <p>Strict coordinate descent reached the global V1 optimum in 9 of the 11 eligible cases. It missed <code>bv_8</code> and <code>dj_8</code>: in each landscape, either constituent flip leaves V1 unchanged, but taking both lowers it. The strict rule rejects the neutral first step and cannot cross the plateau. This turns a general suspicion about greedy search into an observed, exactly enumerated failure mode.</p>
+
+        <p>An offline simulation over these already compiled landscapes compared Hamming-radius-one and radius-two neighborhoods. Radius one again reached 9 of 11 global optima after consulting 96 unique states. Radius two reached all 11 after consulting 295 unique states, versus 1,116 assignments for exhaustive enumeration. This is evidence about search policy on small frozen landscapes—not a new physical compilation run and not proof that radius-two search scales efficiently.</p>
+
+        <h2 id="interpretation">Interpretation</h2>
+        <p>The full census supports a defensible statement: birth orientation is a consequential CircLS mapping input on a substantial minority of this verified 2–32-qubit roster, and a deterministic verifier-gated search can recover lower-V1 physical compilations without increasing T1. The exhaustive study adds a separate result: strict one-flip descent has a concrete plateau failure, and a two-coordinate neighborhood repairs it on every tractable case tested.</p>
+
+        <p>The work is materially stronger than a collection of selected positive examples because it establishes a frozen denominator, publishes zeros and exclusions, reports secondary-metric regressions, and compares the heuristic with exact optima where tractable. It is still better described as a focused compiler study and research lead than as a complete standalone paper contribution.</p>
+
+        <p>The closest novelty challenge is <a href="https://arxiv.org/abs/2604.15099">O3LS</a>, which already studies orientation-sensitive automatic lattice-surgery layout search. <a href="https://arxiv.org/abs/2608.03315">Harvest</a> already co-optimizes placement, routing, scheduling, and resource supply. Our current method is a simple and expensive CircLS-specific outer loop over an existing orientation hook. No comparison against a runnable O3LS optimizer has yet been completed.</p>
+
+        <blockquote>
+          <p>The next research question is whether a deterministic joint-orientation search can retain the small-instance quality of radius-two descent without requiring a quadratic number of full physical compilations at larger scales.</p>
+        </blockquote>
+
+        <p>A stronger follow-up should predeclare a plateau-aware or bounded beam-search algorithm; compare released CircLS, strict descent, random orientation sampling, and exhaustive optima where tractable; freeze a separate random-circuit panel; extend to larger cases; and compare against an actual O3LS implementation or a carefully matched reimplementation.</p>
+
+        <h2 id="reproduction">Reproduction record</h2>
+        <p>The public inputs are the <a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d">pinned CircLS checkout</a>, <a href="https://arxiv.org/abs/2608.23819">CircLS paper</a>, <a href="https://github.com/pnnl/QASMBench/tree/357b942396d5c2b7cbc1c229c585a6ef5ccaebac">pinned QASMBench checkout</a>, the complete method above, and the machine-readable corpus manifest. The run used macOS 26.6.2 on arm64, Python 3.12.12, NumPy 2.5.2, SciPy 1.18.1, NetworkX 3.6.1, Stim/Sinter 1.16.0, PyMatching 2.4.0, and NWQEC 0.1.2.</p>
+
+        <p>An independent reproducer should implement the method from the public description, freeze source revisions, dependencies, platform and BLAS/LAPACK identity, generated-QASM hashes, code, commands, and outputs before comparing detailed endpoints. Report exact endpoint agreement, metric agreement with a different endpoint, compile failure, and verification failure separately. A frozen placement replay is not a search reproduction.</p>
+
+        <div class="result-box">
+          <h3>Machine-readable evidence</h3>
+          <p>The companion archive contains the two protocols, source pins, dependency lock, frozen manifests, full census table, exhaustive summary, neighborhood-policy analysis, and consolidated research status. The methods and central results remain readable on this page; the download is for audit and automation.</p>
+          <p class="artifact-actions">
+            <a class="artifact-link" href="/downloads/circls-orientation-census-companion-v2.0.zip" download>Download companion v2.0</a>
+            <a href="/writing/circls-orientation-clean-room/files/primary-census-protocol.md">Primary protocol</a>
+            <a href="/writing/circls-orientation-clean-room/files/exhaustive-protocol.md">Exhaustive protocol</a>
+          </p>
+          <p>Individual files: <a href="/writing/circls-orientation-clean-room/files/source-pins.json">source pins</a>, <a href="/writing/circls-orientation-clean-room/files/primary-manifest.json">primary manifest</a>, <a href="/writing/circls-orientation-clean-room/files/primary-summary.json">primary summary</a>, <a href="/writing/circls-orientation-clean-room/files/primary-results.csv">all census rows</a>, <a href="/writing/circls-orientation-clean-room/files/exhaustive-manifest.json">exhaustive manifest</a>, <a href="/writing/circls-orientation-clean-room/files/exhaustive-summary.json">exhaustive summary</a>, <a href="/writing/circls-orientation-clean-room/files/neighborhood-policy-analysis.json">neighborhood analysis</a>, <a href="/writing/circls-orientation-clean-room/files/research-status.md">consolidated status</a>, <a href="/writing/circls-orientation-clean-room/files/requirements-lock.txt">dependency lock</a>, and <a href="/writing/circls-orientation-clean-room/files/manifest.sha256">content manifest</a>.</p>
+          <p class="artifact-hash"><strong>Primary manifest SHA-256</strong><br><code>56f02dc76c4c36dd9d207b5dda6509a8aad528ed9ee8c6b7cff576651ac91a5f</code></p>
+          <p class="artifact-hash"><strong>Exhaustive manifest SHA-256</strong><br><code>dbf61727e5a325135eb8a2a600351f8a0e30db3ee2de87e90941b0b3da9d001e</code></p>
+          <p class="artifact-hash"><strong>Companion archive SHA-256</strong><br><code>56ad81c602cfcbdaf776843490fab3fb036e25e7e83df1830613f610cce30747</code></p>
+        </div>
+
+        <h2 id="limits">Claim boundaries</h2>
         <ul>
-          <li>No improvement to the mathematical quantum algorithms.</li>
-          <li>No Shor, non-Clifford, T-gate, or magic-state-factory result. CircLS is Clifford-only at this pin.</li>
-          <li>No hardware runtime, hardware area, fidelity, or logical-error-rate advantage.</li>
-          <li>No global optimum; only a one-flip local optimum.</li>
-          <li>No claim that fifteen differently selected cases estimate general performance.</li>
-          <li>No claim of independent reproduction yet.</li>
-          <li>No established novelty determination. <a href="https://arxiv.org/abs/2608.03315">Harvest</a> and <a href="https://arxiv.org/abs/2604.15099">O3LS</a> cover nearby congestion- and layout-aware compilation territory.</li>
+          <li>No change to the mathematical quantum algorithms and no Shor result.</li>
+          <li>No quantum-hardware experiment, hardware runtime, fidelity, or logical-error-rate result.</li>
+          <li>No non-Clifford, T-gate, or magic-state-factory evaluation at this CircLS pin.</li>
+          <li>No claim that V1 alone determines the preferred hardware layout; three V1 improvements enlarge the bounding box.</li>
+          <li>No global-optimality claim beyond birth orientation for the 11 exhaustively enumerated small cases.</li>
+          <li>No independent external reproduction or new cross-platform replay of the complete census yet.</li>
+          <li>No established novelty over O3LS or Harvest.</li>
         </ul>
 
-        <h2 id="report">Reproduction Reporting</h2>
-        <p>A disagreement is evidence, not a failed review. Preserve enough information to distinguish a benchmark mismatch, placement divergence, different positive local optimum, physical-lowering mismatch, and verifier failure.</p>
-        <p><a href="https://github.com/rwill128/rwill128.github.io/issues/new?title=CircLS%20orientation-search%20reproduction">Open a reproduction report on GitHub</a> with your public source, environment, commands, output, and hashes.</p>
+        <div class="article-end">
+          <h2>Report a reproduction</h2>
+          <p><a href="https://github.com/rwill128/rwill128.github.io/issues/new?title=CircLS%20birth-orientation%20census%20reproduction">Open a GitHub report</a> with your source revisions, environment, implementation hash, commands, outputs, and whether each public verifier check ran and passed.</p>
+        </div>
       </article>
 
       <aside class="article-aside" aria-label="Article contents">
         <p>Contents</p>
         <ol>
-          <li><a href="#result-first">Result summary</a></li>
-          <li><a href="#what-compiler">Compiler target</a></li>
-          <li><a href="#claim">Reproduction claim</a></li>
-          <li><a href="#sources">Sources and environment</a></li>
-          <li><a href="#baseline">Baseline configuration</a></li>
-          <li><a href="#benchmarks">Benchmark construction</a></li>
-          <li><a href="#method">Search method</a></li>
-          <li><a href="#verification">Verification criteria</a></li>
-          <li><a href="#results">Original results</a></li>
-          <li><a href="#platform">Cross-platform behavior</a></li>
-          <li><a href="#clean-room">Reproduction protocol</a></li>
-          <li><a href="#not-claimed">Scope and limitations</a></li>
+          <li><a href="#findings">Complete census</a></li>
+          <li><a href="#metrics">Metrics</a></li>
+          <li><a href="#method">Frozen method</a></li>
+          <li><a href="#exhaustive">Exact comparison</a></li>
+          <li><a href="#interpretation">Interpretation</a></li>
+          <li><a href="#reproduction">Reproduction record</a></li>
+          <li><a href="#limits">Claim boundaries</a></li>
         </ol>
       </aside>
     </div>
