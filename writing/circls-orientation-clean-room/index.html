@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Birth-Orientation Optimization in CircLS: Complete Benchmark Census and Exact Small-Instance Analysis | Richard Williams</title>
-  <meta name="description" content="A frozen 31-case study of birth-orientation search in CircLS, including every verified improvement, zero-gain case, exclusion, exhaustive small-instance optimum, and limitation.">
+  <title>Optimizing Surface-Code Patch Orientation in CircLS | Richard Williams</title>
+  <meta name="description" content="A 31-case study of whether choosing better starting orientations for surface-code patches reduces the space-time cost of circuits compiled by CircLS.">
   <meta name="author" content="Richard Williams">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Birth-Orientation Optimization in CircLS: Complete Benchmark Census and Exact Small-Instance Analysis">
-  <meta property="og:description" content="A complete CircLS compiler study with verified improvements, zero-gain cases, exact small-instance optima, and a documented failure mode of strict coordinate descent.">
+  <meta property="og:title" content="Optimizing Surface-Code Patch Orientation in CircLS">
+  <meta property="og:description" content="Ten of 26 verified circuits used less occupied space over time with unchanged modeled latency; exhaustive small cases show where one-at-a-time search fails.">
   <meta property="og:url" content="https://rwill128.github.io/writing/circls-orientation-clean-room/">
   <meta name="twitter:card" content="summary">
   <meta name="theme-color" content="#f6f6f3">
@@ -35,12 +35,12 @@
     <header class="article-header">
       <div class="shell article-heading">
         <div class="article-kicker">
-          <span>Fault-tolerant quantum compilation</span>
-          <span>31-case census</span>
-          <span>Exact small-instance analysis</span>
+          <span>Fault-tolerant quantum compiler</span>
+          <span>31 preselected cases</span>
+          <span>Exhaustive search up to 8 qubits</span>
         </div>
-        <h1>Birth-Orientation Optimization in CircLS</h1>
-        <p class="article-deck">A complete benchmark census of a verifier-gated orientation search, followed by exhaustive analysis of every eligible case with at most eight data qubits.</p>
+        <h1>Optimizing Surface-Code Patch Orientation in CircLS</h1>
+        <p class="article-deck">Changing only the starting orientation of data patches reduced the modeled space-time cost of 10 out of 26 verified compilations, without increasing their latency.</p>
         <div class="article-byline">
           <span>Richard Williams</span>
           <time datetime="2026-08-31">August 31, 2026</time>
@@ -53,40 +53,52 @@
       <div class="wide-shell metric-grid">
         <div class="metric">
           <strong>31</strong>
-          <span>cases frozen before the census</span>
+          <span>cases selected before results were known</span>
         </div>
         <div class="metric">
-          <strong>10 / 26</strong>
-          <span>eligible cases with lower V1</span>
+          <strong>10 of 26</strong>
+          <span>verified compilations used less occupied space over time</span>
         </div>
         <div class="metric">
           <strong>1.62%</strong>
-          <span>aggregate V1-weighted reduction</span>
+          <span>less occupied space-time across all verified cases, weighted by original cost</span>
         </div>
         <div class="metric">
-          <strong>9 / 11</strong>
-          <span>small cases where strict descent reached the global orientation optimum</span>
+          <strong>Unchanged</strong>
+          <span>modeled latency in all 10 improved compilations</span>
         </div>
       </div>
     </section>
 
     <div class="shell article-layout">
       <article class="article-body">
-        <p><a href="https://arxiv.org/abs/2608.23819">CircLS</a> maps logical Clifford circuits to modeled lattice-surgery operations. Each data patch can be born in either of two orientations. That choice leaves the logical computation unchanged, but it changes which X and Z boundaries face each direction and can therefore change placement, routing, and the occupied spacetime of the compiled circuit.</p>
+        <p><a href="https://arxiv.org/abs/2608.23819">CircLS</a> is a compiler for modeled fault-tolerant quantum circuits. It represents each logical data qubit as a surface-code patch. A patch has two possible starting orientations: rotating it swaps which directions its X and Z boundaries face. The quantum program does not change, but the compiler may be able to place and connect the patches more efficiently.</p>
 
-        <p>This study adds an outer search over that existing compiler input. It does not improve a quantum algorithm, execute a quantum computer, or estimate an advantage for Shor's algorithm. The result is narrower: for this pinned CircLS backend and benchmark roster, changing patch birth orientations sometimes produces a smaller verified physical compilation than CircLS's released <code>full</code> configuration.</p>
+        <p>CircLS calls this starting choice a patch's <em>birth orientation</em>. We tested whether searching those choices could improve the output of the released compiler. Every comparison starts with CircLS's own optimized <code>full</code> configuration. We then change orientations, rerun placement and the complete compilation pipeline, and accept a result only if it uses less occupied space over time, adds no latency, reproduces exactly, and passes every public verifier check.</p>
+
+        <p>This is a compiler optimization. It does not change a quantum algorithm, execute a quantum computer, or establish an advantage for Shor's algorithm.</p>
+
+        <h2 id="metrics">What the measurements mean</h2>
+        <p>The labels V1, T1, and V2 are names used by CircLS, not terms a quantum-computing reader should be expected to recognize without explanation.</p>
+        <ul>
+          <li><strong>Occupied space over time (V1)</strong> is the primary measurement. CircLS adds up the number of surface-code tiles in use during every round and divides by the code distance. A lower number means less total occupancy across the compiled circuit.</li>
+          <li><strong>Modeled latency (T1)</strong> is the number of measurement layers. We rejected any candidate that increased it.</li>
+          <li><strong>Physical qubit-rounds (V2)</strong> is a second measure of total resource use.</li>
+          <li><strong>Reserved rectangle (V3)</strong> is the area of the smallest rectangle containing every tile the circuit touches, multiplied by the modeled duration and normalized by code distance. It can grow even when actual occupied space-time shrinks.</li>
+        </ul>
+        <p>The exact definitions are in <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/metrics/experiment_stats.py">CircLS's metric code</a>. These are estimates for compiler-generated circuits, not wall-clock runtime or measurements from quantum hardware.</p>
 
         <h2 id="findings">Complete census</h2>
-        <p>The primary roster was frozen before the run and contained every available CircLS case from 2 through 32 logical qubits, except one TopoLS-derived case whose separate source checkout was unavailable. No case was selected because an earlier search had found a gain.</p>
+        <p>We selected the test set before running this experiment. It contained every available CircLS case from 2 through 32 logical qubits, except one TopoLS-derived case whose separate source checkout was unavailable. No case was added or removed because an earlier search looked promising.</p>
 
         <div class="result-box">
           <h3>Primary result</h3>
           <ul>
-            <li>31 cases were attempted; 26 had released baselines that passed every required public verification check.</li>
-            <li>10 of 26 eligible cases improved and 16 had zero gain under strict one-flip coordinate descent.</li>
-            <li>Mean V1 reduction, including zeros, was 1.67%; median reduction was 0%; aggregate V1-weighted reduction was 1.62%.</li>
-            <li>Every accepted endpoint retained the baseline T1 latency.</li>
-            <li>Three V1 winners enlarged the rectangular bounding box, so the result is not an unqualified area reduction.</li>
+            <li>31 cases were attempted. The released baseline passed every required verification check in 26 of them, so those 26 entered the performance comparison.</li>
+            <li>The one-patch-at-a-time search reduced occupied space-time in 10 of the 26 verified cases. It found no improvement in the other 16.</li>
+            <li>Across all 26 cases, including the zeros, the average reduction per case was 1.67%, the median was 0%, and the combined reduction weighted by each case's original cost was 1.62%.</li>
+            <li>All 10 improvements kept the same modeled latency as the released compiler.</li>
+            <li>Three improvements required a larger reserved rectangle, so lower occupied space-time does not automatically mean a smaller chip footprint.</li>
           </ul>
         </div>
 
@@ -94,12 +106,12 @@
           <thead>
             <tr>
               <th>Case</th>
-              <th align="right">V1</th>
+              <th align="right">Occupied space-time (V1)</th>
               <th align="right">Reduction</th>
-              <th align="right">T1</th>
-              <th align="right">V2</th>
+              <th align="right">Measurement layers (T1)</th>
+              <th align="right">Qubit-rounds (V2)</th>
               <th align="right">Peak tiles</th>
-              <th align="right">Bounding box</th>
+              <th align="right">Reserved rectangle</th>
             </tr>
           </thead>
           <tbody>
@@ -116,76 +128,73 @@
           </tbody>
         </table>
 
-        <p>The three bounding-box regressions—<code>twistedghz_8</code>, <code>teleport_8</code>, and <code>dj_32</code>—matter. Those endpoints use less occupied spacetime and fewer physical qubit-rounds, but could require a larger rectangular chip reservation. V1, V2, peak allocation, and bounding-box volume answer different engineering questions.</p>
+        <p>The three reserved-rectangle regressions—<code>twistedghz_8</code>, <code>teleport_8</code>, and <code>dj_32</code>—matter. Those results use fewer resources across time, but their layouts spread across a larger rectangle. The preferred result therefore depends on whether the machine is constrained by total work, peak active patches, or fixed chip area.</p>
 
-        <h3>Zero-gain and ineligible cases</h3>
-        <p>The 16 fully verified zero-gain cases were <code>deutsch_n2</code>, <code>grover_n2</code>, <code>iswap_n2</code>, <code>cat_state_n4</code>, <code>hs4_n4</code>, <code>lpn_n5</code>, <code>bv_8</code>, <code>dj_8</code>, <code>ghz_8</code>, <code>bbpssw_4</code>, <code>bv_16</code>, <code>ghz_16</code>, <code>bbpssw_8</code>, <code>cat_state_n22</code>, <code>ghz_state_n23</code>, and <code>ghz_32</code>. “Zero” means that the declared one-flip search accepted no improvement; it does not prove that no better multi-flip orientation exists.</p>
+        <h3>Cases without a reported improvement</h3>
+        <p>The one-patch search found no gain in <code>deutsch_n2</code>, <code>grover_n2</code>, <code>iswap_n2</code>, <code>cat_state_n4</code>, <code>hs4_n4</code>, <code>lpn_n5</code>, <code>bv_8</code>, <code>dj_8</code>, <code>ghz_8</code>, <code>bbpssw_4</code>, <code>bv_16</code>, <code>ghz_16</code>, <code>bbpssw_8</code>, <code>cat_state_n22</code>, <code>ghz_state_n23</code>, and <code>ghz_32</code>. That does not prove that no better combination exists; the exhaustive experiment below finds exactly that situation in two cases.</p>
 
-        <p>The five ineligible baselines were <code>qrng_n4</code>, <code>steane_encode</code>, <code>graphstate_8</code>, <code>graphstate_16</code>, and <code>graphstate_32</code>. They remain in the denominator of attempted cases but not in the verified performance comparison because their released baselines did not complete every forced public verifier check.</p>
+        <p>Five released baselines—<code>qrng_n4</code>, <code>steane_encode</code>, <code>graphstate_8</code>, <code>graphstate_16</code>, and <code>graphstate_32</code>—did not complete every required public verification check. They are reported among the 31 attempted cases but excluded from the 26-case performance comparison.</p>
 
-        <p>A post-census look at the 14 eligible cases with T1 greater than two found 10 improvements, a 3.10% mean reduction, a 1.01% median, and a 1.65% aggregate V1-weighted reduction. This subgroup is exploratory; it was not a separately predeclared primary endpoint.</p>
+        <p>As a secondary, after-the-fact check, we looked at the 14 verified cases longer than two measurement layers. Ten improved. Their average reduction was 3.10%, their median was 1.01%, and their weighted combined reduction was 1.65%. Because this subgroup was defined after the primary census, it is suggestive rather than a separate confirmed result.</p>
 
-        <h2 id="metrics">What was measured</h2>
-        <p>At the pinned code distance <code>d = 3</code>, CircLS defines V1 as the sum of occupied tiles in each round divided by three. T1 is the number of measurement layers. V2 is the physical qubit-round count. Peak allocated tiles and rectangular bounding-box volume provide two additional views of spatial cost. The implementation is public in <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/metrics/experiment_stats.py">CircLS's metric code</a>.</p>
-
-        <p>These are resource measures of a compiler-generated, modeled fault-tolerant circuit. V1 is not wall-clock runtime. A lower V1 does not by itself demonstrate lower hardware error, less reserved chip area, or a faster quantum computer.</p>
-
-        <h2 id="method">Frozen method</h2>
+        <h2 id="method">How the search worked</h2>
         <p>Each case began with CircLS commit <a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d"><code>3523afeb0034bf047651a7e98a7e45d3da5df72d</code></a> and its released <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/experiments/ablation.py#L53-L104"><code>full</code> configuration</a>. That baseline includes optimized assignment, measurement reduction, liveness-based allocation, scheduling, routing, physical Stim lowering, and the public verifier. It was not a deliberately weakened control.</p>
 
         <ol>
-          <li>Compile the unmodified released baseline and require every public verification check to run and pass, forcing the graphlike-distance check above its default detector cap.</li>
-          <li>Use the realized orientation of every data patch as the current state.</li>
-          <li>Flip each data-patch orientation once, independently. For every candidate, rerun optimized placement and the complete physical CircLS compilation.</li>
-          <li>Keep a candidate only if exact V1 is lower and exact T1 is no larger than the current state.</li>
-          <li>Rank eligible candidates by V1, then T1, then coordinate name.</li>
-          <li>Independently recompile candidates in that order. Accept the first only when its circuit hash and metrics reproduce exactly and every public verification check passes.</li>
-          <li>Repeat until a complete one-flip neighborhood contains no accepted improvement.</li>
+          <li>Compile the unmodified released baseline and require every public verification check to run and pass.</li>
+          <li>Record the starting orientation that CircLS chose for every data patch.</li>
+          <li>Turn one patch at a time. For each possibility, rerun optimized placement and the complete CircLS compilation.</li>
+          <li>Keep a candidate only if occupied space-time is strictly lower and modeled latency is no higher.</li>
+          <li>If several candidates qualify, rank them by occupied space-time, then latency, then patch name.</li>
+          <li>Recompile the candidates independently. Accept the first only if its circuit hash and measurements match exactly and every public verification check passes.</li>
+          <li>Start another round from the accepted result. Stop when turning any single patch fails to help.</li>
         </ol>
 
-        <p>This is deterministic steepest coordinate descent from the released baseline. It establishes a one-flip local optimum, not a global optimum. No route proxy was used in the census.</p>
+        <p>The optimization term for this procedure is deterministic steepest coordinate descent. More simply, it repeatedly takes the best verified one-patch change. When it stops, we know that no single patch helps; we do not yet know whether changing two or more patches together would help.</p>
 
         <h3>Verification and run accounting</h3>
-        <p>Every accepted move and final endpoint passed CircLS's <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/tools/evaluate.py#L97-L199">public verifier</a>: silence, deterministic observables, forced graphlike distance, and logical affine equivalence. The census performed 854 complete candidate compilations and 58 full verification calls over 3,862 aggregate case-seconds. Nine candidate compilations failed, all while screening <code>teleport_8</code>; they were recorded as rejected candidates rather than removed from the run.</p>
+        <p>Every accepted change passed CircLS's <a href="https://github.com/John-YuehanZhang/CircLS/blob/3523afeb0034bf047651a7e98a7e45d3da5df72d/circls/tools/evaluate.py#L97-L199">public verifier</a>, including checks for silence, deterministic observables, graphlike distance, and logical equivalence. The census performed 854 complete candidate compilations and 58 full verification calls. Nine candidate compilations failed, all while searching <code>teleport_8</code>; they were recorded as rejected attempts rather than omitted.</p>
 
-        <h2 id="exhaustive">Exact small-instance comparison</h2>
-        <p>Coordinate descent can stop at a local optimum. To measure that failure directly, the follow-up experiment took all 14 census cases with at most eight data qubits. Eleven had fully verified baselines; three were reported as ineligible. Every one of the <code>2^n</code> birth-orientation assignments was compiled through CircLS's modeled physical-circuit pipeline for each eligible case.</p>
+        <h2 id="exhaustive">Testing every orientation on small cases</h2>
+        <p>A one-patch-at-a-time search can miss a result that requires several coordinated changes. We tested this directly on all 14 census cases with at most eight data qubits. Eleven had verified baselines. For each of those 11, we compiled every possible combination of patch orientations.</p>
 
-        <p>The comparator compiled 1,116 assignments with zero compilation failures. Every improving global endpoint was independently recompiled and fully verified. “Global” here means global only over birth orientation while retaining CircLS's placement optimizer and every other pinned compiler choice—not global over all layouts, schedules, routes, or circuits.</p>
+        <p>This required 1,116 complete compilations, with no compilation failures. Every best improving result was independently recompiled and fully verified. “Best” here means the best patch-orientation combination under the fixed CircLS setup. It does not mean the best possible layout, schedule, route, or quantum circuit.</p>
 
         <table>
           <thead>
             <tr>
               <th>Case</th>
-              <th align="right">Released V1</th>
-              <th align="right">Strict-descent V1</th>
-              <th align="right">Global V1</th>
-              <th align="right">Global reduction</th>
-              <th>Why strict descent missed it</th>
+              <th align="right">Released occupied space-time</th>
+              <th align="right">One-patch search</th>
+              <th align="right">Best of every combination</th>
+              <th align="right">Reduction from release</th>
+              <th>Why the simple search missed it</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>bv_8</code></td><td align="right">73.667</td><td align="right">73.667</td><td align="right">72.333</td><td align="right">1.81%</td><td>Two individually neutral flips</td></tr>
-            <tr><td><code>dj_8</code></td><td align="right">93.333</td><td align="right">93.333</td><td align="right">92.000</td><td align="right">1.43%</td><td>Two individually neutral flips</td></tr>
+            <tr><td><code>bv_8</code></td><td align="right">73.667</td><td align="right">73.667</td><td align="right">72.333</td><td align="right">1.81%</td><td>Two patches had to change together</td></tr>
+            <tr><td><code>dj_8</code></td><td align="right">93.333</td><td align="right">93.333</td><td align="right">92.000</td><td align="right">1.43%</td><td>Two patches had to change together</td></tr>
           </tbody>
         </table>
 
-        <p>Strict coordinate descent reached the global V1 optimum in 9 of the 11 eligible cases. It missed <code>bv_8</code> and <code>dj_8</code>: in each landscape, either constituent flip leaves V1 unchanged, but taking both lowers it. The strict rule rejects the neutral first step and cannot cross the plateau. This turns a general suspicion about greedy search into an observed, exactly enumerated failure mode.</p>
+        <p>The one-patch search found the best possible orientation in 9 of the 11 verified small cases. It missed <code>bv_8</code> and <code>dj_8</code>. In both, changing either patch by itself has no effect, but changing the pair reduces occupied space-time. Because the simple search refuses a first step that does not immediately help, it can never reach the better pair.</p>
 
-        <p>An offline simulation over these already compiled landscapes compared Hamming-radius-one and radius-two neighborhoods. Radius one again reached 9 of 11 global optima after consulting 96 unique states. Radius two reached all 11 after consulting 295 unique states, versus 1,116 assignments for exhaustive enumeration. This is evidence about search policy on small frozen landscapes—not a new physical compilation run and not proof that radius-two search scales efficiently.</p>
+        <p>Using the already compiled results, we then simulated a search allowed to consider changes to two patches at once. The one-patch policy examined 96 distinct assignments and found the best result in 9 of 11 cases. The two-patch policy examined 295 assignments and found the best result in all 11, compared with 1,116 assignments for exhaustive enumeration. This is an offline analysis of small cases, not yet evidence that a two-patch search will scale efficiently.</p>
 
         <h2 id="interpretation">Interpretation</h2>
-        <p>The full census supports a defensible statement: birth orientation is a consequential CircLS mapping input on a substantial minority of this verified 2–32-qubit roster, and a deterministic verifier-gated search can recover lower-V1 physical compilations without increasing T1. The exhaustive study adds a separate result: strict one-flip descent has a concrete plateau failure, and a two-coordinate neighborhood repairs it on every tractable case tested.</p>
+        <p>Starting patch orientation materially affected 10 of the 26 verified circuits in this test set. The extra search produced less occupied space-time in those cases without adding measurement layers. The effect was not universal, and the 1.62% combined reduction across the full verified set is modest.</p>
 
-        <p>The work is materially stronger than a collection of selected positive examples because it establishes a frozen denominator, publishes zeros and exclusions, reports secondary-metric regressions, and compares the heuristic with exact optima where tractable. It is still better described as a focused compiler study and research lead than as a complete standalone paper contribution.</p>
+        <p>The exhaustive experiment identifies a more specific opportunity: one-at-a-time search can fail even on small circuits because two changes may need to be made together. Allowing pairs repaired both observed failures and still examined far fewer assignments than exhaustive search.</p>
 
-        <p>The closest novelty challenge is <a href="https://arxiv.org/abs/2604.15099">O3LS</a>, which already studies orientation-sensitive automatic lattice-surgery layout search. <a href="https://arxiv.org/abs/2608.03315">Harvest</a> already co-optimizes placement, routing, scheduling, and resource supply. Our current method is a simple and expensive CircLS-specific outer loop over an existing orientation hook. No comparison against a runnable O3LS optimizer has yet been completed.</p>
+        <p>This is stronger evidence than a collection of successful examples: the test set was fixed first, unsuccessful and excluded cases are reported, tradeoffs in other measurements are visible, and the small results are compared with the exact best orientation. It is still better described as a focused compiler study and a research lead than as a complete standalone paper contribution.</p>
+
+        <p>The closest prior work is <a href="https://arxiv.org/abs/2604.15099">O3LS</a>, which already studies orientation-aware automatic layout search for lattice surgery. <a href="https://arxiv.org/abs/2608.03315">Harvest</a> jointly optimizes placement, routing, scheduling, and resource supply. Our method is currently a simple, expensive search wrapped around CircLS's existing orientation input. We have not yet completed a direct comparison with a runnable O3LS optimizer.</p>
 
         <blockquote>
-          <p>The next research question is whether a deterministic joint-orientation search can retain the small-instance quality of radius-two descent without requiring a quadratic number of full physical compilations at larger scales.</p>
+          <p>Can a scalable search capture the benefit of changing two patches together without recompiling every possible pair on larger circuits?</p>
         </blockquote>
 
-        <p>A stronger follow-up should predeclare a plateau-aware or bounded beam-search algorithm; compare released CircLS, strict descent, random orientation sampling, and exhaustive optima where tractable; freeze a separate random-circuit panel; extend to larger cases; and compare against an actual O3LS implementation or a carefully matched reimplementation.</p>
+        <p>A stronger follow-up should define that search before testing it, compare it with released CircLS, one-patch search, and random orientation sampling, and continue using exhaustive results wherever they remain affordable. It should also use a separately frozen random-circuit test set, extend to larger circuits, and compare with an actual O3LS implementation or a carefully matched reimplementation.</p>
 
         <h2 id="reproduction">Reproduction record</h2>
         <p>The public inputs are the <a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d">pinned CircLS checkout</a>, <a href="https://arxiv.org/abs/2608.23819">CircLS paper</a>, <a href="https://github.com/pnnl/QASMBench/tree/357b942396d5c2b7cbc1c229c585a6ef5ccaebac">pinned QASMBench checkout</a>, the complete method above, and the machine-readable corpus manifest. The run used macOS 26.6.2 on arm64, Python 3.12.12, NumPy 2.5.2, SciPy 1.18.1, NetworkX 3.6.1, Stim/Sinter 1.16.0, PyMatching 2.4.0, and NWQEC 0.1.2.</p>
@@ -211,7 +220,7 @@
           <li>No change to the mathematical quantum algorithms and no Shor result.</li>
           <li>No quantum-hardware experiment, hardware runtime, fidelity, or logical-error-rate result.</li>
           <li>No non-Clifford, T-gate, or magic-state-factory evaluation at this CircLS pin.</li>
-          <li>No claim that V1 alone determines the preferred hardware layout; three V1 improvements enlarge the bounding box.</li>
+          <li>No claim that lower occupied space-time alone determines the preferred hardware layout; three improvements enlarge the reserved rectangle.</li>
           <li>No global-optimality claim beyond birth orientation for the 11 exhaustively enumerated small cases.</li>
           <li>No independent external reproduction or new cross-platform replay of the complete census yet.</li>
           <li>No established novelty over O3LS or Harvest.</li>
@@ -226,10 +235,10 @@
       <aside class="article-aside" aria-label="Article contents">
         <p>Contents</p>
         <ol>
+          <li><a href="#metrics">Measurements</a></li>
           <li><a href="#findings">Complete census</a></li>
-          <li><a href="#metrics">Metrics</a></li>
-          <li><a href="#method">Frozen method</a></li>
-          <li><a href="#exhaustive">Exact comparison</a></li>
+          <li><a href="#method">Search method</a></li>
+          <li><a href="#exhaustive">Every small orientation</a></li>
           <li><a href="#interpretation">Interpretation</a></li>
           <li><a href="#reproduction">Reproduction record</a></li>
           <li><a href="#limits">Claim boundaries</a></li>
