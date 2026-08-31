@@ -1,0 +1,1984 @@
+{
+  "acceptance": "strictly lower V1, non-increasing T1, deterministic recompilation, and every public verifier field run and passed",
+  "baseline": "released CircLS full configuration at the pinned commit",
+  "cross_platform_optimizer_audit": {
+    "bv_n19": "V1/T1 effect and final hash reproduced; released baseline had a different hash and physical secondary metrics",
+    "effects_surviving": 14,
+    "effects_tested": 15,
+    "exact_original_hash_replays": 13,
+    "platform": "Linux arm64, Python 3.12, frozen dependencies",
+    "random_holdout_12_60_303": "optimized assignment selected a different layout; the reported orientation was no longer an improvement"
+  },
+  "orientation_claims": [
+    {
+      "baseline": {
+        "T1_rounds": 92,
+        "V1_volume_blocks": 220.33333333333334,
+        "circuit_sha256": "92814b1f84452fb5d404bfe266cbcdb3ec12292cb42980f236c4a6986492867b",
+        "placement": {
+          "q0": [
+            1,
+            9
+          ],
+          "q1": [
+            1,
+            7
+          ],
+          "q10": [
+            7,
+            3
+          ],
+          "q11": [
+            7,
+            1
+          ],
+          "q12": [
+            5,
+            1
+          ],
+          "q13": [
+            3,
+            1
+          ],
+          "q14": [
+            3,
+            3
+          ],
+          "q15": [
+            1,
+            3
+          ],
+          "q16": [
+            1,
+            1
+          ],
+          "q2": [
+            1,
+            5
+          ],
+          "q3": [
+            3,
+            5
+          ],
+          "q4": [
+            3,
+            7
+          ],
+          "q5": [
+            5,
+            7
+          ],
+          "q6": [
+            7,
+            7
+          ],
+          "q7": [
+            7,
+            5
+          ],
+          "q8": [
+            5,
+            5
+          ],
+          "q9": [
+            5,
+            3
+          ]
+        }
+      },
+      "case": "teleport_8",
+      "final": {
+        "T1_rounds": 92,
+        "V1_volume_blocks": 208.33333333333334,
+        "circuit_sha256": "0fe4bb01e6c42d1cf92154fb0a53c853c0cf10e552bc5888205cbf60a47cd758",
+        "placement": {
+          "q0": [
+            1,
+            5
+          ],
+          "q1": [
+            3,
+            5
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            5,
+            7
+          ],
+          "q12": [
+            5,
+            9
+          ],
+          "q13": [
+            7,
+            7
+          ],
+          "q14": [
+            7,
+            9
+          ],
+          "q15": [
+            9,
+            9
+          ],
+          "q16": [
+            9,
+            7
+          ],
+          "q2": [
+            1,
+            3
+          ],
+          "q3": [
+            3,
+            3
+          ],
+          "q4": [
+            3,
+            1
+          ],
+          "q5": [
+            5,
+            1
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            1
+          ],
+          "q8": [
+            7,
+            3
+          ],
+          "q9": [
+            7,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 5.446293494704991,
+      "selection_status": "original held-out"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 76,
+        "V1_volume_blocks": 232.33333333333334,
+        "circuit_sha256": "7a37da6fdf5fd8cd754926b871c68b5fec16da754a0a2050041e2fb7d66476fd",
+        "placement": {
+          "q0": [
+            1,
+            1
+          ],
+          "q1": [
+            3,
+            7
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            7,
+            5
+          ],
+          "q12": [
+            1,
+            7
+          ],
+          "q13": [
+            3,
+            3
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            7,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            3,
+            1
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            3,
+            5
+          ]
+        }
+      },
+      "case": "bv_n14",
+      "final": {
+        "T1_rounds": 76,
+        "V1_volume_blocks": 229.66666666666666,
+        "circuit_sha256": "e8a3618ea8b44d6832436cd4087805a33f70a4dbca41b7900f979af3ae1acf56",
+        "placement": {
+          "q0": [
+            1,
+            1
+          ],
+          "q1": [
+            3,
+            7
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            7,
+            5
+          ],
+          "q12": [
+            1,
+            7
+          ],
+          "q13": [
+            3,
+            3
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            7,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            3,
+            1
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            3,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 1.1477761836442002,
+      "selection_status": "original held-out; independent QASMBench"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 34,
+        "V1_volume_blocks": 103.66666666666667,
+        "circuit_sha256": "c0c6effe0037d797293375d37c5f011e78860061bb8efdd5154678243696318b",
+        "placement": {
+          "q0": [
+            7,
+            1
+          ],
+          "q1": [
+            3,
+            5
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            1
+          ],
+          "q4": [
+            3,
+            1
+          ],
+          "q5": [
+            3,
+            3
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "y0": [
+            1,
+            5
+          ],
+          "y1": [
+            1,
+            3
+          ],
+          "y2": [
+            5,
+            5
+          ],
+          "y3": [
+            7,
+            5
+          ]
+        }
+      },
+      "case": "twistedghz_8",
+      "final": {
+        "T1_rounds": 34,
+        "V1_volume_blocks": 93.0,
+        "circuit_sha256": "ab491f3cf2077d926302fd7395d0b0cbe726f96ddaf173ad5fcf7358b38a90ae",
+        "placement": {
+          "q0": [
+            7,
+            1
+          ],
+          "q1": [
+            1,
+            7
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            1
+          ],
+          "q4": [
+            5,
+            5
+          ],
+          "q5": [
+            3,
+            3
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "y0": [
+            1,
+            5
+          ],
+          "y1": [
+            1,
+            3
+          ],
+          "y2": [
+            3,
+            1
+          ],
+          "y3": [
+            7,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 10.289389067524123,
+      "selection_status": "frozen panel 2"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 104,
+        "V1_volume_blocks": 388.6666666666667,
+        "circuit_sha256": "b74abab459b356e5e510e9ad7edf90199f8843a38deabeec508cc914bf9c9b38",
+        "placement": {
+          "q0": [
+            3,
+            7
+          ],
+          "q1": [
+            3,
+            9
+          ],
+          "q10": [
+            3,
+            3
+          ],
+          "q11": [
+            5,
+            3
+          ],
+          "q12": [
+            7,
+            3
+          ],
+          "q13": [
+            1,
+            7
+          ],
+          "q14": [
+            3,
+            1
+          ],
+          "q15": [
+            7,
+            1
+          ],
+          "q16": [
+            5,
+            1
+          ],
+          "q17": [
+            9,
+            3
+          ],
+          "q18": [
+            5,
+            5
+          ],
+          "q2": [
+            7,
+            7
+          ],
+          "q3": [
+            5,
+            9
+          ],
+          "q4": [
+            7,
+            9
+          ],
+          "q5": [
+            7,
+            5
+          ],
+          "q6": [
+            5,
+            7
+          ],
+          "q7": [
+            3,
+            5
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            1,
+            3
+          ]
+        }
+      },
+      "case": "bv_n19",
+      "final": {
+        "T1_rounds": 104,
+        "V1_volume_blocks": 378.0,
+        "circuit_sha256": "4e7c81b7146fe3d022b0bebf222f808fcb3f415c55d8f1bc96af894b06c6fc09",
+        "placement": {
+          "q0": [
+            5,
+            9
+          ],
+          "q1": [
+            7,
+            9
+          ],
+          "q10": [
+            1,
+            5
+          ],
+          "q11": [
+            3,
+            5
+          ],
+          "q12": [
+            7,
+            7
+          ],
+          "q13": [
+            9,
+            7
+          ],
+          "q14": [
+            9,
+            5
+          ],
+          "q15": [
+            1,
+            7
+          ],
+          "q16": [
+            3,
+            7
+          ],
+          "q17": [
+            1,
+            3
+          ],
+          "q18": [
+            5,
+            5
+          ],
+          "q2": [
+            3,
+            1
+          ],
+          "q3": [
+            7,
+            5
+          ],
+          "q4": [
+            5,
+            7
+          ],
+          "q5": [
+            3,
+            9
+          ],
+          "q6": [
+            3,
+            3
+          ],
+          "q7": [
+            5,
+            3
+          ],
+          "q8": [
+            7,
+            3
+          ],
+          "q9": [
+            9,
+            3
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 2.7444253859348233,
+      "selection_status": "frozen panel 2; independent QASMBench"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 87,
+        "V1_volume_blocks": 292.6666666666667,
+        "circuit_sha256": "81882c0d425ee6cc507419d93e1fdff351b416cb94ca2d88a7387a0684170ebf",
+        "placement": {
+          "q0": [
+            7,
+            7
+          ],
+          "q1": [
+            3,
+            1
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            7,
+            5
+          ],
+          "q12": [
+            1,
+            7
+          ],
+          "q13": [
+            5,
+            1
+          ],
+          "q14": [
+            1,
+            1
+          ],
+          "q15": [
+            3,
+            3
+          ],
+          "q2": [
+            3,
+            7
+          ],
+          "q3": [
+            7,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            5,
+            7
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            3,
+            5
+          ]
+        }
+      },
+      "case": "dj_16",
+      "final": {
+        "T1_rounds": 87,
+        "V1_volume_blocks": 287.3333333333333,
+        "circuit_sha256": "44274e4e5df57a0ec584bb4a7799afdcdd3e38ad1e37fce1fc50cefa0e987066",
+        "placement": {
+          "q0": [
+            7,
+            1
+          ],
+          "q1": [
+            7,
+            7
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            7,
+            5
+          ],
+          "q12": [
+            1,
+            7
+          ],
+          "q13": [
+            3,
+            7
+          ],
+          "q14": [
+            5,
+            7
+          ],
+          "q15": [
+            3,
+            3
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            3,
+            1
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            3,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 1.8223234624145879,
+      "selection_status": "exploratory cross-family"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 104,
+        "V1_volume_blocks": 767.3333333333334,
+        "circuit_sha256": "c2dd81de031e822eba8ef86c097b8144e3970ea5c466dabb9764494704baf5ce",
+        "placement": {
+          "q0": [
+            3,
+            7
+          ],
+          "q1": [
+            11,
+            1
+          ],
+          "q10": [
+            9,
+            3
+          ],
+          "q11": [
+            5,
+            1
+          ],
+          "q12": [
+            11,
+            9
+          ],
+          "q13": [
+            3,
+            5
+          ],
+          "q14": [
+            9,
+            1
+          ],
+          "q15": [
+            7,
+            5
+          ],
+          "q16": [
+            1,
+            1
+          ],
+          "q17": [
+            7,
+            1
+          ],
+          "q18": [
+            1,
+            7
+          ],
+          "q19": [
+            3,
+            1
+          ],
+          "q2": [
+            11,
+            3
+          ],
+          "q20": [
+            9,
+            9
+          ],
+          "q21": [
+            7,
+            7
+          ],
+          "q22": [
+            9,
+            7
+          ],
+          "q23": [
+            1,
+            3
+          ],
+          "q24": [
+            1,
+            5
+          ],
+          "q25": [
+            3,
+            9
+          ],
+          "q26": [
+            5,
+            9
+          ],
+          "q27": [
+            7,
+            9
+          ],
+          "q28": [
+            9,
+            5
+          ],
+          "q29": [
+            5,
+            5
+          ],
+          "q3": [
+            1,
+            9
+          ],
+          "q4": [
+            5,
+            7
+          ],
+          "q5": [
+            7,
+            3
+          ],
+          "q6": [
+            11,
+            5
+          ],
+          "q7": [
+            3,
+            3
+          ],
+          "q8": [
+            5,
+            3
+          ],
+          "q9": [
+            11,
+            7
+          ]
+        }
+      },
+      "case": "bv_n30",
+      "final": {
+        "T1_rounds": 104,
+        "V1_volume_blocks": 760.6666666666666,
+        "circuit_sha256": "e7e24ff91914f437be00e7e4c18aff1a3767f4a6b7d47394ea2c54eb045c8e96",
+        "placement": {
+          "q0": [
+            5,
+            5
+          ],
+          "q1": [
+            11,
+            1
+          ],
+          "q10": [
+            9,
+            3
+          ],
+          "q11": [
+            5,
+            1
+          ],
+          "q12": [
+            11,
+            9
+          ],
+          "q13": [
+            3,
+            5
+          ],
+          "q14": [
+            9,
+            1
+          ],
+          "q15": [
+            3,
+            7
+          ],
+          "q16": [
+            1,
+            5
+          ],
+          "q17": [
+            11,
+            5
+          ],
+          "q18": [
+            1,
+            7
+          ],
+          "q19": [
+            3,
+            1
+          ],
+          "q2": [
+            1,
+            1
+          ],
+          "q20": [
+            9,
+            9
+          ],
+          "q21": [
+            7,
+            7
+          ],
+          "q22": [
+            9,
+            7
+          ],
+          "q23": [
+            11,
+            7
+          ],
+          "q24": [
+            11,
+            3
+          ],
+          "q25": [
+            7,
+            1
+          ],
+          "q26": [
+            5,
+            9
+          ],
+          "q27": [
+            7,
+            9
+          ],
+          "q28": [
+            7,
+            3
+          ],
+          "q29": [
+            7,
+            5
+          ],
+          "q3": [
+            1,
+            9
+          ],
+          "q4": [
+            5,
+            7
+          ],
+          "q5": [
+            9,
+            5
+          ],
+          "q6": [
+            1,
+            3
+          ],
+          "q7": [
+            3,
+            3
+          ],
+          "q8": [
+            5,
+            3
+          ],
+          "q9": [
+            3,
+            9
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 0.8688097306689957,
+      "selection_status": "survey-selected follow-up; independent QASMBench"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 38,
+        "V1_volume_blocks": 141.66666666666666,
+        "circuit_sha256": "c6d37b92f917e42e3f92d490448ab18da91284dadcc1dd43e035e5e81aaa6be6",
+        "placement": {
+          "q0": [
+            5,
+            5
+          ],
+          "q1": [
+            7,
+            3
+          ],
+          "q10": [
+            1,
+            7
+          ],
+          "q11": [
+            3,
+            5
+          ],
+          "q2": [
+            1,
+            5
+          ],
+          "q3": [
+            3,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            7,
+            1
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            5,
+            1
+          ],
+          "q8": [
+            3,
+            3
+          ],
+          "q9": [
+            7,
+            5
+          ]
+        }
+      },
+      "case": "bv_holdout_12",
+      "final": {
+        "T1_rounds": 38,
+        "V1_volume_blocks": 140.33333333333334,
+        "circuit_sha256": "7682795691dbaaf9a9e04c7a1ac31a82e9aa2e86725669c799377bd30162dedf",
+        "placement": {
+          "q0": [
+            7,
+            5
+          ],
+          "q1": [
+            1,
+            3
+          ],
+          "q10": [
+            3,
+            1
+          ],
+          "q11": [
+            5,
+            3
+          ],
+          "q2": [
+            3,
+            3
+          ],
+          "q3": [
+            5,
+            5
+          ],
+          "q4": [
+            7,
+            3
+          ],
+          "q5": [
+            3,
+            5
+          ],
+          "q6": [
+            7,
+            1
+          ],
+          "q7": [
+            1,
+            5
+          ],
+          "q8": [
+            5,
+            1
+          ],
+          "q9": [
+            1,
+            1
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 0.9411764705882231,
+      "selection_status": "frozen route-proxy holdout"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 65,
+        "V1_volume_blocks": 184.33333333333334,
+        "circuit_sha256": "22b904254e1c81600da798549b83dc75dea83063854d8f83b5dd6fc8ad76456f",
+        "placement": {
+          "q0": [
+            7,
+            5
+          ],
+          "q1": [
+            3,
+            7
+          ],
+          "q10": [
+            7,
+            1
+          ],
+          "q11": [
+            5,
+            5
+          ],
+          "q2": [
+            3,
+            5
+          ],
+          "q3": [
+            5,
+            7
+          ],
+          "q4": [
+            7,
+            7
+          ],
+          "q5": [
+            3,
+            3
+          ],
+          "q6": [
+            5,
+            3
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            3,
+            1
+          ],
+          "q9": [
+            5,
+            1
+          ]
+        }
+      },
+      "case": "dj_holdout_12",
+      "final": {
+        "T1_rounds": 65,
+        "V1_volume_blocks": 177.66666666666666,
+        "circuit_sha256": "9164f1d6b2561cd4fd85e8eeefd65728e67d8bd700a90c5af1063bb5b40f1d61",
+        "placement": {
+          "q0": [
+            7,
+            1
+          ],
+          "q1": [
+            7,
+            5
+          ],
+          "q10": [
+            5,
+            5
+          ],
+          "q11": [
+            3,
+            3
+          ],
+          "q2": [
+            5,
+            3
+          ],
+          "q3": [
+            1,
+            1
+          ],
+          "q4": [
+            1,
+            3
+          ],
+          "q5": [
+            3,
+            1
+          ],
+          "q6": [
+            5,
+            1
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            3,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 3.616636528028938,
+      "selection_status": "frozen route-proxy holdout"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 70,
+        "V1_volume_blocks": 169.0,
+        "circuit_sha256": "f3a6d2670a74057fcb8517eee917fec0caceb9235db72568840f288501dec925",
+        "placement": {
+          "q0": [
+            7,
+            3
+          ],
+          "q1": [
+            7,
+            5
+          ],
+          "q10": [
+            1,
+            1
+          ],
+          "q11": [
+            3,
+            1
+          ],
+          "q12": [
+            3,
+            3
+          ],
+          "q2": [
+            7,
+            7
+          ],
+          "q3": [
+            5,
+            7
+          ],
+          "q4": [
+            5,
+            5
+          ],
+          "q5": [
+            3,
+            5
+          ],
+          "q6": [
+            3,
+            7
+          ],
+          "q7": [
+            1,
+            7
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            1,
+            3
+          ]
+        }
+      },
+      "case": "teleport_holdout_6",
+      "final": {
+        "T1_rounds": 70,
+        "V1_volume_blocks": 159.66666666666666,
+        "circuit_sha256": "1cf65746a989bd353a67e93a8fd4a6bc4751d7ba77615310e5b9d00e55c92cb3",
+        "placement": {
+          "q0": [
+            7,
+            3
+          ],
+          "q1": [
+            7,
+            5
+          ],
+          "q10": [
+            1,
+            1
+          ],
+          "q11": [
+            3,
+            1
+          ],
+          "q12": [
+            3,
+            3
+          ],
+          "q2": [
+            7,
+            7
+          ],
+          "q3": [
+            5,
+            7
+          ],
+          "q4": [
+            5,
+            5
+          ],
+          "q5": [
+            3,
+            5
+          ],
+          "q6": [
+            3,
+            7
+          ],
+          "q7": [
+            1,
+            7
+          ],
+          "q8": [
+            1,
+            5
+          ],
+          "q9": [
+            1,
+            3
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 5.522682445759375,
+      "selection_status": "frozen route-proxy holdout"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 26,
+        "V1_volume_blocks": 65.66666666666667,
+        "circuit_sha256": "3e47c300d3f3b6541eb1b33b3e10a98a284e762bc8b7ee776032f65fb42b54ba",
+        "placement": {
+          "q0": [
+            1,
+            5
+          ],
+          "q1": [
+            3,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "y0": [
+            1,
+            1
+          ],
+          "y1": [
+            3,
+            5
+          ],
+          "y2": [
+            5,
+            5
+          ]
+        }
+      },
+      "case": "twistedghz_holdout_6",
+      "final": {
+        "T1_rounds": 26,
+        "V1_volume_blocks": 57.666666666666664,
+        "circuit_sha256": "452e797996edc09df0418a19987d5d9ec5934431064ace94dc6a334a9f0f9efa",
+        "placement": {
+          "q0": [
+            3,
+            5
+          ],
+          "q1": [
+            3,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            1,
+            1
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "y0": [
+            3,
+            3
+          ],
+          "y1": [
+            1,
+            5
+          ],
+          "y2": [
+            5,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 12.182741116751284,
+      "selection_status": "frozen route-proxy holdout"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 74,
+        "V1_volume_blocks": 246.66666666666666,
+        "circuit_sha256": "1c069bf5b4a2524a4795e2820549d4eb2fdf9bac1fdc39782d9d8634b9164504",
+        "placement": {
+          "q0": [
+            1,
+            3
+          ],
+          "q1": [
+            7,
+            1
+          ],
+          "q10": [
+            3,
+            1
+          ],
+          "q11": [
+            5,
+            3
+          ],
+          "q2": [
+            1,
+            1
+          ],
+          "q3": [
+            7,
+            3
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            1,
+            5
+          ],
+          "q6": [
+            5,
+            7
+          ],
+          "q7": [
+            7,
+            5
+          ],
+          "q8": [
+            3,
+            5
+          ],
+          "q9": [
+            5,
+            5
+          ],
+          "y0": [
+            5,
+            1
+          ],
+          "y1": [
+            7,
+            7
+          ],
+          "y2": [
+            3,
+            7
+          ],
+          "y3": [
+            1,
+            7
+          ]
+        }
+      },
+      "case": "random_holdout_12_60_303",
+      "final": {
+        "T1_rounds": 74,
+        "V1_volume_blocks": 244.0,
+        "circuit_sha256": "bce539c45788baa3ac414f4b94d56c34b1fa76e9e9447aaa724df085a0c751e1",
+        "placement": {
+          "q0": [
+            1,
+            3
+          ],
+          "q1": [
+            7,
+            1
+          ],
+          "q10": [
+            3,
+            1
+          ],
+          "q11": [
+            5,
+            3
+          ],
+          "q2": [
+            1,
+            1
+          ],
+          "q3": [
+            7,
+            3
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            1,
+            5
+          ],
+          "q6": [
+            5,
+            7
+          ],
+          "q7": [
+            7,
+            5
+          ],
+          "q8": [
+            3,
+            5
+          ],
+          "q9": [
+            5,
+            5
+          ],
+          "y0": [
+            5,
+            1
+          ],
+          "y1": [
+            7,
+            7
+          ],
+          "y2": [
+            3,
+            7
+          ],
+          "y3": [
+            1,
+            7
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 1.0810810810810811,
+      "selection_status": "frozen route-proxy holdout"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 35,
+        "V1_volume_blocks": 94.66666666666667,
+        "circuit_sha256": "e91e48a0f95d05c4b3ce4ebf29fc04b3900b56c3fa5fbe00f9c40be75b914139",
+        "placement": {
+          "q0": [
+            3,
+            1
+          ],
+          "q1": [
+            1,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "q6": [
+            1,
+            5
+          ],
+          "q7": [
+            3,
+            5
+          ],
+          "y0": [
+            5,
+            5
+          ]
+        }
+      },
+      "case": "parallel_holdout_n8_d30_s11",
+      "final": {
+        "T1_rounds": 35,
+        "V1_volume_blocks": 92.0,
+        "circuit_sha256": "fc45f309a840da7543ac3dfc23824938a0ad6a6a26d16343566d3fb5fda1ba01",
+        "placement": {
+          "q0": [
+            3,
+            1
+          ],
+          "q1": [
+            1,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "q6": [
+            1,
+            5
+          ],
+          "q7": [
+            3,
+            5
+          ],
+          "y0": [
+            5,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 2.8169014084507116,
+      "selection_status": "frozen executed-shared-window panel"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 56,
+        "V1_volume_blocks": 149.0,
+        "circuit_sha256": "42ad1693675881b8fbf7d71242f89de7cadf406544dc9841e9f5280751491397",
+        "placement": {
+          "q0": [
+            5,
+            5
+          ],
+          "q1": [
+            1,
+            3
+          ],
+          "q2": [
+            3,
+            5
+          ],
+          "q3": [
+            3,
+            7
+          ],
+          "q4": [
+            7,
+            5
+          ],
+          "q5": [
+            3,
+            3
+          ],
+          "q6": [
+            7,
+            7
+          ],
+          "q7": [
+            3,
+            1
+          ],
+          "y0": [
+            5,
+            7
+          ],
+          "y1": [
+            5,
+            1
+          ],
+          "y2": [
+            1,
+            5
+          ],
+          "y3": [
+            1,
+            1
+          ]
+        }
+      },
+      "case": "parallel_holdout_n8_d30_s15",
+      "final": {
+        "T1_rounds": 56,
+        "V1_volume_blocks": 141.0,
+        "circuit_sha256": "a43ea86bc6c7e9aa4da61235a2ae71ef982d3c94c0e4b649370b4d1fb76197b7",
+        "placement": {
+          "q0": [
+            1,
+            3
+          ],
+          "q1": [
+            7,
+            1
+          ],
+          "q2": [
+            3,
+            3
+          ],
+          "q3": [
+            3,
+            1
+          ],
+          "q4": [
+            3,
+            5
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "q6": [
+            1,
+            1
+          ],
+          "q7": [
+            7,
+            3
+          ],
+          "y0": [
+            1,
+            5
+          ],
+          "y1": [
+            5,
+            1
+          ],
+          "y2": [
+            5,
+            5
+          ],
+          "y3": [
+            7,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 5.369127516778526,
+      "selection_status": "frozen executed-shared-window panel"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 47,
+        "V1_volume_blocks": 152.33333333333334,
+        "circuit_sha256": "0f3c072fa8ed62cb329ea3b5b1051c26cd86d9fed2cd17892c80cfcfde94de25",
+        "placement": {
+          "q0": [
+            5,
+            3
+          ],
+          "q1": [
+            7,
+            3
+          ],
+          "q2": [
+            1,
+            3
+          ],
+          "q3": [
+            3,
+            5
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            7,
+            1
+          ],
+          "q6": [
+            3,
+            1
+          ],
+          "q7": [
+            5,
+            1
+          ],
+          "y0": [
+            1,
+            5
+          ],
+          "y1": [
+            1,
+            1
+          ]
+        }
+      },
+      "case": "parallel_holdout_n8_d40_s49",
+      "final": {
+        "T1_rounds": 47,
+        "V1_volume_blocks": 139.0,
+        "circuit_sha256": "dffe5c788fbf279a12ccf3319c9315ea9ba8734a67d88a365c9dbcaff202258a",
+        "placement": {
+          "q0": [
+            5,
+            3
+          ],
+          "q1": [
+            3,
+            1
+          ],
+          "q2": [
+            3,
+            5
+          ],
+          "q3": [
+            5,
+            5
+          ],
+          "q4": [
+            3,
+            3
+          ],
+          "q5": [
+            7,
+            1
+          ],
+          "q6": [
+            1,
+            3
+          ],
+          "q7": [
+            5,
+            1
+          ],
+          "y0": [
+            3,
+            7
+          ],
+          "y1": [
+            1,
+            5
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 8.7527352297593,
+      "selection_status": "frozen two-shared-window panel"
+    },
+    {
+      "baseline": {
+        "T1_rounds": 17,
+        "V1_volume_blocks": 58.333333333333336,
+        "circuit_sha256": "18a87cec5ab1cd667b48b2cf7b8f5c4b298528d5236210b12db7ad633e2a4400",
+        "placement": {
+          "q0": [
+            3,
+            5
+          ],
+          "q1": [
+            1,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            1,
+            5
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "q6": [
+            3,
+            3
+          ],
+          "q7": [
+            3,
+            1
+          ]
+        }
+      },
+      "case": "parallel_holdout_n8_d30_s392",
+      "final": {
+        "T1_rounds": 17,
+        "V1_volume_blocks": 57.0,
+        "circuit_sha256": "9afb7e2a5df870cad76ea513bfdc2ccaa23f565be119c1dff9cf5dee47d7a56d",
+        "placement": {
+          "q0": [
+            3,
+            5
+          ],
+          "q1": [
+            1,
+            1
+          ],
+          "q2": [
+            5,
+            1
+          ],
+          "q3": [
+            1,
+            3
+          ],
+          "q4": [
+            1,
+            5
+          ],
+          "q5": [
+            5,
+            3
+          ],
+          "q6": [
+            3,
+            3
+          ],
+          "q7": [
+            3,
+            1
+          ]
+        }
+      },
+      "reported_v1_reduction_percent": 2.285714285714291,
+      "selection_status": "frozen route-transition panel"
+    }
+  ],
+  "schema": "circls-orientation-claims-v1",
+  "separate_correctness_fixes": {
+    "fallback_bus_persistence": {
+      "patch": "patches/0001-fallback-bus-persistence.patch",
+      "patch_sha256": "fff8157a3b7eba5b6c9ad56d636e922714ae84faab2fdf2d93112f7be53066a6",
+      "qualification": "feasibility/correctness fix, not a performance win"
+    },
+    "symbolic_reporting": {
+      "patch": "patches/0002-symbolic-reporting.patch",
+      "patch_sha256": "12dc53607688ac7fe6e76b63990ad968af18e29fd0069c531a330a3211e70a51",
+      "qualification": "reporting/verifier correctness fix; physical circuit unchanged"
+    }
+  }
+}

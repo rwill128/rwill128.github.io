@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Can you reproduce this CircLS compiler result? | Richard Williams</title>
+  <meta name="description" content="A clean-room specification for independently reproducing verifier-gated birth-orientation search in the released CircLS lattice-surgery compiler.">
+  <meta name="author" content="Richard Williams">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Can you reproduce this CircLS compiler result?">
+  <meta property="og:description" content="Fifteen original-environment results, fourteen effects surviving a clean Linux optimizer replay, and a public clean-room specification.">
+  <meta property="og:url" content="https://rwill128.github.io/writing/circls-orientation-clean-room/">
+  <meta property="article:author" content="Richard Williams">
+  <meta property="article:published_time" content="2026-08-31">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#f6f6f3">
+  <link rel="canonical" href="https://rwill128.github.io/writing/circls-orientation-clean-room/">
+  <link rel="stylesheet" href="/assets/site.css?v=20260831-1">
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to article</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="/">Richard Williams</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/#writing" aria-current="page">Writing</a>
+        <a class="optional-nav" href="/#work">Work</a>
+        <a href="https://github.com/rwill128" rel="me">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="article">
+    <header class="article-header">
+      <div class="shell article-heading">
+        <div class="article-kicker">
+          <span>Quantum compilation</span>
+          <span>Clean-room reproduction</span>
+          <span>Open review</span>
+        </div>
+        <h1>Can you reproduce this CircLS compiler result?</h1>
+        <p class="article-deck">A public specification for testing whether verifier-gated birth-orientation search finds lower occupied-spacetime circuits in the released CircLS compiler.</p>
+        <div class="article-byline">
+          <span>By Richard Williams</span>
+          <span>August 31, 2026</span>
+          <span>9 minute read</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="metric-band" aria-label="Reported results">
+      <div class="wide-shell metric-grid">
+        <div class="metric">
+          <strong>15</strong>
+          <span>verified effects in the original macOS-arm64 environment</span>
+        </div>
+        <div class="metric">
+          <strong>14/15</strong>
+          <span>effects surviving a clean Linux-arm64 optimizer replay</span>
+        </div>
+        <div class="metric">
+          <strong>13/15</strong>
+          <span>exact optimized replays across both environments</span>
+        </div>
+        <div class="metric">
+          <strong>0</strong>
+          <span>author implementation files in the clean-room archive</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell article-layout">
+      <article class="article-body">
+        <p><strong>This is an invitation to reproduce a narrow compiler result, not an announcement that the result is established.</strong></p>
+        <p>The experiment asks whether changing the orientation in which logical data patches are introduced can reduce the physical occupied-spacetime metric produced by <a href="https://arxiv.org/abs/2608.23819">CircLS</a>. The baseline is CircLS's released <code>full</code> configuration—not a weakened control scheduler—and every accepted result must pass the compiler's complete public verification path.</p>
+        <p>The initial study found fifteen lower-V1 circuits with no T1 latency increase. A later clean Linux replay exposed an important limitation: fourteen effects survived a fresh run of optimized assignment, but one did not. The clean-room package reports that disagreement rather than smoothing it away.</p>
+
+        <div class="result-box">
+          <h3>Download the isolated reproduction input</h3>
+          <p>The archive contains only the method, public-source pins, reported results, and a byte manifest. It contains no author search code, generated trace, patch, custom verifier, vendor checkout, or saved reproduction output.</p>
+          <p class="artifact-actions">
+            <a class="artifact-link" href="/downloads/circls-orientation-clean-room-spec-v1.3.zip" download>Download clean-room spec v1.3</a>
+            <a href="/writing/circls-orientation-clean-room/files/method-spec.md">Read the raw method</a>
+          </p>
+          <p class="artifact-hash"><strong>SHA-256</strong><br><code>c8913c63afe686beabb4abfb61c85e57cc71282e5746cb8731883bbf0000f9ae</code></p>
+        </div>
+
+        <h2 id="scope">What is being tested</h2>
+        <p>CircLS compiles Clifford QASM or Pauli-product measurement programs into physical Stim circuits for a lattice-surgery model. Its released <code>full</code> configuration includes optimized placement, terminal-measurement re-selection, first-use allocation, last-use retirement, scheduling, parallel execution where permitted, routing, physical lowering, and verification.</p>
+        <p>The tested variable is each data patch's birth orientation: <code>X_horizontal</code> or <code>X_vertical</code>. CircLS already exposes that input. The proposed contribution is narrower: use the realized physical circuit as a counterfactual cost oracle while re-running optimized placement, and accept an orientation change only after deterministic recompilation and full verification.</p>
+        <p>The exact public sources are:</p>
+        <ul>
+          <li><a href="https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d">CircLS commit <code>3523afeb...f72d</code></a> and its <a href="https://arxiv.org/abs/2608.23819">paper</a>;</li>
+          <li><a href="https://github.com/pnnl/QASMBench/tree/357b942396d5c2b7cbc1c229c585a6ef5ccaebac">QASMBench commit <code>357b9423...ebac</code></a> and its <a href="https://arxiv.org/abs/2005.13018">paper</a>.</li>
+        </ul>
+
+        <h2 id="reported-results">Reported results</h2>
+        <p>These rows have different selection histories. They are not fifteen fresh held-out trials and should not be pooled as if they were. The labels and complete traces are retained in the author review artifact; the clean-room input includes the reported metrics and circuit hashes but withholds the final orientation maps.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Case</th>
+              <th>Selection</th>
+              <th>V1 baseline → final</th>
+              <th>Reduction</th>
+              <th>T1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>teleport_8</code></td><td>Original held-out</td><td>220.333 → 208.333</td><td>5.45%</td><td>92 → 92</td></tr>
+            <tr><td><code>bv_n14</code></td><td>Original held-out, QASMBench</td><td>232.333 → 229.667</td><td>1.15%</td><td>76 → 76</td></tr>
+            <tr><td><code>twistedghz_8</code></td><td>Frozen panel 2</td><td>103.667 → 93.000</td><td>10.29%</td><td>34 → 34</td></tr>
+            <tr><td><code>bv_n19</code></td><td>Frozen panel 2, QASMBench</td><td>388.667 → 378.000</td><td>2.74%</td><td>104 → 104</td></tr>
+            <tr><td><code>dj_16</code></td><td>Exploratory cross-family</td><td>292.667 → 287.333</td><td>1.82%</td><td>87 → 87</td></tr>
+            <tr><td><code>bv_n30</code></td><td>Survey-selected, QASMBench</td><td>767.333 → 760.667</td><td>0.87%</td><td>104 → 104</td></tr>
+            <tr><td><code>bv_holdout_12</code></td><td>Frozen route-proxy panel</td><td>141.667 → 140.333</td><td>0.94%</td><td>38 → 38</td></tr>
+            <tr><td><code>dj_holdout_12</code></td><td>Frozen route-proxy panel</td><td>184.333 → 177.667</td><td>3.62%</td><td>65 → 65</td></tr>
+            <tr><td><code>teleport_holdout_6</code></td><td>Frozen route-proxy panel</td><td>169.000 → 159.667</td><td>5.52%</td><td>70 → 70</td></tr>
+            <tr><td><code>twistedghz_holdout_6</code></td><td>Frozen route-proxy panel</td><td>65.667 → 57.667</td><td>12.18%</td><td>26 → 26</td></tr>
+            <tr><td><code>random_holdout_12_60_303</code></td><td>Frozen route-proxy panel</td><td>246.667 → 244.000</td><td>1.08%</td><td>74 → 74</td></tr>
+            <tr><td><code>parallel_holdout_n8_d30_s11</code></td><td>Frozen shared-window panel</td><td>94.667 → 92.000</td><td>2.82%</td><td>35 → 35</td></tr>
+            <tr><td><code>parallel_holdout_n8_d30_s15</code></td><td>Frozen shared-window panel</td><td>149.000 → 141.000</td><td>5.37%</td><td>56 → 56</td></tr>
+            <tr><td><code>parallel_holdout_n8_d40_s49</code></td><td>Frozen two-window panel</td><td>152.333 → 139.000</td><td>8.75%</td><td>47 → 47</td></tr>
+            <tr><td><code>parallel_holdout_n8_d30_s392</code></td><td>Frozen transition panel</td><td>58.333 → 57.000</td><td>2.29%</td><td>17 → 17</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="method">The search rule</h2>
+        <ol>
+          <li>Compile the circuit with CircLS's released <code>full</code> configuration.</li>
+          <li>Flip one data patch's birth orientation.</li>
+          <li>Re-run optimized placement and complete physical compilation.</li>
+          <li>Reject compile failures and candidates whose V1 is not strictly lower or whose T1 increases.</li>
+          <li>Recompile each metric-eligible candidate independently. Require the circuit hash and metrics to reproduce.</li>
+          <li>Require silence, determinism, forced graphlike distance, and affine logical equivalence all to run and pass with no skipped field.</li>
+          <li>Accept the lowest-V1 eligible candidate, breaking ties by T1 and coordinate name.</li>
+          <li>Continue until a complete one-flip neighborhood contains no acceptable move.</li>
+        </ol>
+        <p>This is coordinate descent. Its endpoint is a verified one-flip local optimum, not a global optimum.</p>
+
+        <h2 id="proxy">The cheap route proxy</h2>
+        <p>In a guarded zero-rotation, equal-latency regime where liveness and batch structure do not change, the source-derived prediction at distance three is:</p>
+        <pre><code>delta V1 = ((rounds + 1) / d) × delta route cells
+         = (4 / 3) × delta route cells</code></pre>
+        <p>The proxy is only a ranker. A candidate still has to survive complete physical compilation and the unchanged verifier. No prediction applies after rotations, latency changes, walls, batch demotion, or batch restructuring.</p>
+
+        <h2 id="platform-boundary">The result that did not survive Linux</h2>
+        <p>A clean Linux-arm64 run independently rebuilt CircLS and QASMBench from the public repositories, installed the frozen Python dependencies, and reran optimized assignment.</p>
+        <ul>
+          <li>Thirteen cases reproduced the original optimized baseline and final hashes exactly.</li>
+          <li><code>bv_n19</code> retained V1 388.667 → 378.000 at T1 104 and reproduced the exact final hash, but its released baseline physical circuit differed.</li>
+          <li><code>random_holdout_12_60_303</code> selected a different optimized placement. The original orientation map became V1 298.000/T1 91 rather than an improvement, so this row is excluded from any platform-independent aggregate.</li>
+        </ul>
+        <p>The likely source is numerical platform sensitivity in CircLS's optimized assignment portfolio, which uses eigendecomposition, Hungarian assignment, and approximate QAP starts. That is a source-informed hypothesis, not yet a minimal root-cause proof.</p>
+        <blockquote>
+          <p>Publication-safe summary: fifteen verified original-environment results, fourteen effects surviving a clean Linux optimizer replay, and thirteen exact optimized replays.</p>
+        </blockquote>
+
+        <h2 id="clean-room">How to perform an independent reproduction</h2>
+        <ol>
+          <li>Give the reproducer only the downloadable clean-room archive.</li>
+          <li>Have them obtain the pinned CircLS and QASMBench sources from their public repositories.</li>
+          <li>Have them implement the method from the prose rather than translating author code.</li>
+          <li>Require them to freeze their implementation, environment, output, and hashes before seeing the full author artifact.</li>
+          <li>Report exact agreements, metric-only agreements, failures, exclusions, skipped checks, and platform differences separately.</li>
+        </ol>
+        <p>The archive exposes its components directly for inspection:</p>
+        <ul>
+          <li><a href="/writing/circls-orientation-clean-room/files/method-spec.md">method specification</a>;</li>
+          <li><a href="/writing/circls-orientation-clean-room/files/source-pins.json">public source pins</a>;</li>
+          <li><a href="/writing/circls-orientation-clean-room/files/reported-results.json">reported results</a>;</li>
+          <li><a href="/writing/circls-orientation-clean-room/files/manifest.sha256">archive content manifest</a>.</li>
+        </ul>
+
+        <h2 id="separate-fixes">Two correctness fixes are separate</h2>
+        <p>The wider review artifact also contains two CircLS corrections. They are deliberately not counted as orientation-search performance:</p>
+        <ul>
+          <li>a fallback-bus persistence fix that rescues a hard compiler failure, but is not a speedup;</li>
+          <li>a symbolic-reporting fix that corrects a false-negative logical verdict without changing the physical circuit.</li>
+        </ul>
+        <p>The clean-room results describe those observations, but the archive withholds the author patches.</p>
+
+        <h2 id="not-claimed">What is not claimed</h2>
+        <ul>
+          <li>No hardware runtime or hardware-area advantage.</li>
+          <li>No non-Clifford, magic-state, or Shor improvement. CircLS is Clifford-only at this pin.</li>
+          <li>No global optimum.</li>
+          <li>No claim to broad novelty in congestion-aware compilation or layout awareness. <a href="https://arxiv.org/abs/2608.03315">Harvest</a> and <a href="https://arxiv.org/abs/2604.15099">O3LS</a> already cover important nearby territory.</li>
+          <li>No peer-reviewed novelty determination.</li>
+        </ul>
+
+        <h2 id="report">Report what you find</h2>
+        <p>Successful reproductions, failures, partial agreements, and counterexamples are all useful. If you attempt the clean-room implementation, please preserve your source pins, dependency versions, platform, commands, output, and hashes.</p>
+        <p><a href="https://github.com/rwill128/rwill128.github.io/issues/new?title=CircLS%20clean-room%20reproduction">Open a reproduction report on GitHub</a>. Please do not optimize the report for agreement; platform failures and negative results are part of the evidence.</p>
+      </article>
+
+      <aside class="article-aside" aria-label="Article contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#scope">What is being tested</a></li>
+          <li><a href="#reported-results">Reported results</a></li>
+          <li><a href="#method">Search rule</a></li>
+          <li><a href="#proxy">Route proxy</a></li>
+          <li><a href="#platform-boundary">Platform boundary</a></li>
+          <li><a href="#clean-room">Clean-room protocol</a></li>
+          <li><a href="#not-claimed">What is not claimed</a></li>
+          <li><a href="#report">Report results</a></li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <span>&copy; 2026 Richard Williams</span>
+      <a href="/">Back to the homepage</a>
+    </div>
+  </footer>
+</body>
+</html>

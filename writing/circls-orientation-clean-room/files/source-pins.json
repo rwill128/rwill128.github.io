@@ -1,0 +1,19 @@
+{
+  "created_date": "2026-08-31",
+  "package_version": "v1.3",
+  "python": "3.12",
+  "sources": {
+    "CircLS": {
+      "commit": "3523afeb0034bf047651a7e98a7e45d3da5df72d",
+      "commit_url": "https://github.com/John-YuehanZhang/CircLS/tree/3523afeb0034bf047651a7e98a7e45d3da5df72d",
+      "paper": "https://arxiv.org/abs/2608.23819",
+      "repository": "https://github.com/John-YuehanZhang/CircLS.git"
+    },
+    "QASMBench": {
+      "commit": "357b942396d5c2b7cbc1c229c585a6ef5ccaebac",
+      "commit_url": "https://github.com/pnnl/QASMBench/tree/357b942396d5c2b7cbc1c229c585a6ef5ccaebac",
+      "paper": "https://arxiv.org/abs/2005.13018",
+      "repository": "https://github.com/pnnl/QASMBench.git"
+    }
+  }
+}
