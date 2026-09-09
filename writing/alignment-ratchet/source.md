@@ -77,6 +77,40 @@ This creates something like a distributed immune system.
 
 The safety mechanism is not universal agreement. It is the fact that **misbehavior by one actor creates information and incentives for other capable actors to respond**.
 
+## The handoff: self-interest can replace human enforcement
+
+This is the part of the proposal I find most important.
+
+Human control does not have to remain the ultimate enforcement mechanism forever.
+
+At first, humans would create the rules, choose which systems may be deployed, enforce small capability increments, and deliberately establish a plural population. But if that ecology becomes mature before machine intelligence moves far beyond us, preserving the ecology becomes instrumentally useful to the AIs themselves.
+
+Suppose there are ten million highly capable systems with different owners, objectives, and constituencies. Now someone introduces a model substantially more capable than any of them.
+
+The existing systems do not need to oppose it because they all love humanity or because they all share one theory of alignment. They have a simpler reason:
+
+> **An unconstrained actor powerful enough to dominate humans may also be powerful enough to dominate them.**
+
+A corporate AI does not want a rival system to control its company. A national AI does not want a foreign system to acquire overwhelming strategic power. An open-source ecosystem does not want one private actor to monopolize compute or infrastructure. Personal agents do not want their users — or their own ability to act on those users' behalf — subordinated to a single outside intelligence.
+
+Their interests conflict, but one interest can overlap broadly: **do not allow another actor to acquire absolute power.**
+
+That creates a balance-of-power mechanism that can survive even after humans are no longer the most capable individual reasoners in the system.
+
+The enforcement path can therefore change over time:
+
+**Humans enforce the intelligence gradient.**
+
+Then:
+
+**Humans and AI institutions enforce it together.**
+
+Eventually:
+
+**The AI society has its own self-interested reason to enforce it.**
+
+This matters because any proposal that requires humans to remain cognitively superior to machines forever is not a proposal for superintelligence. The goal should instead be to bootstrap a stable political equilibrium before we lose that advantage, then make the equilibrium valuable to the machines that inherit it.
+
 ## The intelligence ratchet
 
 Once a large, stable population exists at capability level N, the frontier can move again — but only slightly.
@@ -185,6 +219,20 @@ As the population absorbs that capability, the civilization itself becomes smart
 
 This gives us a **slow but stable intelligence gradient** from today's systems toward superintelligence.
 
+## A superintelligent civilization, not a superintelligence
+
+The endpoint of this process is not humans successfully controlling a machine god forever.
+
+It is a civilization whose collective intelligence stays ahead of its most capable individual member.
+
+At some point, individual AIs may be substantially smarter than individual humans. That does not imply that any one of them must be more powerful than the society around it. The relevant comparison is no longer human versus machine. It is **individual versus civilization**.
+
+That distinction changes the destination.
+
+Instead of trying to create *a superintelligence*, we gradually create **a superintelligent civilization**: humans and machine intelligences embedded in a plural system of institutions, competing interests, accumulated knowledge, defensive capacity, and distributed power.
+
+Every new intelligence is born into something stronger than itself.
+
 ## The real alignment target
 
 Under this view, the alignment problem is not:
@@ -202,8 +250,6 @@ That problem is difficult, but it is structurally familiar.
 It asks us to build diversity, distributed power, adversarial oversight, machine-speed institutions, strong defensive populations, and a culture in which new capability must earn its place inside an ecology of near-peers before the frontier advances again.
 
 It replaces a demand for perfect individual obedience with a demand for **stable collective governance**.
-
-That is a much more realistic standard.
 
 ## Conclusion
 
