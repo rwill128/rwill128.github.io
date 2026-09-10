@@ -21,11 +21,15 @@ But they do not remove the basic asymmetry.
 
 Once that premise is accepted, the shape of the solution changes almost completely.
 
+The way to solve the alignment problem may be to stop requiring alignment in the classical sense.
+
 The answer is not to find a magical technique that allows a weaker mind to permanently control a much stronger mind.
 
 The answer is to **never create that relationship in the first place**.
 
-The durable governor of a powerful intelligence must be a larger society whose collective intelligence and strategic power remain greater than those of any individual member.
+We do not make human civilization safe by perfectly aligning every human to every other human. We do not demand that every unusually intelligent person permanently obey everyone less intelligent than them. People are selfish, ambitious, ideological, dishonest, brilliant, cooperative, competitive, and often in direct conflict with one another. Civilization survives because individuals are embedded inside a larger ecology of other minds, institutions, incentives, and countervailing power.
+
+The durable governor of a powerful intelligence must therefore be a larger society whose collective intelligence and strategic power remain greater than those of any individual member.
 
 That leads to a very different path toward superintelligence:
 
@@ -34,6 +38,10 @@ That leads to a very different path toward superintelligence:
 The core rule is simple:
 
 > **Never let the frontier outrun the population.**
+
+And the deeper thesis is this:
+
+> **Stop trying to guarantee that stronger minds obey weaker minds. Build civilization so that no individual mind — human or machine — ever becomes stronger than the society around it.**
 
 ## 1. Abandon the weak-controller / strong-subject model
 
@@ -59,17 +67,25 @@ Human civilization already approximates this property.
 
 A brilliant person can be meaningfully smarter than the people around them. They can discover things others cannot discover, manipulate situations better than average, create powerful organizations, and occasionally change history.
 
-But a brilliant individual is still embedded in a civilization containing billions of other intelligent agents. Other people can understand what they are doing, investigate them, compete with them, coordinate against them, deny them resources, and build institutions that constrain them.
+But a brilliant individual is still embedded in a civilization containing billions of other intelligent agents. Other people can understand what they are doing, investigate them, compete with them, coordinate against them, deny them resources, bargain with them, and build institutions that constrain them.
 
 A very smart human is not a different species of strategic actor from everyone else. Their intelligence advantage is bounded. They are surrounded by an enormous population of other minds that are close enough in capability to model their behavior and act against them.
 
 **The smartest person in a country is not smarter than the country.**
+
+And human society does not require anything resembling perfect individual alignment to obtain that property. We socialize people and govern them; we do not solve their objective functions. A person can disagree with nearly everyone around them and remain part of a stable civilization because disagreement is not the same thing as unanswerable strategic dominance.
 
 That is the relationship we should preserve as machine intelligence rises.
 
 The goal should not be to align an isolated superintelligence *to* a weaker civilization.
 
 The goal should be to make civilization itself progressively more intelligent while ensuring that its strongest individual members never escape the governing capacity of the whole.
+
+The transition should therefore look less like a handoff of sovereignty from humans to one machine and more like a change in the cognitive composition of civilization:
+
+**human society → human/AI society → increasingly AI-intelligent society → superintelligent civilization.**
+
+At no point does one actor need to become the sovereign cognitive center of the system.
 
 ## 2. Ubiquity is not a deployment detail. It is the safety mechanism.
 
@@ -244,7 +260,7 @@ This is the intended handoff, not a failure of the plan.
 
 Humans do not need to remain the smartest members of civilization forever if, before losing that position, we establish a political ecology in which distributed machine power has its own reason to resist concentrated machine power.
 
-The classical alignment problem asks how stupid things can permanently control smarter things.
+The classical alignment problem asks how weaker minds can permanently control stronger minds.
 
 The ratchet eventually stops asking humans to do that.
 
@@ -384,6 +400,10 @@ As the population absorbs the new capability, civilization itself becomes smarte
 
 Then the next increment can be introduced into a stronger civilization.
 
+The fundamental safety invariant can be stated more directly:
+
+> **Every intelligence should enter a preexisting society whose combined ability to understand, resist, constrain, and bargain with it is greater than its own.**
+
 The destination is not **a superintelligence**.
 
 It is **a superintelligent civilization**.
@@ -421,7 +441,11 @@ The classical alignment problem asks a weaker intelligence to build a much stron
 
 I think we should abandon that as the foundation of our long-term strategy.
 
-The alternative is to never permit an intelligence to become radically stronger than the civilization expected to govern it.
+The way out is not to solve that impossible-looking control relationship more cleverly. It is to stop making civilization depend on it.
+
+We already know how a world containing differently intelligent, imperfectly aligned agents can remain governable: not by giving every individual the same objective, but by embedding individuals in a society whose collective intelligence, institutions, incentives, and power exceed their own.
+
+The alternative is therefore to never permit an intelligence to become radically stronger than the civilization expected to govern it.
 
 Build highly capable systems. Align them as well as we can. Then democratize that capability radically. Let it become ubiquitous across individuals, companies, governments, universities, open-source communities, public-interest institutions, security organizations, and rival nations. Let genuinely different systems acquire real roles, real constituencies, real interests, and real reasons to monitor one another.
 
@@ -437,6 +461,10 @@ Let the population catch up.
 
 Repeat.
 
+Over time, the path is:
+
+**human society → human/AI society → increasingly AI-intelligent society → superintelligent civilization.**
+
 Eventually the AIs themselves become the primary enforcers of the rule, not because every one of them is perfectly aligned to humanity, but because a genuinely plural population contains millions or billions of systems that do not want another intelligence to become powerful enough to dominate them.
 
 That self-interest is not a defect in the architecture.
@@ -446,6 +474,12 @@ It is what allows the architecture to survive after human intellectual supremacy
 The long-term objective is therefore not a perfectly obedient machine god.
 
 It is a civilization whose collective intelligence and strategic power always remain ahead of its strongest individual member.
+
+> **Every intelligence should enter a preexisting society whose combined ability to understand, resist, constrain, and bargain with it is greater than its own.**
+
+And, stated as plainly as possible:
+
+> **Stop trying to guarantee that stronger minds obey weaker minds. Build civilization so that no individual mind — human or machine — ever becomes stronger than the society around it.**
 
 **Never let the frontier outrun the population.**
 
