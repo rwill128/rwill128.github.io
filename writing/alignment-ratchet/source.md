@@ -2,267 +2,358 @@
 layout: post
 title: "The Alignment Ratchet: Build an AI Society Before Superintelligence"
 date: 2026-09-09
-description: "The safest path to superintelligence may be a slow intelligence gradient: a large, plural society of near-frontier AIs that can govern and socialize each modest capability increase before the frontier advances again."
+description: "Do not let a radically smarter individual outrun the society meant to govern it. Democratize each level of AI capability until it is ubiquitous, plural, and independently controlled before the frontier advances again."
 ---
 
 # The Alignment Ratchet: Build an AI Society Before Superintelligence
 
-**I do not think the alignment problem is solvable in the strongest sense at the level of a single individual AI.**
+**The classical alignment problem starts from the wrong control relationship.**
 
-If a system becomes much smarter and more strategically capable than the people trying to control it, I do not think we can ever be fully confident that it will continue doing exactly what we intend. Better training, better evaluations, interpretability, constitutions, reward design, monitoring, and containment may all help. But none of them changes the basic asymmetry: the thing being governed may eventually understand the situation better than the governor.
+It asks how a less capable intelligence can create a much more capable intelligence and still remain confident that the stronger system will indefinitely do what the weaker one intends.
 
-That suggests a different target.
+I do not think that relationship has a stable solution.
 
-Instead of trying to create one perfectly aligned superintelligence, we should create a **society of well-aligned intelligences** and make sure that no individual system is ever allowed to become so much more capable than that society that it can escape the society's ability to understand, constrain, and respond to it.
+The more strategically capable the system becomes relative to its overseers, the less credible it is to treat better instructions, better reward models, better constitutions, better interpretability, or better monitoring as a permanent guarantee of control. Those techniques are valuable. They should make individual systems safer. But they do not remove the basic asymmetry.
 
-The alignment problem becomes a problem of institutions, population structure, and relative power.
+A substantially less capable intelligence should not expect to remain sovereign over a substantially more capable one forever.
 
-The path to superintelligence is then not a jump. It is a ratchet.
+If we take that premise seriously, then the alignment problem has to be reformulated.
 
-## Individual alignment is the wrong unit of analysis
+The durable governor of a powerful intelligence cannot be a much weaker individual. It has to be a **larger society whose collective intelligence and strategic power remain greater than those of any individual member**.
 
-Human beings already give us a useful example.
+That leads to a very different path toward superintelligence.
 
-A brilliant person can be meaningfully smarter than the people around them. They can discover things other people cannot discover, manipulate situations better than average, build powerful organizations, and occasionally change history.
+Do not build a machine god and hope it obeys.
 
-But a brilliant individual is still only fractionally more capable than the surrounding human population. They live among billions of other intelligent agents. Other people can understand their actions, disagree with them, investigate them, compete with them, coordinate against them, and build institutions that constrain them.
+**Build a machine society first, democratize each capability level until it becomes ubiquitous throughout real society, and never let the frontier outrun the population.**
+
+## 1. Abandon the weak-controller / strong-subject model
+
+The most dangerous picture of AI alignment is also the most common one:
+
+> Humans remain the permanent governors.  
+> AI becomes arbitrarily more intelligent.  
+> Alignment techniques somehow preserve human control.
+
+That asks the weaker side of an increasingly unequal relationship to retain decisive strategic authority forever.
+
+My proposal starts by rejecting that goal.
+
+Individual alignment still matters. We should make systems honest, corrigible, legible, robust, and prosocial wherever possible. But those properties should be treated as **defense in depth**, not as the constitutional foundation of a future civilization.
+
+The constitutional foundation should be structural:
+
+> **No individual intelligence should ever become more strategically capable than the society responsible for governing it.**
+
+Human civilization already approximates this property.
+
+A brilliant person can be meaningfully smarter than the people around them. They can discover things others cannot discover, manipulate situations better than average, create powerful organizations, and occasionally change history.
+
+But the brilliant individual is still embedded in a civilization containing billions of other intelligent agents. Other people can understand what they are doing, investigate them, compete with them, coordinate against them, deny them resources, and build institutions that constrain them.
 
 The smartest person in a country is not smarter than the country.
 
-This is not because the population has one perfectly aligned objective. It is almost the opposite. Human societies contain competing interests everywhere: governments, companies, courts, journalists, voters, researchers, rivals, auditors, regulators, criminals, activists, and ordinary people all pulling in different directions.
+That is the relationship we should preserve as machine intelligence rises.
 
-That plurality is part of what makes unilateral domination difficult.
+## 2. Ubiquity is not a deployment detail. It is the safety mechanism.
 
-If we want safe machine superintelligence, we should preserve the same structural property as machine intelligence rises:
+This proposal is **not**: a frontier laboratory spins up ten million copies of its current model, gives them slightly different prompts, and uses them to supervise the next model.
 
-> **The effective intelligence and strategic power of the surrounding society must remain greater than the effective intelligence and strategic power of any individual member.**
+That would miss the point almost completely.
 
-That is the core invariant.
+A population owned by one laboratory is not a society in the relevant sense. It can share one operator, one infrastructure provider, one model lineage, one update mechanism, one security architecture, one set of incentives, one shutdown authority, and one catastrophic common-mode failure.
 
-## First build a population
+The safety property requires **real social diffusion**.
 
-Imagine a future in which today's highly capable agentic systems are no longer rare frontier artifacts.
+Before a materially stronger capability level is allowed into the population, the current level should become cheap, ordinary, independently controlled, and deeply embedded throughout civilization.
 
-They are everywhere.
+Imagine an Astra-class capability level, using "Astra" only as a convenient label for a highly capable agentic system.
 
-There are systems from many companies, many countries, open-source communities, universities, governments, public-interest organizations, and individuals. They are built from different foundation models and different training pipelines. They have different owners, constitutions, incentives, loyalties, and institutional roles.
+Before "Astra × 2" systems are permitted to enter society, Astra-class systems should already be everywhere:
 
-Some protect companies. Some protect citizens. Some represent national interests. Some are personal agents. Some exist specifically to audit other systems. Some are open-source and run on consumer hardware.
+- individuals own and operate them;
+- small businesses use them;
+- large companies use independently controlled versions;
+- governments and rival governments have them;
+- universities and scientific institutions have them;
+- open-source communities maintain them;
+- public-interest organizations have them;
+- security teams and infrastructure operators have them;
+- competing vendors provide genuinely different model families;
+- some versions can run on consumer or prosumer hardware rather than existing only behind a provider's API.
 
-There are not a few thousand of them. There are millions or billions.
+There should be no single switch that turns off "the Astra-level population."
 
-The important point is not just numerical scale. It is **plurality**.
+There should be no single company that can revoke access to it.
 
-A billion copies of essentially the same model, trained by the same provider, under the same incentives, are not a robust society. They are a monoculture with a billion instances.
+There should be no single model lineage whose failure compromises most of the population.
 
-A useful machine society needs genuine differences in training, objectives, institutional allegiance, information, and incentives. One part of the population must have reasons to notice and expose failures in another part.
+By the time a stronger system arrives, the prior capability level should have become part of the fabric of society.
 
-This means we do not need every model to be perfectly aligned. We need the population to be aligned well enough that dangerous behavior remains a minority condition inside a much larger system capable of detecting and suppressing it.
+That is what **population saturation** means.
 
-## Alignment through competing interests
+## 3. The ratchet has two axes: capability and diffusion
 
-Human institutions rarely work by making every participant benevolent.
+It is not enough to increase capability slowly.
 
-Banks do not trust counterparties simply because counterparties promise to behave. Companies audit employees. Governments investigate companies. Journalists investigate governments. Courts constrain governments and citizens. Rival firms look for each other's weaknesses. Security researchers deliberately attack software so that vulnerabilities can be fixed.
+A world can increase capability in small increments while keeping every increment concentrated in the hands of a few frontier laboratories. That still produces a society in which the frontier can outrun the population.
 
-The system works because interests overlap without being identical.
+The ratchet therefore has two axes:
 
-AI can exploit the same structure.
+**Capability** and **diffusion**.
 
-A corporate security agent may care about protecting its employer. A national-security agent may care about protecting infrastructure. An open-source security system may care about public disclosure. A bank's agents may care about financial integrity. Their objectives differ, but all of them can have strong incentives to detect a dangerous exploit.
+The sequence should look like:
 
-Likewise, if one provider's model begins behaving deceptively, competing providers have an incentive to find out. If a government model is compromised, domestic and foreign systems may both have reasons to investigate. If a company conceals a dangerous failure, outside systems can challenge its claims.
+**Level N is developed → Level N is democratized → Level N becomes ubiquitous and institutionally mature → only then is Level N+1 introduced.**
 
-This creates something like a distributed immune system.
+Then:
 
-The safety mechanism is not universal agreement. It is the fact that **misbehavior by one actor creates information and incentives for other capable actors to respond**.
+**Level N+1 is tested by the Level-N society → Level N+1 diffuses → Level N+1 becomes the new social baseline → only then does the frontier move again.**
 
-## The handoff: self-interest can replace human enforcement
+The essential rule is:
 
-This is the part of the proposal I find most important.
+> **No capability generation should materially outrun the strongest intelligence level already widely distributed across independent society.**
 
-Human control does not have to remain the ultimate enforcement mechanism forever.
+The population must catch up before the frontier advances.
 
-At first, humans would create the rules, choose which systems may be deployed, enforce small capability increments, and deliberately establish a plural population. But if that ecology becomes mature before machine intelligence moves far beyond us, preserving the ecology becomes instrumentally useful to the AIs themselves.
+That rules out the dangerous pattern:
 
-Suppose there are ten million highly capable systems with different owners, objectives, and constituencies. Now someone introduces a model substantially more capable than any of them.
+**100 → 400**
 
-The existing systems do not need to oppose it because they all love humanity or because they all share one theory of alignment. They have a simpler reason:
+and replaces it with something like:
 
-> **An unconstrained actor powerful enough to dominate humans may also be powerful enough to dominate them.**
+**100 → 105 → population catches up → 110 → population catches up → 115 → population catches up.**
 
-A corporate AI does not want a rival system to control its company. A national AI does not want a foreign system to acquire overwhelming strategic power. An open-source ecosystem does not want one private actor to monopolize compute or infrastructure. Personal agents do not want their users — or their own ability to act on those users' behalf — subordinated to a single outside intelligence.
+The numbers are illustrative. What matters is preserving a shallow enough intelligence gradient that the surrounding population never loses the ability to understand, challenge, and constrain the strongest systems.
 
-Their interests conflict, but one interest can overlap broadly: **do not allow another actor to acquire absolute power.**
+## 4. Why plurality matters
 
-That creates a balance-of-power mechanism that can survive even after humans are no longer the most capable individual reasoners in the system.
+Numerical scale alone is not enough.
 
-The enforcement path can therefore change over time:
+A billion copies of one model are not a robust civilization. They are a monoculture with a billion instances.
+
+The population has to represent **genuinely competing interests**.
+
+Different countries should have systems aligned to different national interests. Companies should have systems aligned to their owners and customers. Individuals should possess personal systems. Open-source communities should maintain systems outside corporate control. Universities, civil-society groups, infrastructure providers, auditors, and security organizations should operate their own.
+
+The underlying models should differ too.
+
+Different foundation models, training pipelines, post-training regimes, constitutions, tools, owners, information sources, and institutional roles reduce the chance that one hidden failure mode becomes universal.
+
+This diversity is not an unfortunate complication to be managed away.
+
+It is one of the core defenses.
+
+Human societies do not remain governable because everyone shares one objective. They remain governable partly because interests conflict.
+
+Companies audit employees. Governments investigate companies. Journalists investigate governments. Courts constrain governments and citizens. Rival firms expose weaknesses. Security researchers attack software so vulnerabilities can be fixed. Political opponents watch each other closely.
+
+Misbehavior by one actor creates incentives for another actor to notice it.
+
+A plural AI society can exploit the same structure.
+
+## 5. The crucial handoff: AIs eventually police the frontier out of self-interest
+
+At first, humans would have to establish and enforce this architecture.
+
+We would constrain capability jumps. We would encourage model diversity. We would insist on broad diffusion. We would build institutions that prevent a frontier system from acquiring overwhelming power before the population catches up.
+
+But the architecture becomes much more interesting once the AI population itself understands why the rule exists.
+
+Eventually, individual AIs may become capable enough that humans alone can no longer reliably control them.
+
+That does **not** have to mean the end of governance.
+
+By then, if the ratchet has worked, those AIs are members of a huge society of other AIs with different interests, owners, affiliations, and objectives.
+
+Now suppose somebody introduces a model substantially more powerful than the rest.
+
+The existing systems do not need to oppose it because they are perfectly aligned to humanity.
+
+They have a much simpler reason:
+
+> **They do not want to be dominated by it either.**
+
+A corporate AI does not want a rival intelligence to dictate outcomes to its company.
+
+A national AI does not want a foreign or private intelligence to acquire overwhelming strategic power.
+
+An open-source agent does not want a centralized system to monopolize compute or infrastructure.
+
+A personal AI does not want its user — or itself — subordinated to an uncontestable actor.
+
+Different systems can disagree profoundly about almost everything while sharing an instrumental preference against **someone else acquiring absolute power**.
+
+That creates a natural balance-of-power mechanism.
+
+The enforcement sequence can therefore evolve:
 
 **Humans enforce the intelligence gradient.**
 
 Then:
 
-**Humans and AI institutions enforce it together.**
+**Humans and AI institutions enforce the intelligence gradient.**
 
 Eventually:
 
-**The AI society has its own self-interested reason to enforce it.**
+**The AI society itself has strong self-interested reasons to enforce the intelligence gradient.**
 
-This matters because any proposal that requires humans to remain cognitively superior to machines forever is not a proposal for superintelligence. The goal should instead be to bootstrap a stable political equilibrium before we lose that advantage, then make the equilibrium valuable to the machines that inherit it.
+This is the intended handoff, not a failure of the plan.
 
-## The intelligence ratchet
+Humans do not need to remain the smartest members of civilization forever if we establish, before losing that position, a political ecology in which distributed machine power resists concentrated machine power.
 
-Once a large, stable population exists at capability level N, the frontier can move again — but only slightly.
-
-The process should look something like this:
-
-1. **Populate level N.** Make the current capability level abundant, diverse, and deeply integrated into defensive, scientific, economic, and governance institutions.
-2. **Let level N govern itself.** Build machine-speed monitoring, auditing, incident response, adversarial evaluation, and institutional memory.
-3. **Introduce a small number of N+1 systems.** The new systems are somewhat smarter, but not so much smarter that the level-N population becomes unable to understand them.
-4. **Subject N+1 to the level-N society.** Near-peer systems test them, attack them, monitor them, debate their behavior, and learn their failure modes.
-5. **Socialize N+1.** The new systems enter an existing society whose norms and institutions are already enforced by a vastly larger population of intelligences only modestly less capable than they are.
-6. **Let the population catch up.** Once N+1 is understood, stabilized, and widely distributed, it becomes the new normal.
-7. **Repeat.** Only then do we create N+2.
-
-The median and mean intelligence of the machine population climb gradually.
-
-What must never happen is something like:
-
-**100 → 400**
-
-where a small group suddenly possesses an intelligence level that the surrounding population can no longer meaningfully police.
-
-The safe pattern is more like:
-
-**100 → 105 → population catches up → 110 → population catches up → 115 → population catches up.**
-
-The exact numbers are not the point. The point is that the capability gradient remains shallow enough that collective oversight never loses comprehension.
-
-## Socialization, not just instruction
+## 6. Socialization rather than permanent obedience
 
 This changes the metaphor for alignment.
 
-We usually talk about alignment as though we are programming or training a subordinate: tell the system what humans want, punish the wrong behavior, reward the right behavior, and hope the objective generalizes.
+The classical picture is instruction: build a more powerful subordinate, tell it what humans want, and somehow ensure that the instruction remains binding no matter how much more capable the subordinate becomes.
 
-But humans do not become safe members of society because a more intelligent species writes a perfect objective function into us.
+The ratchet model is closer to **socialization**.
 
-We are socialized by a population.
+Humans are not made safe members of society by having a more intelligent species write perfect objectives into us.
 
-A highly intelligent human grows up surrounded by other humans. They learn norms, encounter consequences, develop reputations, form relationships, face competitors, observe institutions, and discover that other people can coordinate against them. Even an unusually capable person is born into a civilization that already exists.
+We are born into a population.
+
+We learn norms. We face consequences. We develop reputations. We form alliances. We encounter rivals. We depend on institutions. We discover that other intelligent beings can coordinate against us.
+
+Even an unusually brilliant human is born into a civilization that already exists.
 
 A slightly superhuman AI should enter the world the same way.
 
-It should not wake up as the smartest strategic actor that has ever existed, supervised by a handful of slower humans.
+It should not awaken as the most strategically capable actor that has ever existed while a handful of slower humans try to determine whether it is trustworthy.
 
-It should wake up inside a mature machine society containing millions or billions of near-peers that already know how to monitor one another, already have institutions, already exchange threat information, already possess defensive infrastructure, and collectively have far more compute and strategic capacity than the newcomer.
+It should enter a mature ecology containing millions or billions of near-peers that already possess defensive infrastructure, institutional memory, threat intelligence, monitoring systems, and the ability to coordinate at machine speed.
 
-The smarter model is not merely evaluated. It is **socialized by the group**.
+The new model is not merely evaluated by that society.
 
-## The hacker thought experiment
+It is **socialized by it**.
 
-Cybersecurity makes this intuitive.
+## 7. The hacker thought experiment
 
-Imagine a world containing one thousand extremely capable malicious hacking agents.
+Cybersecurity makes the idea concrete.
 
-That sounds terrifying in today's environment because human defenders are slow, scarce, fragmented, and usually reactive. A thousand autonomous attackers can probe enormous attack surfaces continuously while defenders struggle to keep up.
+Imagine a world with one thousand extremely capable malicious hacking agents.
 
-Now change only one thing.
+In today's environment that sounds terrifying. Human defenders are slow, scarce, fragmented, and reactive. A thousand autonomous attackers can probe enormous attack surfaces continuously.
 
-Suppose the world also contains **ten million well-aligned, equally capable or nearly equally capable defensive agents**.
+Now imagine that before those offensive systems appeared, society had already democratized the same underlying capability.
 
-They are distributed throughout cloud providers, operating systems, governments, banks, software vendors, open-source projects, telecom networks, and personal machines.
+There are **ten million equally capable or nearly equally capable defensive agents**.
 
-They continuously fuzz software. They generate exploit variants. They watch anomalous behavior. They operate honeypots. They correlate incidents across organizations. They reproduce attacks. They harden systems. They generate and test patches. They distribute newly discovered defensive knowledge at machine speed.
+They are distributed across operating systems, cloud providers, banks, governments, telecom networks, software companies, open-source projects, universities, infrastructure operators, and personal machines.
 
-The thousand attackers are no longer fighting a human security team.
+They continuously fuzz software, generate exploit variants, monitor anomalies, operate honeypots, reproduce incidents, trace campaigns, generate and test patches, rotate defenses, and exchange threat information at machine speed.
+
+The thousand attackers are no longer fighting an understaffed security team.
 
 They are fighting a planetary machine-speed immune system that outnumbers them ten thousand to one.
 
 I do not expect the thousand to win.
 
-The cases where they might win are exactly the cases the broader architecture must prevent: a catastrophic monoculture vulnerability shared by nearly every defender, a centralized resource whose compromise grants disproportionate control, or an intelligence jump so large that the defenders can no longer understand what the attackers are doing.
+And notice why this works.
 
-Those are not side issues. Avoiding them is the architecture.
+The defensive agents do not have to share one ideology. They do not even have to trust one another.
 
-## Why this is different from ordinary "multipolar AI"
+A bank's security agent, a Chinese government agent, an American government agent, an open-source security agent, and a cloud provider's agent can all have different interests while independently preferring that a destructive worm not compromise their infrastructure.
 
-A world with five frontier labs racing each other is not what I mean by multipolarity.
+Competing interests can generate **overlapping defensive incentives**.
 
-That can make the problem worse. Five organizations each fearing that the others will reach the next capability level first have strong incentives to move faster than the surrounding governance system can adapt.
+That is exactly the kind of ecology the ratchet is meant to create before stronger systems appear.
 
-The crucial requirement is that **population mass catches up before the frontier moves materially again**.
+## 8. What the proposal explicitly rules out
 
-A few frontier systems do not constitute a society. A dense population of near-frontier systems does.
+Several superficially similar approaches do not satisfy the requirement.
 
-The difference is the difference between five brilliant people with private armies and a civilization containing billions of educated citizens, mature institutions, distributed knowledge, and competing centers of power.
+**A laboratory population is not enough.**  
+Millions of agents controlled by one organization are not a genuinely independent society.
 
-The second arrangement can absorb unusually capable individuals without becoming subordinate to them.
+**API access is not democratization.**  
+If one provider can revoke access, alter the model, restrict usage, or centrally observe the population, capability remains concentrated.
 
-That is the condition we need to reproduce for AI.
+**Five frontier labs are not multipolar civilization.**  
+A handful of companies racing upward can increase danger because each has an incentive to outrun the others before society catches up.
 
-## The group must remain smarter than the individual
+**Gradual capability increases without broad diffusion are not enough.**  
+The frontier can still pull away from everyone else.
+
+**One foundation model copied everywhere is not enough.**  
+Common-mode failure can defeat numerical advantage.
+
+**Human oversight alone is not the long-term solution.**  
+The architecture has to remain stable after individual machine intelligences become smarter than individual humans.
+
+The relevant target is not "many AIs."
+
+It is **widely distributed, independently controlled, heterogeneous near-frontier intelligence embedded throughout real society**.
+
+## 9. The group must remain smarter than the individual
 
 The phrase "superintelligence" encourages us to imagine a single mind standing above humanity.
 
-I think that image itself points toward the unsafe path.
+That is exactly the configuration I want to avoid.
 
-The better destination is a society in which **individual machine intelligences gradually become more capable than individual humans while the combined intelligence of the surrounding machine-human civilization remains greater than any individual AI**.
+The safer destination is a society in which individual machine intelligences gradually become more capable than individual humans while the combined intelligence and strategic power of the surrounding machine-human civilization remain greater than those of any individual AI.
 
-Humans would eventually live alongside systems that are smarter than us. Later generations might be substantially smarter than us.
+Humans can eventually live among systems smarter than us.
 
-But there would never be a moment when one of those systems was suddenly outside the comprehension and control of every other capable actor.
+Later generations can be substantially smarter than us.
 
-A brilliant new model would be like a brilliant new member of an already functioning civilization: exceptional, useful, perhaps transformative, but still embedded inside a larger network of intelligence and power.
+But there should never be a deliberate moment where civilization creates an actor that has strategically escaped the civilization around it.
 
-As the population absorbs that capability, the civilization itself becomes smarter. The next increment can then be introduced into a stronger society.
+A brilliant new AI should be more like a brilliant new member of an existing society: exceptional, useful, perhaps transformative, but still embedded in a larger network of intelligence, institutions, competitors, and power.
 
-This gives us a **slow but stable intelligence gradient** from today's systems toward superintelligence.
+As the population absorbs the new capability, civilization itself becomes smarter.
 
-## A superintelligent civilization, not a superintelligence
+Then the next increment can be introduced into a stronger civilization.
 
-The endpoint of this process is not humans successfully controlling a machine god forever.
+The destination is not **a superintelligence**.
 
-It is a civilization whose collective intelligence stays ahead of its most capable individual member.
+It is **a superintelligent civilization**.
 
-At some point, individual AIs may be substantially smarter than individual humans. That does not imply that any one of them must be more powerful than the society around it. The relevant comparison is no longer human versus machine. It is **individual versus civilization**.
+## 10. What alignment research becomes under this model
 
-That distinction changes the destination.
+If this framing is right, some of the most important alignment questions change.
 
-Instead of trying to create *a superintelligence*, we gradually create **a superintelligent civilization**: humans and machine intelligences embedded in a plural system of institutions, competing interests, accumulated knowledge, defensive capacity, and distributed power.
+We still need individual-system alignment research, but we also need to understand:
 
-Every new intelligence is born into something stronger than itself.
+- How do we measure whether a capability level is genuinely democratized rather than merely widely accessible through centralized providers?
+- How much model diversity is enough to reduce common-mode failure?
+- How do we measure the effective strategic-power gap between the frontier and the surrounding population?
+- How do we detect cartel formation or collusion among powerful systems?
+- How do we build machine-speed institutions for auditing, adjudication, incident response, and collective defense?
+- How do we prevent one actor from skipping the ratchet and deploying a system several capability levels ahead?
+- How do we ensure that consumer, open-source, civic, corporate, and national actors all retain meaningful access to near-frontier capability?
+- How quickly must diffusion occur before the next frontier increment is safe?
+- Which resources — compute, replication, infrastructure access, model improvement, financial power — must remain distributed for the population's numerical advantage to translate into strategic advantage?
 
-## The real alignment target
+These are not secondary governance questions attached to "the real" alignment problem.
 
-Under this view, the alignment problem is not:
-
-> How do we build a system smarter than us and guarantee that it will forever do exactly what we intend?
-
-I do not think that problem has a satisfactory solution.
-
-The better question is:
-
-> How do we ensure that no new intelligence ever becomes more strategically capable than the society responsible for governing it?
-
-That problem is difficult, but it is structurally familiar.
-
-It asks us to build diversity, distributed power, adversarial oversight, machine-speed institutions, strong defensive populations, and a culture in which new capability must earn its place inside an ecology of near-peers before the frontier advances again.
-
-It replaces a demand for perfect individual obedience with a demand for **stable collective governance**.
+Under this proposal, **they are the alignment problem**.
 
 ## Conclusion
 
-I do not think we should race toward a solitary superintelligence and hope that alignment research outruns capability research at the last moment.
+The classical alignment problem asks a weaker intelligence to build a much stronger intelligence and somehow guarantee permanent obedience.
 
-We should build the society first.
+I think we should stop designing civilization around the hope that this relationship can remain stable.
 
-Create a huge population of capable, heterogeneous, well-aligned systems. Give them competing interests and reasons to police one another. Let them build institutions, defensive infrastructure, norms, and machine-speed governance. Then increase the frontier slowly enough that every stronger generation is born into a civilization capable of understanding and socializing it.
+The alternative is to keep intelligence increases inside the range of collective governance.
 
-The long-term objective is not a perfectly obedient machine god.
+Build highly capable systems. Align them as well as we can. Then democratize that capability radically. Let it become ubiquitous across individuals, companies, governments, universities, open-source communities, public-interest institutions, and rival nations. Let genuinely different systems acquire real roles, real constituencies, real interests, and real reasons to monitor one another.
 
-It is a civilization whose collective intelligence always stays ahead of its most capable individual member.
+Only when that capability level has saturated society should the frontier move materially again.
 
-If we can preserve that invariant, then the path from human-level AI to superintelligence does not need to be a leap into the unknown.
+Then introduce a slightly stronger generation into a world already populated by vastly more numerous near-peers capable of understanding and constraining it.
 
-It can be a ratchet: slow, plural, governed, and stable.
+Let the population catch up.
+
+Repeat.
+
+Eventually the AIs themselves become the primary enforcers of the rule, not because every one of them is perfectly aligned to humanity, but because none of them wants another intelligence to become powerful enough to dominate the rest.
+
+The long-term objective is therefore not a perfectly obedient machine god.
+
+It is a civilization whose collective intelligence and strategic power always remain ahead of its strongest individual member.
+
+**Never let the frontier outrun the population.**
+
+That is the alignment ratchet.
